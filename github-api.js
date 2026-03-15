@@ -12,15 +12,16 @@ const GITHUB_API_BASE = 'https://api.github.com';
 // ============================================================
 
 function setGitHubToken(token) {
-  localStorage.setItem('github_pat', token);
+  // 使用 sessionStorage 代替 localStorage：关闭标签页后自动清除，降低 XSS 风险
+  sessionStorage.setItem('github_pat', token);
 }
 
 function getGitHubToken() {
-  return localStorage.getItem('github_pat');
+  return sessionStorage.getItem('github_pat');
 }
 
 function clearGitHubToken() {
-  localStorage.removeItem('github_pat');
+  sessionStorage.removeItem('github_pat');
 }
 
 // ============================================================
