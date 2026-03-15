@@ -1,168 +1,149 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+本文件为 Claude Code 提供项目上下文。所有指令必须严格遵守。
 
-## Project Overview
+## 项目概述
 
-This repository contains static HTML pages for a fictional government portal simulation ("Atelier Federal Government"). The content is primarily in Chinese with some English elements, and includes departments such as central bank, ministries, and external services.
+阿特利尔联邦政府门户网站（Atelier Federal Government），模拟政府门户的静态网站项目。内容以中文为主，部分英文标题。
 
-All HTML files are self-contained with inline CSS styling. There are no external stylesheets, JavaScript files, build scripts, or package dependencies.
+**技术架构：Firebase Auth（仅认证）+ GitHub 仓库（数据存储）+ GitHub Pages（公开读取）**
 
-## Directory Structure
+## 目录结构
 
-- `Bank_of_Atelier/` – Central bank website (Bank of Atelier)
-- `Centeral_Gov_service/` – Various federal ministries and departments (Justice, Defence, Education, Finance, etc.)
-- `Outside_Gov_service/` – External government-related organizations (National Power Company, Universities Admissions Service)
-- `gov_Notice/` – Public notices and travel advisories
-- `local_gov/` – Local government portal
-- `nationalicon/` – National emblem image (`nationicon.png`)
-- `css/` – Common CSS files for different service categories (new)
-
-Each directory contains one or more `.html` files representing individual agency or service pages.
-
-## Development Commands
-
-There is no build system, package manager, or test suite. To view a page, open the corresponding `.html` file directly in a web browser.
-
-- **Preview**: Double-click any `.html` file or use `open file.html` (macOS) / `start file.html` (Windows) / `xdg-open file.html` (Linux).
-- **No linting or formatting tools** are configured.
-- **No automated tests** exist.
-
-## Key Architecture Notes
-
-1. **Self-contained HTML**: Each page includes its own `<style>` block with CSS custom properties (CSS variables) defining a department‑specific color scheme. There is no shared CSS.
-
-2. **Image references**: Most pages reference the national emblem via an absolute Windows path:
-   ```html
-   <img src="G:\nationicon.png" alt="国徽" class="gov-emblem">
-   ```
-   The actual image is stored in `nationalicon/nationicon.png`. If pages are moved to another environment, these `src` attributes may need to be updated to a relative path (e.g., `../nationalicon/nationicon.png`).
-
-3. **Design consistency**: Pages follow a similar visual pattern:
-   - A dark header with an orange accent border
-   - Hero section with a search bar (where applicable)
-   - Card‑based or list‑based content grids
-   - Responsive media queries for mobile screens
-   - Government‑style footer
-
-4. **Language**: Content is mostly written in Chinese (`lang="zh-CN"`), with occasional English labels and titles.
-
-5. **Common CSS extraction**: Public CSS files have been extracted for each service category (federal, local, notice, external, bank) in the `css/` directory. These files contain shared styles, CSS custom properties, and responsive rules for future development. Existing HTML files retain their inline CSS unchanged.
-
-## Common Tasks
-
-- **Adding a new department page**: Create a new `.html` file in the appropriate directory. Copy the structure and CSS variable definitions from an existing page, then modify the content and color palette.
-
-- **Fixing broken image links**: Update `src="G:\nationicon.png"` to a relative path that points to `../nationalicon/nationicon.png` (adjust the number of `..` based on the directory depth).
-
-- **Viewing the site locally**: Because there is no server, some intra‑site links (e.g., `href="clock.html"`) may not work if the target file is in a different directory. Use relative paths that respect the directory hierarchy.
-
-## Notes for Future Maintenance
-
-- The project is purely presentational; there is no backend, no dynamic data, and no interactive functionality beyond basic hyperlinks.
-- All styling is inline, which makes global design changes tedious. Consider extracting common CSS into a shared stylesheet if the site grows.
-- The absolute image path `G:\nationicon.png` suggests the original author worked with a mapped drive. Keep this in mind when moving or deploying the files.
-
-## Backend Architecture: Firebase Auth + GitHub Storage
-
-The project uses **Firebase Auth only** for authentication and **GitHub repository** for all data storage. Firestore and Firebase Storage have been removed to achieve free-tier operation.
-
-### Architecture
 ```
-Firebase Auth (仅认证) → GitHub Repo (内容JSON + 媒体文件) → GitHub Pages (公开读取)
+├── Bank_of_Atelier/          # 中央银行
+├── Centeral_Gov_service/     # 联邦部委（司法、国防、教育、财政等 22 个页面）
+├── Outside_Gov_service/      # 外部机构（电力公司、大学招生等）
+├── gov_Notice/               # 公告与旅行警告
+├── local_gov/                # 地方政府门户
+├── nationalicon/             # 国徽图片 (nationicon.png)
+├── css/                      # 公共 CSS（federal, local, notice, external, bank）
+├── content/                  # 内容数据（JSON 文件）
+│   ├── index.json            # 所有内容的索引
+│   ├── categories.json       # 分类定义
+│   ├── tags.json             # 标签定义
+│   ├── news/                 # 新闻文章（每篇一个 JSON）
+│   ├── announcements/        # 公告
+│   ├── policies/             # 政策文件
+│   ├── service-updates/      # 服务更新
+│   ├── travel-warnings/      # 旅行警告
+│   └── submissions/          # 表单提交
+├── media/                    # 媒体文件
+│   ├── index.json            # 媒体索引
+│   ├── images/               # 图片
+│   └── documents/            # 文档（PDF 等）
+├── config/                   # 系统配置
+│   ├── users.json            # 用户角色映射（Firebase UID → 角色）
+│   └── workflow-logs.json    # 工作流审核日志
+├── firebase-config.js        # Firebase 配置（仅 Auth）
+├── github-api.js             # GitHub REST API 封装
+├── auth.js                   # 认证 + 角色检查
+├── database.js               # 数据操作封装层（调用 github-api.js）
+├── admin-dashboard.html      # 完整管理仪表板
+├── admin-panel.html          # 简易管理面板
+├── index.html                # 主页
+├── login.html / register.html # 登录/注册
+├── news.html                 # 新闻页（支持动态加载）
+├── USAGE_GUIDE.md            # 详细使用说明
+└── CHANGELOG.md              # 迭代日志
 ```
 
-### Core Files
-- `firebase-config.js` – Firebase configuration (Auth only, no Firestore/Storage)
-- `github-api.js` – GitHub REST API wrapper (replaces all Firestore/Storage operations)
-- `auth.js` – Authentication functions + role checking via `config/users.json`
-- `database.js` – Wrapper layer calling `github-api.js` (same function signatures as old Firestore version)
-- `login.html`, `register.html` – User authentication pages
-- `admin-dashboard.html` – Full management dashboard with GitHub PAT settings
-- `admin-panel.html` – Simple content management panel
+## 开发命令
 
-### Data Storage Structure
+无构建系统、包管理器或测试套件。预览页面直接用浏览器打开 `.html` 文件。
+
+## 核心架构
+
+### 后端架构
+
 ```
-content/
-  index.json          ← Content index (all items metadata)
-  categories.json     ← Category definitions
-  tags.json           ← Tag definitions
-  news/               ← News articles (one JSON per article)
-  announcements/      ← Announcements
-  policies/           ← Policy documents
-  service-updates/    ← Service updates
-  travel-warnings/    ← Travel warnings
-  submissions/        ← Form submissions
-
-media/
-  index.json          ← Media file index
-  images/             ← Uploaded images
-  documents/          ← Uploaded documents (PDF, etc.)
-
-config/
-  users.json          ← User role mappings (Firebase UID → role)
-  workflow-logs.json  ← Workflow audit log
+用户浏览器 ──▶ GitHub Pages（公开读取 JSON/媒体，无需令牌）
+     │
+     ├──▶ Firebase Auth（仅登录/注册/认证状态）
+     │
+     └──▶ GitHub REST API（管理员写入，需要 PAT 令牌）
 ```
 
-### How It Works
-- **Public reads**: Fetch JSON directly from GitHub Pages URL (no API key needed)
-- **Admin writes**: Use GitHub REST API with Personal Access Token (stored in localStorage)
-- **Role system**: Check `config/users.json` first, then fall back to email domain (`@atelier.gov.at` → editor)
-- **User registration**: Firebase Auth only, no write to GitHub needed
+- **Firebase** 只负责账号密码管理，不使用 Firestore 或 Storage
+- **数据存储** 全部在 GitHub 仓库的 `content/`、`media/`、`config/` 目录中
+- **公开读取** 通过 GitHub Pages URL 直接 fetch JSON 文件
+- **管理写入** 通过 GitHub REST API + Personal Access Token
 
-### Setup Instructions
-1. Create a Firebase project and enable Email/Password Authentication
-2. Update `firebase-config.js` with your Firebase config
-3. Deploy to GitHub Pages (enable in repo Settings → Pages)
-4. Edit `config/users.json` to add your Firebase UID as super_admin
-5. Generate a GitHub PAT with `repo` scope for admin operations
-6. Log in to admin dashboard and enter the PAT when prompted
+### JavaScript 加载顺序
 
-### Adding Auth to Other Pages
+**所有页面**必须加载：
 ```html
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script src="auth.js"></script>
 ```
-Do NOT include `firebase-firestore-compat.js` or `firebase-storage-compat.js`.
 
-### Security Notes
-- GitHub PAT is stored in localStorage and cleared on logout
-- Only admins need a PAT; public users read via GitHub Pages (no auth needed)
-- `config/users.json` controls role assignments
-- `firestore.rules` and `storage.rules` are deprecated (kept for reference only)
+**管理页面**额外加载：
+```html
+<script src="github-api.js"></script>
+<script src="database.js"></script>
+```
 
-### Limitations
-- GitHub API: 100MB max per file upload, recommend repo < 1GB total
-- GitHub Pages deployment has 1-3 minute delay after commits
-- Concurrent index.json edits may conflict (SHA-based retry in github-api.js)
-
-## 后端内容发布系统
-
-项目使用 Firebase Auth + GitHub 存储的架构，实现完全免费运营。
-
-### 系统架构
-- **认证**：Firebase Auth（仅邮箱/密码登录）
-- **数据存储**：GitHub 仓库（JSON 文件 + 媒体文件）
-- **公开访问**：GitHub Pages（静态文件直接读取）
-- **管理操作**：GitHub REST API + Personal Access Token
+**禁止加载**（已从项目中移除）：
+- `firebase-firestore-compat.js`
+- `firebase-storage-compat.js`
 
 ### 角色系统
-- 角色层级：super_admin > admin > editor > author > reviewer > user
-- 角色来源：`config/users.json`（手动分配）或邮箱后缀自动判断
-- `@atelier.gov.at` 邮箱自动获得 `editor` 权限
 
-### 管理界面
-- **管理仪表板**：`admin-dashboard.html` — 完整管理系统，首次使用时提示输入 GitHub PAT
-- **简易面板**：`admin-panel.html` — 基本内容管理
+层级（高→低）：`super_admin` > `admin` > `editor` > `author` > `reviewer` > `user`
 
-### 开发指南
-1. **添加新功能**：扩展 `github-api.js` 中的函数
-2. **修改角色**：编辑 `config/users.json`
-3. **内容管理**：通过管理面板操作，数据存储在 `content/` 目录
+角色判定优先级：
+1. `config/users.json` 中手动分配的角色
+2. 邮箱后缀 `@atelier.gov.at` → 自动 `editor`
+3. 默认 `user`
 
-### 注意事项
-- `firestore.rules` 和 `storage.rules` 已弃用（保留仅供参考）
-- 所有 HTML 页面只加载 Firebase App + Auth SDK，不再加载 Firestore/Storage SDK
-- 管理员需要 GitHub PAT（`repo` 权限），普通用户无需任何令牌
+### 关键配置常量（github-api.js）
+
+```javascript
+GITHUB_OWNER = 'lupo4085'
+GITHUB_REPO  = 'Atelier_Gov'
+GITHUB_BRANCH = 'main'
+GITHUB_PAGES_BASE = 'https://lupo4085.github.io/Atelier_Gov'
+```
+
+## 前端设计规范
+
+1. 每个页面使用 `<style>` 块 + CSS 自定义属性定义配色方案
+2. `css/` 目录有按类别提取的公共 CSS，但现有页面仍保留内联样式
+3. 统一视觉风格：深色 header + 橙色边框、卡片式布局、响应式设计、政府风格 footer
+4. 内容语言：中文 (`lang="zh-CN"`)，部分英文标题
+5. 国徽图片路径：`nationalicon/nationicon.png`（根目录页面）或 `../nationalicon/nationicon.png`（子目录页面）
+
+## 开发规则
+
+### 添加新部门页面
+在对应子目录创建 `.html` 文件，从现有页面复制结构和 CSS 变量，修改内容和配色。
+
+### 添加认证功能到页面
+按上述「所有页面」脚本顺序加载，在 header 中添加 `<div class="auth-status"></div>`。
+
+### 修改数据操作
+扩展 `github-api.js` 中的函数。`database.js` 是兼容层，保持函数签名不变。
+
+### 修改角色权限
+编辑 `config/users.json`，提交推送到 GitHub。
+
+## 限制与注意事项
+
+- GitHub API 单文件上传限制 100MB（base64 编码后实际约 75MB）
+- GitHub 仓库建议总大小 < 1GB
+- GitHub Pages 部署有 1-3 分钟延迟
+- 并发编辑 `index.json` 可能产生 SHA 冲突（需刷新重试）
+- GitHub PAT 存储在 localStorage，注销时清除
+
+## 迭代日志
+
+**每次代码变更后，必须在 `CHANGELOG.md` 中记录：**
+1. 日期和版本标识
+2. 修改了哪些文件
+3. 实现了什么功能
+4. 架构层面的变化（如有）
+5. 已知的未完成功能或遗留问题
+
+详见 `CHANGELOG.md`。
