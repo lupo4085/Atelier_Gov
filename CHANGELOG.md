@@ -4,6 +4,114 @@
 
 ---
 
+## v0.3.4 — 2026-03-15 | 全站恢复正常状态：清除所有风暴阿比斯残留内容
+
+### 修改内容
+
+**全面正常化处理（6 个文件）：**
+
+- `Centeral_Gov_service/emergency-management.html`：
+  - 将"官方行动指令"（风暴撤离令）替换为部门职责介绍
+  - 将"生存指南：低温应对"替换为通用家庭应急准备指南
+  - 将资源调配状态（除雪车/发电车）替换为常规备勤状态
+  - 将"暴风雪将在36小时内减弱"侧边栏替换为"当前无活跃灾害事件"
+
+- `Outside_Gov_service/ANR.html`：
+  - 西海岸干线：`缩短运行` + "叙拉古段停运" → `正常`
+  - 东部沿海线、中部平原线：`全线停运` → `正常`
+  - 车站公告：候车厅转避难所 → 正常服务
+
+- `local_gov/localgov.html`：
+  - 垃圾回收：`服务暂停`（结冰停收）→ `正常运行`
+  - 学校：`期限延长`（全部关闭）→ `正常运行`
+  - 市政税：移除"冬季灾害减免"措辞
+  - 停车与道路：`仅限急救` → `正常运行`
+  - 出生/死亡/婚姻登记：移除"登记处已关闭"说明
+  - 害虫控制：移除"因严寒"描述
+
+- `Outside_Gov_service/national-power-company.html`：
+  - 叙拉古首都圈：`部分中断 83%` → `运行中 61%`
+  - 高地矿区：`高负载 78%` → `运行中 71%`
+  - 冬季电价补贴通知 → 超导输电二期竣工公告
+  - 数据时间戳更新至 2093-03-15
+
+- `Centeral_Gov_service/NHS.html`：
+  - 心理健康：移除"暴风雪幽闭焦虑"描述 → 通用心理咨询服务
+  - "寒冷天气健康指南" → "健康资讯"（春季过敏 + 义体维护）
+  - 急诊等待时间：6小时45分 +400% → 1小时20分 -10%
+
+- `Centeral_Gov_service/NOA.html`：
+  - 云量：95%/暴雪 → 18%/晴朗适宜观测
+  - 望远镜状态：关闭（暴风雪）→ 正常运作
+  - 极光预报：暴风雪遮挡视野 → 建议前往郊区观测
+
+---
+
+## v0.3.3 — 2026-03-15 | 移除灾害告示横幅 + 修复货币命名 + 统一许可协议名称
+
+### 修改内容
+
+**Part 1 — 移除临时气象/灾害告示横幅（6 个文件）：**
+- `Centeral_Gov_service/emergency-management.html`：删除 `.emergency-banner`（温带气旋"阿比斯"紧急状态宣告）
+- `Centeral_Gov_service/metoffice.html`：删除 `.alert-banner`（强辐射预警等级4）
+- `Centeral_Gov_service/NHS.html`：删除 `.alert-banner`（红色警报，寒冷健康风险）
+- `Outside_Gov_service/national-power-company.html`：删除 `.alert-banner`（叙拉古电力中断警报）
+- `local_gov/localgov.html`：删除 `.local-alert`（暴风雪红色预警）
+- `Outside_Gov_service/ANR.html`：删除 `.disruption-banner`（叙拉古列车停运公告）
+
+**Part 2 — 修复货币命名（1 个文件）：**
+- `Centeral_Gov_service/ministry-of-finance.html`：`新阿特利尔信用点 (NAC)` → `阿特利尔镑 (ATP)`，`1 KRM = 4.2 NAC` → `1 KRM = 4.2 ATP`
+
+**Part 3 — 统一开放政府许可协议名称（11 个文件）：**
+- `开放政府许可协议 v3.0` → `阿特利尔联邦开放政府数据许可协议 v1.0`
+- 批量替换：`homeoffice.html`、`nationalgovdoor.html`、`data-research.html`、`departments.html`、`index.html`、`jobs.html`、`news.html`、`research-permit.html`、`service-business.html`、`service-citizen.html`
+- 精准替换：`transparency.html`（正文标题、正文引用、footer 共 2 处）
+
+### 未完成/遗留
+- `gov_Notice/travel.html` 和 `trave2l.html` 的告示横幅为核心内容，未修改（符合预期）
+
+---
+
+## v0.3.2 — 2026-03-15 | 去现实世界化：替换所有真实世界引用
+
+### 修改内容
+
+**类别 A — 紧急号码（19 个文件）：**
+- `911` → `999`（阿特利尔联邦统一紧急号码）
+- 涉及：`Centeral_Gov_service/` 下 15 个文件、`Outside_Gov_service/` 下 3 个文件、`local_gov/localgov.html`
+
+**类别 B — 电话区号（22 个文件）：**
+- `010-555-` → `0870-555-`（移除现实世界北京区号）
+- 涉及：上述 19 个文件 + `contact-form.html`、`departments.html`、`jobs.html`
+
+**类别 C — 国际拨号前缀（4 个文件）：**
+- `+00 (1) 555-0911` → `+870 555-0999`（`travel.html`）
+- `+88 (02) 4921-2200` → `+892 (02) 4921-2200`（`travel.html`，米尔斯顿虚构国）
+- `+00 (1) 800-VISA-BAN` → `+870 800-VIS-DENY`（`trave2l.html`）
+- `+00 (1) 555-3321` → `+870 555-3321`（`trave2l.html`）
+- `+00 (1) 555-0192` → `+870 555-0192`（`foreign_office.html`）
+- `+00 (1) 800 123 4567` → `+870 800 123 4567`（`national-statistics.html`）
+
+**类别 D — 现实国家名称（`visa-application.html`）：**
+- `例如：中华人民共和国` → `例如：克洛维亚共和国`
+- `+86-138XXXXXXXX` → `+870-138XXXXXXXX`
+
+**类别 E — 货币符号：**
+- `£482` → `₳482`（`national-statistics.html`）
+- `£ 100` / `£482.50` → `₳ 100` / `₳482.50`（`bank-of-atelier.html`）
+- `1 USD = 4.2 NAC` → `1 KRM = 4.2 NAC`（`ministry-of-finance.html`，KRM = 克洛缅马克）
+
+**类别 F — 版权声明（`national-statistics.html`）：**
+- `Open Government Licence v3.0` → `阿特利尔联邦开放政府数据许可协议 v1.0`
+
+### 架构变化
+无。纯内容替换，不涉及功能逻辑。
+
+### 已知问题
+无新增。
+
+---
+
 ## v0.3.1 — 2026-03-15 | GitHub Pages 兼容性整理
 
 ### 修改内容
