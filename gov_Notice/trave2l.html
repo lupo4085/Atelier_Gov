@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政策公告：对科洛奇亚实施签证禁令 - 外交部 GOV.AT</title>
+    <style>
+        /* --- 核心样式库 (GOV.AT Standard) --- */
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-flag-purple: #4c2c92; /* 外交部主题色 */
+            --c-flag-orange: #f47738;
+            --c-flag-red: #d4351c; /* 警告色 */
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-page);
+        }
+
+        a {
+            color: var(--c-flag-blue);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+        
+        a:hover {
+            color: var(--c-flag-blue-hover);
+            text-decoration-thickness: 3px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-orange);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); 
+        }
+        
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        /* Dept Bar */
+        .dept-bar {
+            background-color: var(--c-flag-purple);
+            color: #fff;
+            padding: 10px 0;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* Main Layout */
+        main {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .breadcrumbs {
+            font-size: 14px;
+            margin-bottom: 25px;
+            color: var(--c-text-sec);
+        }
+        .breadcrumbs a { color: var(--c-text-sec); }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        .update-meta {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--c-border);
+            padding-bottom: 20px;
+        }
+
+        /* Alert Banner */
+        .alert-banner {
+            border: 4px solid var(--c-flag-red);
+            background-color: #fff;
+            margin-bottom: 40px;
+        }
+
+        .alert-header {
+            background-color: var(--c-flag-red);
+            color: #fff;
+            padding: 10px 20px;
+            font-weight: 700;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-content {
+            padding: 25px;
+        }
+
+        /* Content Sections */
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-text-main);
+        }
+
+        h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; margin-top: 20px; }
+
+        p { margin-bottom: 15px; }
+
+        .info-box {
+            background-color: #f3f2f1;
+            border-left: 5px solid var(--c-text-main);
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .contact-box {
+            background-color: var(--c-bg-light);
+            padding: 25px;
+            border-top: 4px solid var(--c-flag-purple);
+            margin-top: 40px;
+        }
+
+        /* Visa Ban Highlight */
+        .ban-notice {
+            background-color: #fcebeb;
+            border: 1px solid #eebdbd;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        ul { margin-left: 20px; margin-bottom: 20px; }
+        li { margin-bottom: 10px; }
+
+        /* Grid */
+        .grid-row { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+
+        @media (max-width: 768px) {
+            .grid-row { grid-template-columns: 1fr; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="../nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+    
+    <div class="dept-bar">
+        <div class="header-content" style="height:auto; padding: 0 30px;">
+            联邦外交部 | Ministry of Foreign Affairs
+        </div>
+    </div>
+
+    <main>
+        <div class="breadcrumbs">
+            <a href="../index.html">首页</a> &gt; <a href="../Centeral_Gov_service/foreign_office.html">外交部</a> &gt; <a href="#">出入境与签证政策</a> &gt; <span>第99号特别行政令</span>
+        </div>
+
+        <h1>关于暂停签发科洛奇亚公民入境签证的公告</h1>
+        <div class="update-meta">
+            状态：<strong>即时生效</strong> | 法令编号：AT-FA-2094-099 | 更新时间：2094年2月15日 09:00 AMT
+        </div>
+
+        <div class="alert-banner">
+            <div class="alert-header">
+                政策变更：入境禁令已生效
+            </div>
+            <div class="alert-content">
+                <p><strong>联邦外交部根据《联邦出入境管理法》第42条之规定，决定自即日起无限期暂停向科洛奇亚公民发放任何类别的入境签证。</strong></p>
+                <p style="margin-bottom:0">此禁令适用于旅游、商务、探亲及过境签证。阿特利尔边境管理局已收到指令，严禁持有科洛奇亚护照的人员入境，直至另行通知。</p>
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="main-content">
+                
+                <h2>政策背景</h2>
+                <p>鉴于科洛奇亚政府近期针对阿特利尔联邦采取的一系列无理制裁、驱逐我方外交人员以及在边境地区的持续军事挑衅行为，双边外交关系已实质性破裂。</p>
+                <p>为维护国家主权与尊严，并出于对国家安全的考量，阿特利尔联邦政府决定采取对等反制措施。此项决定经联邦安全委员会审议通过，并由总行政签署生效。</p>
+
+                <h2>具体实施细则</h2>
+                <p>自本公告发布之时起，全球范围内的阿特利尔驻外使领馆将执行以下规定：</p>
+                <ul>
+                    <li><strong>立即停止受理：</strong> 所有由科洛奇亚公民提交的签证申请将被即刻驳回，已缴纳的签证费用不予退还。</li>
+                    <li><strong>现有签证失效：</strong> 除持外交护照及特定人道主义豁免人员外，所有已签发给科洛奇亚公民的有效签证自即刻起自动作废。</li>
+                    <li><strong>口岸遣返：</strong> 所有试图通过机场、港口或陆路口岸进入阿特利尔的科洛奇亚护照持有者，将被拒绝入境并安排最近一班交通工具遣返。</li>
+                    <li><strong>过境限制：</strong> 科洛奇亚公民将被禁止在阿特利尔境内任何国际机场转机，无论是否过境免签。</li>
+                </ul>
+
+                <div class="info-box">
+                    <h3>针对在阿特利尔境内科洛奇亚公民的通知</h3>
+                    <p>目前已合法入境并身处阿特利尔境内的科洛奇亚公民，其现有居留许可暂时不受影响，但需注意以下事项：</p>
+                    <div class="ban-notice">
+                        <strong>特别合规要求</strong>
+                        <br><br>
+                        您必须在 <strong>72小时内</strong> 前往最近的警察局或移民局办事处进行重新登记。未按时登记或从事与签证目的不符活动者，将面临立即拘留及强制驱逐出境。
+                    </div>
+                </div>
+
+                <h2>外交豁免与人道主义通道</h2>
+                <p style="font-size: 14px; color: var(--c-text-sec);">
+                    根据《叙拉古外交关系公约》，持有有效外交护照的科洛奇亚外交官及领事官员不受此禁令影响。涉及紧急医疗救治或直系亲属奔丧等极特殊人道主义情况，需通过第三方中立国大使馆向阿特利尔联邦移民局提交特别入境许可申请，并经个案严格审查。
+                </p>
+            </div>
+
+            <aside class="sidebar">
+                <div class="contact-box">
+                    <h3 style="margin-top:0">政策咨询与执行</h3>
+                    <p>关于本行政令的具体执行标准及豁免申请流程，相关机构联系方式如下：</p>
+                    
+                    <h4 style="margin-bottom:5px; font-size:16px;">联邦移民局 执法处</h4>
+                    <p style="font-size: 24px; font-weight: 700; color: var(--c-flag-blue); margin-bottom: 20px;">
+                        +00 (1) 800-VISA-BAN
+                    </p>
+
+                    <h4 style="margin-bottom:5px; font-size:16px;">外交部外部事务司</h4>
+                    <p style="font-size: 15px; margin-bottom: 5px;">媒体问询：+00 (1) 555-3321</p>
+                    <p style="font-size: 15px;">外交照会传真：FAX-992-10</p>
+                    
+                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #ccc;">
+                        <a href="#" style="font-weight:700;">查阅入境黑名单更新 &rarr;</a>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3>相关法律文件</h3>
+                    <ul style="list-style: none; margin-left: 0;">
+                        <li style="border-bottom: 1px solid #e5e5e5; padding-bottom: 10px;">
+                            <a href="#">第99号行政令全文 (PDF)</a>
+                        </li>
+                        <li style="border-bottom: 1px solid #e5e5e5; padding-bottom: 10px;">
+                            <a href="#">国家安全法修正案：边境管控</a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="header-content" style="padding: 40px 30px; display: block; text-align: center; color: var(--c-text-sec); font-size: 14px;">
+            <p>
+                © 阿特利尔联邦共和国外交部
+                <br>
+                捍卫国家利益，维护边境安全。
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

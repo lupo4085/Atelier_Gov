@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府招聘 - GOV.AT</title>
+    <link rel="stylesheet" href="css/common-federal.css">
+    <style>
+        .header-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .header-nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .header-nav a:hover { text-decoration: underline; }
+
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .auth-status span { color: #fff; }
+
+        .breadcrumbs {
+            max-width: 960px;
+            margin: 15px auto 0;
+            padding: 0 30px;
+        }
+
+        .search-bar {
+            background: var(--c-bg-light);
+            padding: 25px;
+            border: 1px solid var(--c-border);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .search-field {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-field label {
+            display: block;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .search-field input,
+        .search-field select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--c-text-main);
+            font-family: var(--font-gov);
+            font-size: 16px;
+        }
+
+        .search-field input:focus,
+        .search-field select:focus {
+            outline: 3px solid var(--c-flag-orange);
+            outline-offset: 0;
+        }
+
+        .btn-search {
+            background: var(--c-flag-blue);
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: var(--font-gov);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-search:hover {
+            background: var(--c-flag-blue-hover);
+        }
+
+        .results-info {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-bottom: 20px;
+        }
+
+        .job-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .job-card {
+            border: 1px solid var(--c-border);
+            padding: 25px;
+            margin-bottom: 15px;
+            background: #fff;
+            transition: box-shadow 0.2s;
+        }
+
+        .job-card:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .job-card h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+        }
+
+        .job-card h3 a {
+            color: var(--c-flag-blue);
+            text-decoration: none;
+        }
+
+        .job-card h3 a:hover {
+            text-decoration: underline;
+        }
+
+        .job-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-bottom: 10px;
+        }
+
+        .job-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .job-card p {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin: 0 0 12px 0;
+        }
+
+        .job-tag {
+            display: inline-block;
+            background: var(--c-bg-light);
+            color: var(--c-text-sec);
+            font-size: 12px;
+            padding: 3px 10px;
+            border: 1px solid var(--c-border);
+            margin-right: 5px;
+        }
+
+        .job-tag.urgent {
+            background: #fce4e4;
+            color: #d4351c;
+            border-color: #d4351c;
+        }
+
+        .salary {
+            font-weight: 700;
+            color: var(--c-text-main);
+        }
+
+        .apply-link {
+            display: inline-block;
+            background: var(--c-flag-blue);
+            color: #fff;
+            padding: 8px 20px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .apply-link:hover {
+            background: var(--c-flag-blue-hover);
+            color: #fff;
+        }
+
+        footer {
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-field { min-width: 100%; }
+            .job-meta { flex-direction: column; gap: 5px; }
+            .header-content {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 15px 30px;
+            }
+            .header-nav {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div style="display: flex; align-items: center;">
+                <img src="nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+                <span class="logo-text">Atelier Federal Government</span>
+            </div>
+            <nav class="header-nav">
+                <a href="index.html">首页</a>
+                <a href="index.html#services">服务</a>
+                <a href="departments.html">部门</a>
+                <div class="auth-status"></div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="breadcrumbs">
+        <a href="index.html">首页</a> &gt; <span>政府招聘</span>
+    </div>
+
+    <main>
+        <h1>政府招聘</h1>
+        <p>阿特利尔联邦政府各部门当前公开招聘的职位。所有联邦政府岗位均通过公开竞聘方式录用。</p>
+
+        <div class="search-bar">
+            <div class="search-field">
+                <label for="keyword">关键词</label>
+                <input type="text" id="keyword" placeholder="职位名称、技能...">
+            </div>
+            <div class="search-field">
+                <label for="department">部门</label>
+                <select id="department">
+                    <option value="">所有部门</option>
+                    <option value="homeoffice">内政部</option>
+                    <option value="defence">国防部</option>
+                    <option value="finance">财政部</option>
+                    <option value="foreign">外交部</option>
+                    <option value="justice">司法部</option>
+                    <option value="education">教育部</option>
+                    <option value="science">科学技术部</option>
+                    <option value="industry">工业和信息化部</option>
+                    <option value="nhs">国民健康署</option>
+                </select>
+            </div>
+            <div class="search-field">
+                <label for="type">职位类型</label>
+                <select id="type">
+                    <option value="">所有类型</option>
+                    <option value="fulltime">全职</option>
+                    <option value="contract">合同制</option>
+                    <option value="internship">实习</option>
+                </select>
+            </div>
+            <button class="btn-search">搜索</button>
+        </div>
+
+        <div class="results-info">显示 8 个职位（共 8 个）</div>
+
+        <ul class="job-list">
+            <li class="job-card">
+                <h3><a href="contact-form.html">高级网络安全分析师</a></h3>
+                <div class="job-meta">
+                    <span>内政部 · 网络安全中心</span>
+                    <span>叙拉古</span>
+                    <span>全职</span>
+                    <span>发布：2093-03-10</span>
+                </div>
+                <p>负责联邦政府信息系统的安全审计、漏洞评估和应急响应。要求5年以上网络安全工作经验，持有CISSP或同等认证。</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <span class="job-tag urgent">急聘</span>
+                        <span class="job-tag">网络安全</span>
+                        <span class="job-tag">IT</span>
+                    </div>
+                    <div>
+                        <span class="salary">年薪 85,000 - 110,000 阿特利尔镑</span>
+                        <a href="contact-form.html" class="apply-link" style="margin-left: 15px;">申请职位</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="job-card">
+                <h3><a href="contact-form.html">气象数据科学家</a></h3>
+                <div class="job-meta">
+                    <span>联邦气象台</span>
+                    <span>叙拉古</span>
+                    <span>全职</span>
+                    <span>发布：2093-03-08</span>
+                </div>
+                <p>运用机器学习和统计模型改进天气预报精度。要求气象学或数据科学硕士及以上学历，熟悉Python和大规模数据处理框架。</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <span class="job-tag">数据科学</span>
+                        <span class="job-tag">气象</span>
+                    </div>
+                    <div>
+                        <span class="salary">年薪 72,000 - 95,000 阿特利尔镑</span>
+                        <a href="contact-form.html" class="apply-link" style="margin-left: 15px;">申请职位</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="job-card">
+                <h3><a href="contact-form.html">外交随员（三等秘书）</a></h3>
+                <div class="job-meta">
+                    <span>外交部</span>
+                    <span>驻外使馆（多地）</span>
+                    <span>全职</span>
+                    <span>发布：2093-03-05</span>
+                </div>
+                <p>负责驻外使领馆日常外交事务、领事服务和对外交涉工作。要求通过联邦外交资格考试，精通至少两门外语。</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <span class="job-tag">外交</span>
+                        <span class="job-tag">语言</span>
+                    </div>
+                    <div>
+                        <span class="salary">年薪 65,000 - 85,000 阿特利尔镑 + 驻外津贴</span>
+                        <a href="contact-form.html" class="apply-link" style="margin-left: 15px;">申请职位</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="job-card">
+                <h3><a href="contact-form.html">联邦预算分析员</a></h3>
+                <div class="job-meta">
+                    <span>财政部 · 预算司</span>
+                    <span>叙拉古</span>
+                    <span>全职</span>
+                    <span>发布：2093-03-01</span>
+                </div>
+                <p>参与联邦年度预算的编制、审核与执行监督。要求经济学或财务管理本科及以上学历，3年以上公共财政或审计工作经验。</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <span class="job-tag">财政</span>
+                        <span class="job-tag">分析</span>
+                    </div>
+                    <div>
+                        <span class="salary">年薪 60,000 - 80,000 阿特利尔镑</span>
+                        <a href="contact-form.html" class="apply-link" style="margin-left: 15px;">申请职位</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="job-card">
+                <h3><a href="contact-form.html">射电天文学研究员</a></h3>
+                <div class="job-meta">
+                    <span>国家天文台</span>
+                    <span>西部高原观测站</span>
+                    <span>合同制（3年）</span>
+                    <span>发布：2093-02-25</span>
+                </div>
+                <p>利用国家射电望远镜阵列开展脉冲星和快速射电暴研究。要求天文学或物理学博士学位，具有射电天文观测和数据分析经验。</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <span class="job-tag">科研</span>
+                        <span class="job-tag">天文</span>
+                    </div>
+                    <div>
+                        <span class="salary">年薪 70,000 - 90,000 阿特利尔镑</span>
+                        <a href="contact-form.html" class="apply-link" style="margin-left: 15px;">申请职位</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="job-card">
+                <h3><a href="contact-form.html">铁路信号系统工程师</a></h3>
+                <div class="job-meta">
+                    <span>阿特利尔国家铁路</span>
+                    <span>叙拉古 / 各主要城市</span>
+                    <span>全职</span>
+                    <span>发布：2093-02-20</span>
+                </div>
+                <p>负责铁路信号系统的设计、安装、调试和维护工作。要求电气工程或通信工程本科以上学历，了解ERTMS/ETCS系统优先。</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <span class="job-tag">工程</span>
+                        <span class="job-tag">铁路</span>
+                    </div>
+                    <div>
+                        <span class="salary">年薪 55,000 - 75,000 阿特利尔镑</span>
+                        <a href="contact-form.html" class="apply-link" style="margin-left: 15px;">申请职位</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="job-card">
+                <h3><a href="contact-form.html">公共卫生政策顾问</a></h3>
+                <div class="job-meta">
+                    <span>国民健康署</span>
+                    <span>叙拉古</span>
+                    <span>全职</span>
+                    <span>发布：2093-02-15</span>
+                </div>
+                <p>为健康署高层提供公共卫生政策建议，参与疫情应对策略制定和健康促进项目规划。要求公共卫生硕士及以上学历。</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <span class="job-tag">卫生</span>
+                        <span class="job-tag">政策</span>
+                    </div>
+                    <div>
+                        <span class="salary">年薪 68,000 - 88,000 阿特利尔镑</span>
+                        <a href="contact-form.html" class="apply-link" style="margin-left: 15px;">申请职位</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="job-card">
+                <h3><a href="contact-form.html">暑期政府实习生（多部门）</a></h3>
+                <div class="job-meta">
+                    <span>联邦公务员委员会</span>
+                    <span>叙拉古 / 各地</span>
+                    <span>实习（3个月）</span>
+                    <span>发布：2093-02-01</span>
+                </div>
+                <p>面向在校大学生的暑期实习项目。实习生将在各政府部门轮岗，参与实际政务工作。要求在读本科二年级及以上。</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <span class="job-tag">实习</span>
+                        <span class="job-tag">多部门</span>
+                    </div>
+                    <div>
+                        <span class="salary">月薪 3,500 阿特利尔镑</span>
+                        <a href="contact-form.html" class="apply-link" style="margin-left: 15px;">申请职位</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <div style="margin-top: 40px; padding: 25px; background: #f8f8f8; border-left: 5px solid var(--c-flag-blue);">
+            <h3 style="margin-top: 0;">招聘流程说明</h3>
+            <p>联邦政府所有公开岗位均通过统一招聘平台发布。应聘流程包括：在线申请 → 资格筛选 → 笔试（部分岗位）→ 面试 → 背景审查 → 录用通知。整个流程通常需要4-8周。</p>
+            <p style="margin-top: 10px; font-size: 14px; color: var(--c-text-sec);">如有疑问，请联系联邦公务员委员会：jobs@gov.at 或拨打 010-555-7777。</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="header-content">
+            <p>
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier)
+                <br>
+                所有内容均依据 <a href="transparency.html">开放政府许可协议 v3.0</a> 发布，另有说明除外。
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

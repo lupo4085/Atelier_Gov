@@ -1,0 +1,351 @@
+/*
+ * 外部机构公共CSS
+ * 适用于阿特利尔联邦政府外部机构（国家铁路、电力公司等）页面
+ * 注意：现有HTML文件保持内联CSS不变，此文件供未来开发使用
+ */
+
+:root {
+    /* 基础配色 */
+    --c-flag-dark: #0b0c15;
+    --c-flag-blue: #1d70b8;
+
+    /* 机构特色颜色（可自定义） */
+    --c-agency-primary: #003366;      /* 机构主色，如铁路深蓝 */
+    --c-agency-secondary: #e6e9eb;    /* 机构辅助色，如面板背景 */
+    --c-action-green: #00703c;        /* 行动按钮绿色 */
+    --c-alert-red: #d4351c;
+    --c-warn-orange: #f47738;
+
+    /* 文本颜色 */
+    --c-text-main: #0b0c15;
+    --c-text-sec: #505a5f;
+
+    /* 背景颜色 */
+    --c-bg-page: #f3f2f1;
+    --c-bg-card: #ffffff;
+
+    /* 边框与分隔线 */
+    --c-border: #b1b4b6;
+
+    /* 字体 */
+    --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-data: "GDS Transport", "Roboto", sans-serif;
+}
+
+/* 基础重置 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* 页面基础 */
+body {
+    background-color: var(--c-bg-page);
+    color: var(--c-text-main);
+    font-family: var(--font-gov);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* 链接样式 */
+a {
+    color: var(--c-flag-blue);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+a:hover {
+    color: #003078;
+    text-decoration-thickness: 3px;
+}
+
+/* 头部样式 */
+header {
+    background-color: var(--c-flag-dark);
+    color: #ffffff;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    border-bottom: 5px solid var(--c-agency-primary); /* 机构特征色 */
+}
+
+.header-content {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* 国徽/徽标 */
+.gov-emblem {
+    height: 45px;
+    filter: drop-shadow(0 0 2px rgba(255,255,255,0.2));
+}
+
+/* 机构标题 */
+.header-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logo-text {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.2;
+}
+
+.service-name {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-top: 2px;
+}
+
+/* 面包屑导航 */
+.breadcrumbs {
+    max-width: 960px;
+    margin: 15px auto 0;
+    padding: 0 30px;
+    font-size: 14px;
+    color: var(--c-text-sec);
+}
+
+/* 严重中断横幅 */
+.disruption-banner {
+    background-color: var(--c-alert-red);
+    color: #fff;
+    padding: 25px 0;
+    margin-top: 20px;
+}
+
+.banner-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+.banner-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.banner-text {
+    font-size: 16px;
+    max-width: 800px;
+}
+
+.banner-link {
+    color: #fff;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+/* 主内容区域 */
+main {
+    flex: 1;
+    width: 100%;
+    max-width: 960px;
+    margin: 30px auto 60px;
+    padding: 0 30px;
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 左侧主要功能，右侧状态 */
+    gap: 30px;
+}
+
+/* 主标题 */
+h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* 小工具/功能部件 */
+.planner-widget {
+    background: var(--c-agency-secondary);
+    padding: 30px;
+    border-top: 4px solid var(--c-agency-primary);
+}
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    border: 2px solid var(--c-text-main);
+    font-family: var(--font-gov);
+}
+
+.form-input:focus {
+    outline: 3px solid #ffdd00;
+    border-color: var(--c-text-main);
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-col {
+    flex: 1;
+}
+
+/* 按钮样式 */
+.btn-search {
+    background-color: var(--c-action-green);
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    font-size: 19px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-search:hover {
+    background-color: #005a30;
+}
+
+/* 服务状态面板 */
+.status-panel {
+    background: #fff;
+    border: 1px solid var(--c-border);
+    padding: 25px;
+    border-top: 4px solid var(--c-warn-orange);
+}
+
+.status-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--c-text-main);
+}
+
+.status-list {
+    list-style: none;
+}
+
+.status-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-item:last-child {
+    border-bottom: none;
+}
+
+.status-line {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.status-desc {
+    font-size: 14px;
+    color: var(--c-text-sec);
+    margin-top: 2px;
+}
+
+.status-badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+
+.badge-good {
+    background-color: #00703c;
+    color: white;
+}
+
+.badge-delayed {
+    background-color: #ffdd00;
+    color: black;
+}
+
+.badge-cancelled {
+    background-color: #d4351c;
+    color: white;
+}
+
+/* 数据表格 */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.data-table th {
+    background-color: var(--c-agency-secondary);
+    text-align: left;
+    padding: 12px 15px;
+    font-weight: 700;
+    border-bottom: 2px solid var(--c-border);
+}
+
+.data-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.data-table tr:hover {
+    background-color: #f8f8f8;
+}
+
+/* 页脚 */
+footer {
+    background-color: var(--c-bg-card);
+    padding: 40px 0;
+    border-top: 4px solid var(--c-agency-primary);
+    font-size: 14px;
+    color: var(--c-text-sec);
+    text-align: center;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .header-content {
+        padding: 0 20px;
+    }
+
+    .service-name {
+        font-size: 16px;
+    }
+}
+
+/* 工具类 */
+.text-center { text-align: center; }
+.mt-25 { margin-top: 25px; }
+.mb-25 { margin-bottom: 25px; }
+.bg-agency-primary { background-color: var(--c-agency-primary); color: white; }
+.bg-agency-secondary { background-color: var(--c-agency-secondary); }

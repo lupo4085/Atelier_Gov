@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欢迎来到阿特利尔联邦政府 - GOV.AT</title>
+    <style>
+        :root {
+            /* 沿用核心配色 */
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-flag-orange: #f47738;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff; /* 主页通常是白底 */
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: var(--c-flag-blue);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+        
+        a:hover {
+            color: var(--c-flag-blue-hover);
+            text-decoration-thickness: 3px;
+        }
+
+        /* 1. Header (保持统一) */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-orange);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); 
+        }
+        
+        .logo-text {
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        /* 2. Hero Section (主页特有) */
+        .hero-banner {
+            background-color: var(--c-flag-blue);
+            color: #fff;
+            padding: 60px 0;
+        }
+
+        .hero-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            line-height: 1.1;
+        }
+
+        /* 搜索组件 */
+        .search-wrapper {
+            display: flex;
+            max-width: 600px;
+            background: #fff;
+            padding: 4px;
+            border-radius: 4px; /* 轻微圆角 */
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 15px;
+            font-size: 19px;
+            font-family: var(--font-gov);
+            outline: none;
+        }
+
+        .search-btn {
+            background-color: var(--c-flag-blue);
+            border: none;
+            width: 60px;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='24px' height='24px'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: background-color 0.2s;
+        }
+
+        .search-btn:hover { background-color: var(--c-flag-blue-hover); }
+
+        /* 3. Phase Banner */
+        .phase-banner {
+            border-bottom: 1px solid var(--c-border);
+            padding: 10px 0;
+            background: #fff;
+        }
+        .banner-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            font-size: 14px;
+        }
+        .tag {
+            background-color: var(--c-flag-blue);
+            color: #fff;
+            padding: 2px 8px;
+            font-weight: 700;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+
+        /* 4. Main Lists (No Card Layout) */
+        main {
+            max-width: 960px;
+            margin: 50px auto;
+            padding: 0 30px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* 左侧服务，右侧热门 */
+            gap: 60px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-text-main);
+        }
+        
+        h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        p { margin-bottom: 15px; color: var(--c-text-sec); }
+
+        ul { list-style: none; }
+        
+        li {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        li:last-child { border-bottom: none; }
+
+        li a {
+            font-weight: 700;
+            font-size: 16px;
+            display: block;
+        }
+        
+        li span {
+            display: block;
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-top: 4px;
+            font-weight: 400;
+            text-decoration: none;
+        }
+
+        /* 5. Bottom Section: Announcements */
+        .announcement-section {
+            background-color: var(--c-bg-light);
+            padding: 50px 0;
+            border-top: 1px solid var(--c-border);
+            margin-top: 60px;
+        }
+
+        .announcement-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 三列布局 */
+            gap: 40px;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .announce-col h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            color: var(--c-text-sec);
+            letter-spacing: 0.5px;
+        }
+
+        .doc-list li {
+            border-bottom: 1px solid #dcdcdc;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .doc-meta {
+            font-size: 12px;
+            color: var(--c-text-sec);
+            margin-top: 2px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--c-bg-light);
+            padding: 40px 0;
+            border-top: 2px solid var(--c-border);
+            text-align: center;
+            font-size: 14px;
+            color: var(--c-text-sec);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-grid, .announcement-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .hero-title { font-size: 32px; }
+        }
+
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+    </style>
+
+    <!-- Firebase SDK (仅 Auth) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="phase-banner">
+        <div class="banner-content">
+            <span class="tag">BETA</span>
+            <span>政府正在整理旧联邦的资料，如遇数据丢失，请联系国家档案馆。</span>
+        </div>
+    </div>
+
+    <div class="hero-banner">
+        <div class="hero-content">
+            <div class="hero-title">欢迎来到阿特利尔联邦政府</div>
+            
+            <div class="search-wrapper">
+                <input type="text" class="search-input" placeholder="搜索服务、部门、天文数据...">
+                <button class="search-btn" title="搜索"></button>
+            </div>
+            <div style="margin-top: 15px; font-size: 16px;">
+                <span style="opacity: 0.8">热门搜索：</span> 
+                <a href="service-business.html" style="color: #fff; margin-left: 5px;">商业与税务</a>,
+                <a href="service-business.html" style="color: #fff; margin-left: 5px;">个人所得税</a>,
+                <a href="service-citizen.html" style="color: #fff; margin-left: 5px;">签证</a>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <div class="main-grid">
+            <div class="service-list">
+                <h2>政府服务</h2>
+                
+                <h3>公民身份与生活</h3>
+                <ul>
+                    <li><a href="service-citizen.html">出生、死亡、婚姻与民事</a></li>
+                    <li><a href="service-citizen.html">申请联邦护照与通行证</a></li>
+                    <li><a href="service-citizen.html">能源配额与生活补贴</a></li>
+                </ul>
+
+                <h3>科学、环境与时间</h3>
+                <ul>
+                    <li>
+                        <a href="clock.html">国家标准时服务</a>
+                        <span>查看真太阳时(AMT)与民用时(ACT)的实时数据。</span>
+                    </li>
+                    <li><a href="data-research.html">查询当日紫外线辐射等级</a></li>
+                    <li><a href="research-permit.html">申请大气层外科研许可</a></li>
+                </ul>
+
+                <h3>商业与税务</h3>
+                <ul>
+                    <li><a href="service-business.html">缴纳营业税和所得税</a></li>
+                    <li><a href="service-business.html">公司注册与知识产权</a></li>
+                    <li><a href="service-business.html">进出口关税计算器</a></li>
+                </ul>
+            </div>
+
+            <div class="featured-list">
+                <h2>政府新闻</h2>
+                <ul>
+                    <li>
+                        <a href="news.html">第 72 号行政令：关于鲁珀法案的通知</a>
+                        <span>2093年1月1日生效</span>
+                    </li>
+                    <li>
+                        <a href="news.html">驾驶执照更新</a>
+                        <span>包含地面载具与低空飞行器</span>
+                    </li>
+                    <li>
+                        <a href="jobs.html">寻找工作</a>
+                        <span>联邦公共服务部门招聘入口</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <div class="announcement-section">
+        <div class="announcement-grid">
+            
+            <div class="announce-col">
+                <h4>政府机关</h4>
+                <ul class="doc-list" style="list-style: none;">
+                    <li><a href="Centeral_Gov_service/homeoffice.html">内政部</a></li>
+                    <li><a href="Centeral_Gov_service/NOA.html">国家天文台</a></li>
+                    <li><a href="Centeral_Gov_service/energy.html">联邦能源部</a></li>
+                    <li><a href="Centeral_Gov_service/metoffice.html">联邦气象台</a></li>
+                    <li><a href="departments.html" style="font-weight:400">查看全部 42 个部门部门与机构 &rarr;</a></li>
+                </ul>
+
+                <h4 style="margin-top: 30px;">政府新闻</h4>
+                <ul class="doc-list" style="list-style: none;">
+                    <li>
+                        <a href="news.html">联邦议会批准 2093 财年预算案</a>
+                        <div class="doc-meta">2小时前 | 联邦新闻署</div>
+                    </li>
+                    <li>
+                        <a href="news.html">关于西海岸能源管道维护的公告</a>
+                        <div class="doc-meta">昨日 | 能源部</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="announce-col">
+                <h4>研究与统计</h4>
+                <ul class="doc-list" style="list-style: none;">
+                    <li>
+                        <a href="data-research.html">2091 年度全国人口普查数据摘要</a>
+                        <div class="doc-meta">统计局 | PDF, 2.4MB</div>
+                    </li>
+                    <li>
+                        <a href="data-research.html">太阳黑子活动周期预测报告 (2092-2100)</a>
+                        <div class="doc-meta">国家天文台 | HTML</div>
+                    </li>
+                    <li>
+                        <a href="data-research.html">联邦工业排放月度监测</a>
+                        <div class="doc-meta">环境署 | CSV 数据集</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="announce-col">
+                <h4>战略咨询</h4>
+                <ul class="doc-list" style="list-style: none;">
+                    <li>
+                        <a href="transparency.html">开放咨询：关于修改《矿业法》的意见征集</a>
+                        <div class="doc-meta">截止日期：2092/06/30</div>
+                    </li>
+                    <li>
+                        <a href="transparency.html">白皮书：联邦未来十年的数字化转型</a>
+                    </li>
+                </ul>
+
+                <h4 style="margin-top: 30px;">文件公开请求 (FOI)</h4>
+                <ul class="doc-list" style="list-style: none;">
+                    <li>
+                        <a href="transparency.html">提交新的信息公开申请</a>
+                        <span>根据《信息自由法》获取政府未公开数据。</span>
+                    </li>
+                    <li>
+                        <a href="transparency.html#disclosure-records">查看过往披露记录</a>
+                    </li>
+                    <li><a href="transparency.html#disclosure-records">Transparency Report 2091</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier) 
+                <br>
+                所有内容均依据 <a href="transparency.html">开放政府许可协议 v3.0</a> 发布，另有说明除外。
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

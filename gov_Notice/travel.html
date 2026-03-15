@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅行警告：米尔斯顿共和国 - 外交部 GOV.AT</title>
+    <style>
+        /* --- 核心样式库 (GOV.AT Standard) --- */
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-flag-purple: #4c2c92; /* 外交部主题色 */
+            --c-flag-orange: #f47738;
+            --c-flag-red: #d4351c; /* 警告色 */
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-page);
+        }
+
+        a {
+            color: var(--c-flag-blue);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+        
+        a:hover {
+            color: var(--c-flag-blue-hover);
+            text-decoration-thickness: 3px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-orange);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); 
+        }
+        
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        /* Dept Bar */
+        .dept-bar {
+            background-color: var(--c-flag-purple);
+            color: #fff;
+            padding: 10px 0;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* Main Layout */
+        main {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .breadcrumbs {
+            font-size: 14px;
+            margin-bottom: 25px;
+            color: var(--c-text-sec);
+        }
+        .breadcrumbs a { color: var(--c-text-sec); }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        .update-meta {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--c-border);
+            padding-bottom: 20px;
+        }
+
+        /* Alert Banner */
+        .alert-banner {
+            border: 4px solid var(--c-flag-red);
+            background-color: #fff;
+            margin-bottom: 40px;
+        }
+
+        .alert-header {
+            background-color: var(--c-flag-red);
+            color: #fff;
+            padding: 10px 20px;
+            font-weight: 700;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-content {
+            padding: 25px;
+        }
+
+        /* Content Sections */
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-text-main);
+        }
+
+        h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; margin-top: 20px; }
+
+        p { margin-bottom: 15px; }
+
+        .info-box {
+            background-color: #e8f0f8; /* 浅蓝背景 */
+            border-left: 5px solid var(--c-flag-blue);
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .contact-box {
+            background-color: var(--c-bg-light);
+            padding: 25px;
+            border-top: 4px solid var(--c-flag-purple);
+            margin-top: 40px;
+        }
+
+        /* Evacuation Highlight */
+        .evac-notice {
+            background-color: #fff8e1;
+            border: 1px solid #feeebb;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        ul { margin-left: 20px; margin-bottom: 20px; }
+        li { margin-bottom: 10px; }
+
+        /* Grid */
+        .grid-row { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+
+        @media (max-width: 768px) {
+            .grid-row { grid-template-columns: 1fr; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="../nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+    
+    <div class="dept-bar">
+        <div class="header-content" style="height:auto; padding: 0 30px;">
+            联邦外交部 | Ministry of Foreign Affairs
+        </div>
+    </div>
+
+    <main>
+        <div class="breadcrumbs">
+            <a href="../index.html">首页</a> &gt; <a href="../Centeral_Gov_service/foreign_office.html">外交部</a> &gt; <a href="#">海外旅行建议</a> &gt; <span>米尔斯顿共和国</span>
+        </div>
+
+        <h1>米尔斯顿共和国旅行建议</h1>
+        <div class="update-meta">
+            状态：<strong>红色警告</strong> | 最后更新：2094年2月14日 14:30 AMT
+        </div>
+
+        <div class="alert-banner">
+            <div class="alert-header">
+                ⚠️ 警告：切勿前往 / 准备撤离
+            </div>
+            <div class="alert-content">
+                <p><strong>联邦外交部建议阿特利尔公民切勿前往米尔斯顿共和国。</strong></p>
+                <p style="margin-bottom:0">由于外国军事势力的直接干涉以及该国全境面临迫在眉睫的空袭风险，当地安全局势已极度恶化。如果您目前身处米尔斯顿，请立即启动您的个人应急计划，并准备撤离。</p>
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="main-content">
+                
+                <h2>当前安全局势</h2>
+                <p>有可靠情报显示，针对米尔斯顿共和国首都及主要工业区的空袭将在未来 24 至 72 小时内显著加剧。外国武装势力已介入该国政治冲突，导致地面交通受阻，通讯网络可能随时中断。</p>
+                <p>政府已经要求米尔斯顿共和国政府与国际中立组织保护在米尔斯顿的阿特利尔公民安全，尽管如此，阿特利尔驻米尔斯顿大使馆的领事服务能力已受到限制。</p>
+
+                <h2>给在当地公民的建议</h2>
+                <p>如果您目前仍在米尔斯顿共和国境内，必须立即采取以下预防措施：</p>
+                <ul>
+                    <li><strong>避免一切政治集会：</strong> 远离示威游行、政府大楼及军事设施，以免被误认为冲突参与者。</li>
+                    <li><strong>证件保护：</strong> 始终随身携带您的阿特利尔联邦护照及身份证件原件，将证件复印保存在安全地方。</li>
+                    <li><strong>听从指挥：</strong> 密切关注阿特利尔大使馆发布的广播通知，并服从当地政府与民防部门关于宵禁和防空演习的指令。</li>
+                    <li><strong>制定应急计划：</strong> 储备至少 3 天的饮用水、食物及急救药品。确保您的通讯设备电量充足，并与家人约定好紧急联络方式。</li>
+                    <li><strong>保持通讯畅通：</strong> 网络设施极有可能因攻击而导致网络中断，请准备好收音机等通讯设施。</li>
+                </ul>
+
+                <div class="info-box">
+                    <h3>关于政府撤侨计划的通知</h3>
+                    <p>联邦政府正在制定一项紧急撤离行动，计划将滞留在米尔斯顿共和国的所有阿特利尔公民安全带回国内。</p>
+                    <div class="evac-notice">
+                        <strong>针对米尔斯顿共和国的撤侨行动</strong>
+                        <br><br>
+                        详细的撤离路线、集合点及登机/登船时间表将在 <strong>48小时内</strong> 公布。请保持手机开机并注册外交部的 <a href="#">海外公民紧急短信提醒服务</a> 以第一时间获取坐标。
+                    </div>
+                </div>
+
+                <h2>法律免责声明</h2>
+                <p style="font-size: 14px; color: var(--c-text-sec);">
+                    尽管政府尽最大努力提供协助，但在战争状态下，领事保护能力并非无限。违反本旅行警告执意前往该地区的公民，可能自行承担因救援困难产生的极高风险。同时您的旅行保险可能失效。
+                </p>
+            </div>
+
+            <aside class="sidebar">
+                <div class="contact-box">
+                    <h3 style="margin-top:0">寻求紧急援助</h3>
+                    <p>如果您或您的家人在米尔斯顿共和国遭遇直接生命威胁、被拘留或证件遗失，请立即联系：</p>
+                    
+                    <h4 style="margin-bottom:5px; font-size:16px;">阿特利尔外交部全球支持中心</h4>
+                    <p style="font-size: 24px; font-weight: 700; color: var(--c-flag-blue); margin-bottom: 20px;">
+                        +00 (1) 555-0911
+                    </p>
+
+                    <h4 style="margin-bottom:5px; font-size:16px;">阿特利尔驻米尔斯顿大使馆</h4>
+                    <p style="font-size: 15px; margin-bottom: 5px;">值班电话：+88 (02) 4921-2200</p>
+                    <p style="font-size: 15px;">卫星电话：SAT-8829-10</p>
+                    
+                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #ccc;">
+                        <a href="#" style="font-weight:700;">在线登记您的行踪 &rarr;</a>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3>相关链接</h3>
+                    <ul style="list-style: none; margin-left: 0;">
+                        <li style="border-bottom: 1px solid #e5e5e5; padding-bottom: 10px;">
+                            <a href="#">什么是个人应急计划？(PDF指南)</a>
+                        </li>
+                        <li style="border-bottom: 1px solid #e5e5e5; padding-bottom: 10px;">
+                            <a href="#">战区生存手册简要版</a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="header-content" style="padding: 40px 30px; display: block; text-align: center; color: var(--c-text-sec); font-size: 14px;">
+            <p>
+                © 阿特利尔联邦共和国外交部
+                <br>
+                无论您身在何处，祖国与您同在。
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国家议会 - GOV.AT</title>
+    <style>
+        /* --- 核心样式库 (GOV.AT Standard) --- */
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-parliament: #701e2e; /* 议会专属色：勃艮第红，象征庄严与权力 */
+            --c-flag-orange: #f47738;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --c-live-red: #d4351c;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-page);
+        }
+
+        a {
+            color: var(--c-flag-blue);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+        
+        a:hover {
+            color: var(--c-flag-blue-hover);
+            text-decoration-thickness: 3px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-orange);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); 
+        }
+        
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        /* Parliament Header (Distinctive) */
+        .parl-header {
+            background-color: var(--c-parliament);
+            color: #fff;
+            padding: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dept-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .breadcrumbs {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: rgba(255,255,255,0.8);
+        }
+        .breadcrumbs a { color: #fff; text-decoration: none; }
+        .breadcrumbs a:hover { text-decoration: underline; }
+
+        .dept-title {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .dept-desc {
+            font-size: 19px;
+            max-width: 700px;
+            line-height: 1.4;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Status Tag */
+        .status-tag {
+            display: inline-block;
+            background: #fff;
+            color: var(--c-parliament);
+            padding: 4px 10px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        /* Search Section */
+        .search-strip {
+            background-color: #f3f2f1;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--c-border);
+        }
+
+        .search-wrapper {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .search-label {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .search-box {
+            display: flex;
+            max-width: 700px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            font-size: 18px;
+            border: 2px solid var(--c-text-main);
+            border-right: none;
+        }
+
+        .search-btn {
+            background-color: var(--c-parliament);
+            color: #fff;
+            border: 2px solid var(--c-parliament);
+            padding: 0 25px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .search-btn:hover { background-color: #501520; border-color: #501520; }
+
+        /* Main Layout */
+        main {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 50px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-text-main);
+        }
+
+        /* Lists */
+        .card-list { list-style: none; }
+        .card-list li {
+            border-bottom: 1px solid #e5e5e5;
+            padding: 15px 0;
+        }
+        .card-list li:first-child { padding-top: 0; }
+        
+        .card-title {
+            font-weight: 700;
+            font-size: 18px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .card-meta {
+            font-size: 14px;
+            color: var(--c-text-sec);
+        }
+
+        .tag-bill {
+            background: #e8f0f8;
+            color: #1d70b8;
+            padding: 2px 6px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 8px;
+        }
+
+        /* Live Indicator */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            color: var(--c-live-red);
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--c-live-red);
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Sidebar Modules */
+        .mp-finder {
+            background-color: var(--c-bg-light);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-top: 4px solid var(--c-parliament);
+        }
+
+        .calendar-day {
+            margin-bottom: 15px;
+            border-left: 3px solid var(--c-border);
+            padding-left: 15px;
+        }
+        .cal-time { font-weight: 700; font-size: 14px; }
+        .cal-event { font-size: 15px; }
+
+        @media (max-width: 768px) {
+            .grid-row { grid-template-columns: 1fr; }
+            .dept-title { font-size: 32px; }
+            .search-box { flex-direction: column; }
+            .search-input { border-right: 2px solid var(--c-text-main); margin-bottom: 10px; }
+            .search-btn { padding: 12px; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="../nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+
+    <div class="parl-header">
+        <div class="dept-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">首页</a> &gt; <a href="../departments.html">政府部门</a> &gt; <span>国家议会</span>
+            </div>
+            
+            <div class="status-tag">当前状态：休会中 (Recess)</div>
+            
+            <h1 class="dept-title">阿特利尔国家议会<br>The National Parliament</h1>
+            <p class="dept-desc">
+                我们是人民的代表机构。我们在民主制度下审查法律、监督政府行政，并就战后重建的关键议题进行辩论。
+            </p>
+        </div>
+    </div>
+
+    <div class="search-strip">
+        <div class="search-wrapper">
+            <label class="search-label" for="parl-search">搜索议会记录 (Hansard)、法案或议员：</label>
+            <div class="search-box">
+                <input type="text" id="parl-search" class="search-input" placeholder="输入关键词，例如 '2094 预算', '重建法案'...">
+                <button class="search-btn">搜索议会记录</button>
+            </div>
+            <div style="margin-top: 10px; font-size: 14px;">
+                <a href="#" style="margin-right: 15px;">高级搜索</a>
+                <a href="#">查看今日议程文件 (Order Paper)</a>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <div class="grid-row">
+            <div class="main-content">
+                
+                <div style="margin-bottom: 40px;">
+                    <div class="live-badge">
+                        <div class="live-dot"></div>
+                        <span>议会电视台 (Parliament TV)</span>
+                    </div>
+                    <div style="background: #000; height: 300px; display: flex; align-items: center; justify-content: center; color: #fff; margin-bottom: 10px;">
+                        [视频播放器占位：总理质询环节回顾 - 2094/01/02]
+                    </div>
+                    <p style="font-size: 18px; font-weight: 700;">回顾：总理回答关于《老兵安置法案》修正案的质询</p>
+                </div>
+
+                <h2>当前立法工作 (Legislation)</h2>
+                <ul class="card-list">
+                    <li>
+                        <span class="tag-bill">二读阶段</span>
+                        <a href="#" class="card-title">2094-04 号法案：国家重建与稳定特别法</a>
+                        <p class="card-meta">旨在为关键基础设施项目提供快速审批通道及资金保障。</p>
+                        <div class="card-meta" style="margin-top:5px;">发起人：内阁总理 | 上次辩论：昨日</div>
+                    </li>
+                    <li>
+                        <span class="tag-bill">委员会审议</span>
+                        <a href="#" class="card-title">2093-19 号法案：反腐败与公职人员财产申报法</a>
+                        <p class="card-meta">设立独立调查局并强制所有高级官员公开资产。</p>
+                        <div class="card-meta" style="margin-top:5px;">发起人：司法部长</div>
+                    </li>
+                    <li>
+                        <span class="tag-bill">获得御准 (Royal Assent)</span>
+                        <a href="#" class="card-title">2093-15 号法案：战争赔偿基金设立法</a>
+                        <p class="card-meta">法律已生效。确立了向战争受害者发放赔偿金的法律框架。</p>
+                    </li>
+                </ul>
+
+                <h2 style="margin-top: 40px;">委员会报告 (Select Committees)</h2>
+                <p>议会委员会负责对特定政府部门进行深入调查。</p>
+                <ul class="link-list" style="list-style: none;">
+                    <li style="margin-bottom: 10px;"><a href="#">公共账目委员会：关于战后物资采购违规行为的调查报告</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#">国防委员会：听证会笔录 - 军队规模缩减计划</a></li>
+                </ul>
+            </div>
+
+            <aside class="sidebar">
+                
+                <div class="mp-finder">
+                    <h3 style="margin-top:0; font-size: 20px;">寻找您的议员 (MP)</h3>
+                    <p style="font-size: 14px; margin-bottom: 15px;">输入您的邮编或选区名称，联系您的民意代表。</p>
+                    <input type="text" placeholder="例如：SW1A 2AA" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #aaa;">
+                    <button style="background: var(--c-parliament); color: #fff; border: none; padding: 8px 15px; font-weight: 700; cursor: pointer;">查找</button>
+                </div>
+
+                <div style="background: #fff; border: 1px solid var(--c-border); padding: 20px;">
+                    <h3 style="margin-top:0; font-size: 18px; border-bottom: 2px solid var(--c-text-main); padding-bottom: 10px; margin-bottom: 15px;">下周议程预览</h3>
+                    
+                    <div class="calendar-day">
+                        <div style="color: var(--c-text-sec); font-size: 12px;">1月5日 (周一)</div>
+                        <div class="cal-time">14:30</div>
+                        <div class="cal-event">议会复会：议长致辞</div>
+                    </div>
+
+                    <div class="calendar-day">
+                        <div style="color: var(--c-text-sec); font-size: 12px;">1月6日 (周二)</div>
+                        <div class="cal-time">10:00</div>
+                        <div class="cal-event">教育法案（修正案）辩论</div>
+                    </div>
+
+                    <div class="calendar-day">
+                        <div style="color: var(--c-text-sec); font-size: 12px;">1月7日 (周三)</div>
+                        <div class="cal-time">12:00</div>
+                        <div class="cal-event"><strong>总理质询时间 (PMQs)</strong></div>
+                    </div>
+                    
+                    <a href="#" style="font-size: 14px; display: block; margin-top: 10px;">查看完整议程表 &rarr;</a>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3 style="font-size: 18px;">参观议会</h3>
+                    <p style="font-size: 14px;">议会大厦已完成修复并重新对公众开放。您可以预约旁听辩论或参加导览。</p>
+                    <ul style="list-style: none; font-size: 14px; margin-top: 10px;">
+                        <li style="margin-bottom: 5px;"><a href="#">预订公众席位</a></li>
+                        <li style="margin-bottom: 5px;"><a href="#">学校团体参观指南</a></li>
+                    </ul>
+                </div>
+
+            </aside>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="header-content" style="padding: 40px 30px; display: block; text-align: center; color: var(--c-text-sec); font-size: 14px;">
+            <p>
+                © 阿特利尔国家议会 (Parliament of Atelier)
+                <br>
+                <a href="#" style="color: var(--c-text-sec);">无障碍声明</a> | <a href="#" style="color: var(--c-text-sec);">隐私政策</a> | <a href="#" style="color: var(--c-text-sec);">联系我们</a>
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

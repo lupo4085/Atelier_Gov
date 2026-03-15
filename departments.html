@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府部门目录 - GOV.AT</title>
+    <style>
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-flag-orange: #f47738;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: var(--c-flag-blue);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+
+        a:hover {
+            color: var(--c-flag-blue-hover);
+            text-decoration-thickness: 3px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-orange);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2));
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .header-nav a:hover {
+            text-decoration: underline;
+        }
+
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+
+        /* Breadcrumb */
+        .breadcrumbs {
+            max-width: 960px;
+            margin: 15px auto 0;
+            padding: 0 30px;
+            font-size: 14px;
+            color: var(--c-text-sec);
+        }
+
+        .breadcrumbs a { color: var(--c-flag-blue); text-decoration: none; }
+        .breadcrumbs a:hover { text-decoration: underline; }
+
+        /* Main Content */
+        main {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--c-text-main);
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-text-main);
+        }
+
+        .category-section {
+            margin-bottom: 50px;
+        }
+
+        .dept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .dept-card {
+            background: var(--c-bg-light);
+            border: 1px solid var(--c-border);
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .dept-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .dept-card h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .dept-card h3 a {
+            color: var(--c-text-main);
+            text-decoration: none;
+        }
+
+        .dept-card h3 a:hover {
+            text-decoration: underline;
+        }
+
+        .dept-card p {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .dept-meta {
+            font-size: 12px;
+            color: var(--c-text-sec);
+            margin-top: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--c-bg-light);
+            padding: 40px 0;
+            border-top: 2px solid var(--c-border);
+            text-align: center;
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-top: 60px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dept-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-content {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 15px 30px;
+            }
+            .header-nav {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div style="display: flex; align-items: center;">
+                <img src="nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+                <span class="logo-text">Atelier Federal Government</span>
+            </div>
+            <nav class="header-nav">
+                <a href="index.html">首页</a>
+                <a href="index.html#services">服务</a>
+                <a href="departments.html">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="breadcrumbs">
+        <a href="index.html">首页</a> &gt; <span>政府部门目录</span>
+    </div>
+
+    <main>
+        <h1>政府部门目录</h1>
+        <p>以下是阿特利尔联邦政府各部门及机构的完整列表。点击部门名称查看详细信息、服务与联系方式。</p>
+
+        <div class="category-section">
+            <h2>联邦政府部门</h2>
+            <div class="dept-grid">
+                <div class="dept-card">
+                    <h3><a href="Centeral_Gov_service/homeoffice.html">内政部</a></h3>
+                    <p>负责国家安全、公共治安、边境管控以及公民身份管理。</p>
+                    <div class="dept-meta">联邦部门 · 公民服务</div>
+                </div>
+                <div class="dept-card">
+                    <h3><a href="Centeral_Gov_service/Ministry of Defence.html">国防部</a></h3>
+                    <p>负责国家防卫、军事行动、军队建设与国家安全战略。</p>
+                    <div class="dept-meta">联邦部门 · 国防</div>
+                </div>
+                <div class="dept-card">
+                    <h3><a href="Centeral_Gov_service/Ministry of Finance.html">财政部</a></h3>
+                    <p>管理国家财政、税收政策、预算编制与公共资金分配。</p>
+                    <div class="dept-meta">联邦部门 · 财政</div>
+                </div>
+                <div class="dept-card">
+                    <h3><a href="Centeral_Gov_service/foreign_office.html">外交部</a></h3>
+                    <p>处理国际关系、外交政策、领事服务与跨国合作。</p>
+                    <div class="dept-meta">联邦部门 · 外交</div>
+                </div>
+                <div class="dept-card">
+                    <h3><a href="Centeral_Gov_service/Ministry of Justice.html">司法部</a></h3>
+                    <p>负责法律体系、法院管理、检察工作与司法改革。</p>
+                    <div class="dept-meta">联邦部门 · 司法</div>
+                </div>
+                <div class="dept-card">
+                    <h3><a href="Centeral_Gov_service/energy.html">联邦能源部</a></h3>
+                    <p>管理国家能源政策、资源分配、能源基础设施与可持续发展。</p>
+                    <div class="dept-meta">联邦部门 · 能源</div>
+                </div>
+                <div class="dept-card">
+                    <h3><a href="Centeral_Gov_service/Ministry of Education.html">教育部</a></h3>
+                    <p>负责国家教育政策、学校管理、高等教育与职业培训。</p>
+                    <div class="dept-meta">联邦部门 · 教育</div>
+                </div>
+                <div class="dept-card">
+                    <h3><a href="Centeral_Gov_service/metoffice.html">联邦气象台</a></h3>
+                    <p>提供气象预报、气候监测、灾害预警与科学研究。</p>
+                    <div class="dept-meta">联邦机构 · 气象</div>
+                </div>
+                <div class="dept-card">
+                    <h3><a href="Centeral_Gov_service/NOA.html">国家天文台</a></h3>
+                    <p>负责天文观测、时间标准、空间研究与科学普及。</p>
+                    <div class="dept-meta">联邦机构 · 科学</div>
+                </div>
+                <div class="dept-card">
+                    <h3><a href="Centeral_Gov_service/National Office of Statistics.html">国家统计局</a></h3>
+                    <p>收集、分析与发布国家社会经济统计数据。</p>
+                    <div class="dept-meta">联邦机构 · 统计</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2>中央银行</h2>
+            <div class="dept-grid">
+                <div class="dept-card">
+                    <h3><a href="Bank_of_Atelier/Bank of Atelier.html">阿特利尔中央银行</a></h3>
+                    <p>制定货币政策、管理外汇储备、发行货币与维护金融稳定。</p>
+                    <div class="dept-meta">中央银行 · 金融</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2>外部政府服务机构</h2>
+            <div class="dept-grid">
+                <div class="dept-card">
+                    <h3><a href="Outside_Gov_service/National Power Company.html">国家电力公司</a></h3>
+                    <p>负责全国电力生产、输送、分配与能源供应。</p>
+                    <div class="dept-meta">国有企业 · 能源</div>
+                </div>
+                <div class="dept-card">
+                    <h3><a href="Outside_Gov_service/Universities Admissions Service.html">大学招生服务中心</a></h3>
+                    <p>管理全国高等教育入学申请、考试与录取工作。</p>
+                    <div class="dept-meta">公共服务 · 教育</div>
+                </div>
+                <div class="dept-card">
+                    <h3><a href="Outside_Gov_service/ANR.html">阿特利尔国家铁路</a></h3>
+                    <p>运营全国铁路网络、客运与货运服务。</p>
+                    <div class="dept-meta">国有企业 · 交通</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2>地方政府</h2>
+            <div class="dept-grid">
+                <div class="dept-card">
+                    <h3><a href="local_gov/localgov.html">地方政府门户</a></h3>
+                    <p>访问各地地方政府网站、服务与联系方式。</p>
+                    <div class="dept-meta">地方政府 · 综合服务</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2>政府公告与旅行建议</h2>
+            <div class="dept-grid">
+                <div class="dept-card">
+                    <h3><a href="gov_Notice/travel.html">旅行建议与公告</a></h3>
+                    <p>查看最新的旅行建议、安全通告与入境要求。</p>
+                    <div class="dept-meta">公告服务 · 旅行</div>
+                </div>
+                <div class="dept-card">
+                    <h3><a href="gov_Notice/trave2l.html">紧急情况公告</a></h3>
+                    <p>获取自然灾害、公共卫生事件等紧急情况信息。</p>
+                    <div class="dept-meta">公告服务 · 紧急</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 50px; padding: 25px; background: #f8f8f8; border-left: 5px solid var(--c-flag-blue);">
+            <h3 style="margin-top: 0;">找不到所需部门？</h3>
+            <p>如果您需要联系未列出的部门，或需要其他帮助，请使用我们的 <a href="contact-form.html">在线服务申请</a> 表格。您也可以通过 <a href="index.html#services">政府服务门户</a> 查找特定服务。</p>
+            <p style="margin-top: 15px;"><strong>政府服务热线：</strong> 010-555-8888（工作日 9:00-17:00）</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="header-content">
+            <p>
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier)
+                <br>
+                所有内容均依据 <a href="#">开放政府许可协议 v3.0</a> 发布，另有说明除外。
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

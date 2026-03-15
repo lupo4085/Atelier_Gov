@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 阿特利尔联邦政府</title>
+    <style>
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid #f47738;
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+        }
+
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .register-container {
+            background: #fff;
+            border: 1px solid var(--c-border);
+            border-top: 5px solid var(--c-flag-blue);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: var(--c-text-main);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--c-text-main);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--c-border);
+            font-size: 16px;
+            font-family: var(--font-gov);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--c-flag-blue);
+            box-shadow: 0 0 0 3px rgba(29, 112, 184, 0.2);
+        }
+
+        .btn-primary {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--c-flag-blue-hover);
+        }
+
+        .alert {
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--c-text-sec);
+        }
+
+        .links a {
+            color: var(--c-flag-blue);
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background-color: var(--c-bg-light);
+            padding: 20px 0;
+            border-top: 1px solid var(--c-border);
+            text-align: center;
+            font-size: 14px;
+            color: var(--c-text-sec);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+
+    <div class="breadcrumbs" style="max-width: 960px; margin: 10px auto 0; padding: 0 30px; font-size: 14px; color: #505a5f;">
+        <a href="index.html" style="color: #505a5f; text-decoration: underline;">首页</a> &gt; <span>用户注册</span>
+    </div>
+
+    <main>
+        <div class="register-container">
+            <h1>注册新账户</h1>
+
+            <div id="message" class="alert" style="display: none;"></div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="displayName">姓名</label>
+                    <input type="text" id="displayName" name="displayName" required placeholder="请输入您的姓名">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">电子邮箱</label>
+                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" required placeholder="至少6个字符">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">确认密码</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="再次输入密码">
+                </div>
+
+                <button type="submit" class="btn-primary">注册</button>
+            </form>
+
+            <div class="links">
+                <p>已有账户？ <a href="login.html">立即登录</a></p>
+                <p><a href="index.html">返回首页</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="header-content">
+            <p>© 阿特利尔联邦政府 | 政府服务门户</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+
+    <script>
+        // 根据邮箱域名分配角色
+        function determineRoleFromEmail(email) {
+            if (email.endsWith('@atelier.gov')) {
+                // 政府邮箱可以注册为编辑或作者
+                return 'editor';
+            } else if (email.includes('admin')) {
+                // 包含admin的邮箱可以注册为作者
+                return 'author';
+            }
+            // 其他用户为普通用户
+            return 'user';
+        }
+
+        // 注册表单处理
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const displayName = document.getElementById('displayName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const messageEl = document.getElementById('message');
+
+            messageEl.style.display = 'none';
+            messageEl.className = 'alert';
+
+            // 验证密码
+            if (password !== confirmPassword) {
+                messageEl.textContent = '两次输入的密码不一致';
+                messageEl.className = 'alert alert-error';
+                messageEl.style.display = 'block';
+                return;
+            }
+
+            if (password.length < 6) {
+                messageEl.textContent = '密码长度至少为6个字符';
+                messageEl.className = 'alert alert-error';
+                messageEl.style.display = 'block';
+                return;
+            }
+
+            // 根据邮箱分配角色
+            const role = determineRoleFromEmail(email);
+
+            const result = await signUp(email, password, displayName, role);
+
+            if (result.success) {
+                let roleMessage = '';
+                if (role === 'editor') {
+                    roleMessage = '您已注册为编辑用户。';
+                } else if (role === 'author') {
+                    roleMessage = '您已注册为作者用户。';
+                }
+
+                messageEl.textContent = '注册成功！' + roleMessage + ' 正在跳转到登录页面...';
+                messageEl.className = 'alert alert-success';
+                messageEl.style.display = 'block';
+
+                // 跳转到登录页面
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            } else {
+                messageEl.textContent = '注册失败: ' + result.error;
+                messageEl.className = 'alert alert-error';
+                messageEl.style.display = 'block';
+            }
+        });
+    </script>
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

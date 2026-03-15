@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>叙拉古市议会 - 欢迎访问</title>
+    <style>
+        :root {
+            /* Palette - Local Government */
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8; 
+            --c-flag-blue-hover: #003078;
+            --c-council-green: #00703c; /* 市政服务常绿 */
+            --c-council-purple: #4c2c92; /* 议会代表色 */
+            --c-alert-red: #d4351c;
+            
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #f3f2f1;
+            --c-bg-card: #ffffff;
+            --c-border: #b1b4b6;
+
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            --font-data: "GDS Transport", "Roboto", sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--c-bg-page);
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a { color: var(--c-flag-blue); text-decoration: underline; text-underline-offset: 2px; }
+        a:hover { color: var(--c-flag-blue-hover); text-decoration-thickness: 3px; }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--c-bg-card); /* 市议会通常用白底黑字或深色底 */
+            border-bottom: 1px solid var(--c-border);
+            height: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 顶部黑条 (Government Bar) */
+        .gov-bar {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            padding: 5px 30px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .council-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .council-logo {
+            height: 50px;
+            width: auto;
+        }
+
+        .council-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--c-text-main);
+            line-height: 1.1;
+        }
+        .council-subtitle {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            font-weight: 400;
+        }
+
+        /* --- Breadcrumbs --- */
+        .breadcrumbs {
+            max-width: 960px;
+            margin: 15px auto 0;
+            padding: 0 30px;
+            font-size: 14px;
+            color: var(--c-text-sec);
+        }
+
+        /* --- Alert Banner (Local) --- */
+        .local-alert {
+            background-color: var(--c-alert-red);
+            color: #fff;
+            padding: 20px 0;
+            margin-top: 20px;
+        }
+        
+        .alert-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .alert-content h2 { margin: 0 0 10px 0; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px;}
+        .alert-content p { font-size: 16px; max-width: 80ch; }
+        .alert-content a { color: #fff; font-weight: 700; }
+
+        /* --- Main Grid --- */
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 960px;
+            margin: 40px auto 60px;
+            padding: 0 30px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        h1 { font-size: 36px; font-weight: 700; margin-bottom: 30px; }
+
+        /* Service Cards */
+        .services-section h3 {
+            font-size: 22px;
+            font-weight: 700;
+            border-bottom: 2px solid var(--c-text-main);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            margin-top: 30px;
+        }
+        .services-section h3:first-child { margin-top: 0; }
+
+        .task-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .task-card {
+            background: #fff;
+            border: 1px solid var(--c-border);
+            padding: 20px;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .task-card:hover { border-bottom: 4px solid var(--c-flag-blue); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .task-title { font-weight: 700; font-size: 18px; margin-bottom: 10px; display: block; text-decoration: none; color: var(--c-flag-blue); }
+        .task-desc { font-size: 14px; color: var(--c-text-sec); }
+
+        /* Service Status Tags */
+        .status-tag {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 6px;
+            margin-bottom: 10px;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        .st-suspended { background: #d4351c; color: white; }
+        .st-delayed { background: #ffdd00; color: black; }
+        .st-normal { background: #00703c; color: white; }
+
+        /* Sidebar */
+        .sidebar-box {
+            background: var(--c-council-purple); /* 议会紫 */
+            color: #fff;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-box h3 { font-size: 20px; margin-bottom: 15px; font-weight: 700; }
+        
+        .postcode-search {
+            display: flex;
+            margin-top: 15px;
+        }
+        .postcode-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            font-size: 16px;
+        }
+        .postcode-btn {
+            background: var(--c-flag-dark);
+            color: #fff;
+            border: none;
+            padding: 0 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .quick-links-list { list-style: none; }
+        .quick-links-list li { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .quick-links-list a { color: #fff; text-decoration: none; font-weight: 700; font-size: 16px; display: flex; justify-content: space-between;}
+        .quick-links-list a:hover { text-decoration: underline; }
+
+        /* Footer */
+        footer {
+            background-color: var(--c-bg-card);
+            padding: 40px 0;
+            border-top: 4px solid var(--c-council-purple);
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            main { grid-template-columns: 1fr; }
+            .task-list { grid-template-columns: 1fr; }
+            .council-logo { height: 40px; }
+            .council-title { font-size: 20px; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <div class="gov-bar">
+        <a href="../index.html" style="color: #fff; text-decoration: none;">GOV.AT</a> 阿特利尔联邦政府授权网站
+    </div>
+
+    <header>
+        <div class="header-content">
+            <a href="#" class="council-brand">
+                <img src="../nationalicon/nationicon.png" alt="Syracuse Crest" class="council-logo">
+                <div style="display:flex; flex-direction:column;">
+                    <span class="council-title">叙拉古市议会</span>
+                    <span class="council-subtitle">Syracuse City Council</span>
+                </div>
+            </a>
+            
+            <div style="display: none;">Search</div> 
+        </div>
+    </header>
+
+    <div class="breadcrumbs">
+        <a href="../index.html">首页</a> &gt; <span>地方政府</span> &gt; <span>叙拉古市议会</span>
+    </div>
+
+    <div class="local-alert">
+        <div class="alert-content">
+            <h2>
+                <span style="background:#fff; color:var(--c-alert-red); padding:0 6px; border-radius:2px;">!</span> 
+                极端天气警告：暴风雪红色预警
+            </h2>
+            <p>
+                叙拉古地区现处于风暴阿比斯的控制下。根据叙拉古市应急管理办公室指令，市政服务已进入紧急模式。
+                <br>
+                请民众留在家中。如遇房屋倒塌或生命危险，请拨打 <strong>999</strong>。
+                <br>
+                若您家中失去供暖且无法维持生存温度，请在确保安全的情况下前往<a href="#">最近的政府庇护点</a>。
+            </p>
+        </div>
+    </div>
+
+    <main>
+        <div class="main-column">
+            <h1>欢迎来到叙拉古市</h1>
+            <p class="lead-text" style="font-size: 20px; margin-bottom: 30px;">
+                市议会为您提供市政服务和社区支持服务。
+            </p>
+
+            <div class="services-section">
+                
+                <h3>高频服务</h3>
+                <div class="task-list">
+                    <div class="task-card">
+                        <span class="status-tag st-suspended">服务暂停</span>
+                        <a href="#" class="task-title">垃圾与回收</a>
+                        <p class="task-desc">
+                            因道路结冰，本周所有生活垃圾及回收物收集服务暂停。请勿将垃圾桶置于室外安全地带以免被大风吹走。
+                        </p>
+                    </div>
+
+                    <div class="task-card">
+                        <span class="status-tag st-delayed">期限延长</span>
+                        <a href="#" class="task-title">学校入学与教育</a>
+                        <p class="task-desc">
+                            所有中小学及幼儿园已关闭。请勿前往学校。2092年度秋季入学申请截止日期延长至2月1日。
+                        </p>
+                    </div>
+
+                    <div class="task-card">
+                        <span class="status-tag st-normal">正常运行</span>
+                        <a href="#" class="task-title">市政税</a>
+                        <p class="task-desc">
+                            在线支付系统正常运行。受灾家庭可申请“冬季灾害减免”。
+                        </p>
+                    </div>
+
+                    <div class="task-card">
+                        <span class="status-tag st-suspended">仅限急救</span>
+                        <a href="#" class="task-title">停车与道路</a>
+                        <p class="task-desc">
+                            居民停车许可证管制已解除。主干道目前仅供 UAG 及急救车辆通行。请尽一切可能不要出行。
+                        </p>
+                    </div>
+                </div>
+
+                <h3>社区与福利</h3>
+                <div class="task-list">
+                    <div class="task-card">
+                        <a href="../contact-form.html?service=housing-assistance" class="task-title">住房支持</a>
+                        <p class="task-desc">申请社会住房、报告房屋供暖故障或申请紧急维修。</p>
+                        <a href="../contact-form.html?service=housing-assistance" style="font-size: 14px; font-weight: 700; display: inline-block; margin-top: 10px;">在线申请 &rarr;</a>
+                    </div>
+                    <div class="task-card">
+                        <a href="../contact-form.html?service=social-care" class="task-title">社会关怀</a>
+                        <p class="task-desc">为独居老人及残障人士提供上门送餐与看护服务。</p>
+                        <a href="../contact-form.html?service=social-care" style="font-size: 14px; font-weight: 700; display: inline-block; margin-top: 10px;">申请服务 &rarr;</a>
+                    </div>
+                    <div class="task-card">
+                        <a href="../contact-form.html?service=birth-certificate" class="task-title">出生，死亡与婚姻登记</a>
+                        <p class="task-desc">市政厅登记处已关闭，请转至线上全息窗口办理。</p>
+                        <a href="../contact-form.html?service=birth-certificate" style="font-size: 14px; font-weight: 700; display: inline-block; margin-top: 10px;">在线办理 &rarr;</a>
+                    </div>
+                    <div class="task-card">
+                        <a href="../contact-form.html?service=pest-control" class="task-title">环境与害虫控制</a>
+                        <p class="task-desc">报告因严寒导致的地下设施害虫入侵问题。</p>
+                        <a href="../contact-form.html?service=pest-control" style="font-size: 14px; font-weight: 700; display: inline-block; margin-top: 10px;">报告问题 &rarr;</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="sidebar">
+            
+            <div class="sidebar-box">
+                <h3>查找我的本地服务</h3>
+                <p style="font-size: 14px; opacity: 0.9; margin-bottom: 10px;">
+                    输入您的邮政编码以查询：
+                </p>
+                <ul style="font-size: 13px; list-style: disc; margin-left: 20px; margin-bottom: 15px;">
+                    <li>最近的庇护所</li>
+                    <li>当值药房</li>
+                    <li>所在选区议员</li>
+                </ul>
+                
+                <div class="postcode-search">
+                    <input type="text" class="postcode-input" placeholder="例如：SYR-10A">
+                    <button class="postcode-btn">搜索</button>
+                </div>
+            </div>
+
+            <div class="sidebar-box" style="background: #fff; color: var(--c-text-main); border: 1px solid var(--c-border); border-top: 4px solid var(--c-council-green);">
+                <h3 style="color: var(--c-text-main);">市政新闻</h3>
+                <div style="font-size: 14px;">
+                    <div style="margin-bottom: 15px;">
+                        <a href="#" style="font-weight: 700; display: block;">关于取消“安卡洛斯日”庆典的通知</a>
+                        <span style="color: var(--c-text-sec);">2小时前</span>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <a href="#" style="font-weight: 700; display: block;">铲雪无人机队部署进度图</a>
+                        <span style="color: var(--c-text-sec);">昨天</span>
+                    </div>
+                    <div>
+                        <a href="#" style="font-weight: 700; display: block;">市议会 1 月份例会改为线上举行</a>
+                        <span style="color: var(--c-text-sec);">1月12日</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #f8f8f8; padding: 20px; border: 1px solid #ddd;">
+                <h4 style="margin-bottom: 10px; font-weight: 700;">联系市议会</h4>
+                <p style="font-size: 14px; margin-bottom: 5px;"><strong>一般咨询：</strong> 010-555-8888</p>
+                <p style="font-size: 14px;"><strong>非工作时间紧急热线：</strong> 010-555-9999</p>
+                <p style="font-size: 12px; color: #666; margin-top: 10px;">当前话务量巨大，等待时间可能超过 45 分钟。</p>
+            </div>
+
+        </div>
+        <div style="margin-top: 60px; padding: 30px; background: #f8f8f8; border-left: 5px solid var(--c-flag-blue);">
+            <h3 style="margin-top: 0;">需要本部门的服务？</h3>
+            <p>您可以使用我们的 <a href="contact-form.html">在线服务申请系统</a> 提交申请、查询或反馈。申请将直接转至该部门相关部门处理。</p>
+            <p style="margin-top: 15px;">
+                <a href="contact-form.html" style="background-color: var(--c-flag-blue); color: white; padding: 12px 25px; text-decoration: none; font-weight: 700; display: inline-block;">在线申请服务</a>
+                <a href="#" style="margin-left: 15px; padding: 12px 25px; border: 2px solid var(--c-flag-blue); color: var(--c-flag-blue); text-decoration: none; font-weight: 700; display: inline-block;">查看申请状态</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 14px; color: var(--c-text-sec);">
+                <strong>该部门服务热线：</strong> 010-555-XXXX（工作日 9:00-17:00）<br>
+                <strong>紧急情况（警务/消防/救援）：</strong> 911
+            </p>
+        </div>
+
+    </main>
+
+    <footer>
+        <div style="max-width: 960px; margin: 0 auto; padding: 0 30px;">
+            <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 10px;">服务</h4>
+                    <ul style="list-style: none; font-size: 13px; line-height: 2;">
+                        <li><a href="#" style="color: var(--c-text-sec);">A-Z 服务索引</a></li>
+                        <li><a href="#" style="color: var(--c-text-sec);">在线支付</a></li>
+                        <li><a href="#" style="color: var(--c-text-sec);">无障碍访问</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 10px;">关于</h4>
+                    <ul style="list-style: none; font-size: 13px; line-height: 2;">
+                        <li><a href="#" style="color: var(--c-text-sec);">议员与委员会</a></li>
+                        <li><a href="#" style="color: var(--c-text-sec);">工作机会</a></li>
+                        <li><a href="#" style="color: var(--c-text-sec);">隐私政策</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr style="border: 0; border-top: 1px solid #dcdcdc; margin: 30px 0;">
+            <p>
+                © 叙拉古市议会 (Syracuse City Council) 2092
+                <br>
+                由阿特利尔联邦政府提供技术支持
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

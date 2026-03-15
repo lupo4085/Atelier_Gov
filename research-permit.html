@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大气层外科研许可申请 - GOV.AT</title>
+    <link rel="stylesheet" href="css/common-federal.css">
+    <style>
+        .header-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .header-nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .header-nav a:hover { text-decoration: underline; }
+
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .auth-status span { color: #fff; }
+
+        .breadcrumbs {
+            max-width: 960px;
+            margin: 15px auto 0;
+            padding: 0 30px;
+        }
+
+        .form-container {
+            background: #fff;
+            border: 1px solid var(--c-border);
+            padding: 40px;
+            margin-top: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: var(--c-text-main);
+        }
+
+        .form-group .hint {
+            display: block;
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-bottom: 8px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="date"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            border: 2px solid var(--c-text-main);
+            font-family: var(--font-gov);
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: 3px solid var(--c-flag-orange);
+            outline-offset: 0;
+            border-color: var(--c-text-main);
+        }
+
+        .form-section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-text-main);
+        }
+
+        .form-section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn-submit {
+            background: var(--c-flag-blue);
+            color: #fff;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: var(--font-gov);
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: var(--c-flag-blue-hover);
+        }
+
+        .info-panel {
+            background: #e8f0f8;
+            border-left: 5px solid var(--c-flag-blue);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-panel h3 {
+            margin-top: 0;
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 15px;
+            background: var(--c-bg-light);
+            border: 1px solid var(--c-border);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            background: var(--c-flag-blue);
+            color: #fff;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .step-label {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .required::after {
+            content: " *";
+            color: #d4351c;
+        }
+
+        footer {
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+            .process-steps { grid-template-columns: 1fr 1fr; }
+            .form-container { padding: 20px; }
+            .header-content {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 15px 30px;
+            }
+            .header-nav {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="database.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div style="display: flex; align-items: center;">
+                <img src="nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+                <span class="logo-text">Atelier Federal Government</span>
+            </div>
+            <nav class="header-nav">
+                <a href="index.html">首页</a>
+                <a href="index.html#services">服务</a>
+                <a href="departments.html">部门</a>
+                <div class="auth-status"></div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="breadcrumbs">
+        <a href="index.html">首页</a> &gt; <span>大气层外科研许可申请</span>
+    </div>
+
+    <main>
+        <h1>申请大气层外科研许可</h1>
+        <p>依据《联邦航天与高层大气研究管理条例》（2089年修订），所有涉及大气层外空间的科学研究活动须事先获得联邦科学技术部颁发的科研许可证。</p>
+
+        <div class="info-panel">
+            <h3>申请须知</h3>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>许可证有效期为自签发之日起12个月，可申请续期</li>
+                <li>申请人须为在联邦注册的科研机构或持有有效科研资质的个人</li>
+                <li>审批周期：标准流程约30个工作日，加急流程约15个工作日（加收费用）</li>
+                <li>涉及军事敏感轨道区域的申请须额外获得国防部许可</li>
+            </ul>
+        </div>
+
+        <h2>审批流程</h2>
+        <div class="process-steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-label">提交申请</div>
+                <p style="font-size: 13px; color: var(--c-text-sec); margin-top: 5px;">填写并提交在线申请表</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-label">资质审核</div>
+                <p style="font-size: 13px; color: var(--c-text-sec); margin-top: 5px;">科技部审核申请人资质</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-label">技术评估</div>
+                <p style="font-size: 13px; color: var(--c-text-sec); margin-top: 5px;">专家委员会评估方案</p>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-label">签发许可</div>
+                <p style="font-size: 13px; color: var(--c-text-sec); margin-top: 5px;">审批通过后签发许可证</p>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <form id="permit-form">
+                <div class="form-section-title">申请人信息</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required" for="applicant-name">申请人姓名</label>
+                        <input type="text" id="applicant-name" name="applicant-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="applicant-id">联邦身份编号</label>
+                        <input type="text" id="applicant-id" name="applicant-id" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required" for="email">电子邮箱</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="phone">联系电话</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="institution">所属研究机构</label>
+                    <span class="hint">须为在联邦注册的科研机构或高等院校</span>
+                    <input type="text" id="institution" name="institution" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="institution-id">机构注册编号</label>
+                    <input type="text" id="institution-id" name="institution-id">
+                </div>
+
+                <div class="form-section-title">研究项目信息</div>
+
+                <div class="form-group">
+                    <label class="required" for="project-name">项目名称</label>
+                    <input type="text" id="project-name" name="project-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="research-type">研究类型</label>
+                    <select id="research-type" name="research-type" required>
+                        <option value="">请选择</option>
+                        <option value="observation">天文观测</option>
+                        <option value="atmospheric">大气物理研究</option>
+                        <option value="space-weather">空间天气监测</option>
+                        <option value="satellite">卫星实验</option>
+                        <option value="sounding-rocket">探空火箭发射</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="research-purpose">研究目的与内容</label>
+                    <span class="hint">请详细描述研究目标、方法和预期成果（不少于100字）</span>
+                    <textarea id="research-purpose" name="research-purpose" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required" for="start-date">计划开始日期</label>
+                        <input type="date" id="start-date" name="start-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="end-date">计划结束日期</label>
+                        <input type="date" id="end-date" name="end-date" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="altitude">研究活动最高高度（km）</label>
+                    <span class="hint">大气层外研究活动通常指高度超过100km（卡门线）的活动</span>
+                    <input type="number" id="altitude" name="altitude" min="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="equipment">所需设备与仪器</label>
+                    <span class="hint">列出主要科研设备，包括功率、频率等技术参数</span>
+                    <textarea id="equipment" name="equipment" required></textarea>
+                </div>
+
+                <div class="form-section-title">安全与合规</div>
+
+                <div class="form-group">
+                    <label for="hazard-assessment">安全风险评估</label>
+                    <span class="hint">描述可能的安全风险及应对措施，如涉及放射性材料、推进剂等</span>
+                    <textarea id="hazard-assessment" name="hazard-assessment"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="processing-type">处理方式</label>
+                    <select id="processing-type" name="processing-type" required>
+                        <option value="standard">标准处理（30个工作日）</option>
+                        <option value="expedited">加急处理（15个工作日，加收50%费用）</option>
+                    </select>
+                </div>
+
+                <p style="font-size: 14px; color: var(--c-text-sec); margin-top: 30px; margin-bottom: 20px;">
+                    标有 <span style="color: #d4351c;">*</span> 的字段为必填项。提交申请即表示您确认所填信息真实准确，并同意遵守《联邦航天与高层大气研究管理条例》的相关规定。
+                </p>
+
+                <button type="submit" class="btn-submit">提交申请</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="header-content">
+            <p>
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier)
+                <br>
+                所有内容均依据 <a href="transparency.html">开放政府许可协议 v3.0</a> 发布，另有说明除外。
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+
+            document.getElementById('permit-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const formData = new FormData(form);
+                const data = {};
+                formData.forEach((value, key) => { data[key] = value; });
+
+                if (typeof submitForm === 'function') {
+                    try {
+                        await submitForm('research-permit', data);
+                        alert('申请已成功提交！我们将在审批完成后通过邮件通知您。');
+                        form.reset();
+                    } catch (error) {
+                        alert('提交失败，请稍后重试。错误信息：' + error.message);
+                    }
+                } else {
+                    alert('申请已提交（演示模式）。实际部署后将连接至后端处理系统。');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

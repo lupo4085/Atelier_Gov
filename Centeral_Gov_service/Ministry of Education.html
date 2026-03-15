@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国家教育部 - GOV.AT</title>
+    <style>
+        /* --- 核心样式库 (GOV.AT Standard) --- */
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-dept-edu: #006435; /* 教育部专属色：深绿，象征成长与希望 */
+            --c-flag-orange: #f47738;
+            --c-flag-yellow: #ffdd00; /* 用于高亮招聘信息 */
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-page);
+        }
+
+        a {
+            color: var(--c-flag-blue);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+        
+        a:hover {
+            color: var(--c-flag-blue-hover);
+            text-decoration-thickness: 3px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-orange);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); 
+        }
+        
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        /* Department Header */
+        .dept-header {
+            background-color: #f3f2f1;
+            border-bottom: 1px solid var(--c-border);
+            padding: 40px 0;
+            border-left: 10px solid var(--c-dept-edu);
+        }
+
+        .dept-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .breadcrumbs {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: var(--c-text-sec);
+        }
+        
+        .breadcrumbs a { color: var(--c-text-sec); text-decoration: underline; }
+
+        .dept-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--c-dept-edu);
+        }
+
+        .dept-desc {
+            font-size: 19px;
+            max-width: 700px;
+            line-height: 1.4;
+            color: var(--c-text-main);
+        }
+
+        /* Search Bar (Functional Style) */
+        .search-container {
+            background-color: var(--c-dept-edu);
+            padding: 25px 0;
+            margin-bottom: 40px;
+        }
+        
+        .search-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .search-label {
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .search-box-wrapper {
+            display: flex;
+            background: #fff;
+            padding: 4px;
+            max-width: 700px;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 12px 15px;
+            font-size: 18px;
+            outline: none;
+        }
+
+        .search-btn {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            border: none;
+            padding: 0 25px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .search-btn:hover { background-color: #333; }
+
+        /* Main Layout */
+        main {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 50px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-text-main);
+        }
+
+        .service-group { margin-bottom: 35px; }
+        .service-group h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .link-list { list-style: none; }
+        .link-list li {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .link-list a {
+            font-weight: 700;
+            font-size: 16px;
+            display: block;
+        }
+        .link-list span {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* Recruitment Card (Right Side) */
+        .recruit-card {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            padding: 25px;
+            border-top: 6px solid var(--c-flag-yellow);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .recruit-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.2;
+            color: var(--c-flag-yellow);
+        }
+        
+        .recruit-text {
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .btn-recruit {
+            display: block;
+            background-color: var(--c-flag-yellow);
+            color: var(--c-flag-dark);
+            text-align: center;
+            padding: 12px 10px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 16px;
+            border-bottom: 3px solid #bda400;
+        }
+        .btn-recruit:hover {
+            background-color: #ffe64d;
+            text-decoration: none;
+        }
+
+        /* News Section in Sidebar */
+        .sidebar-news-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 10px;
+        }
+        .sidebar-news-date { font-size: 12px; color: var(--c-text-sec); }
+        .sidebar-news-link { font-weight: 700; font-size: 15px; text-decoration: none; }
+        .sidebar-news-link:hover { text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            .grid-row { grid-template-columns: 1fr; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="../nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+
+    <div class="dept-header">
+        <div class="dept-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">首页</a> &gt; <a href="../departments.html">政府部门</a> &gt; <span>国家教育部</span>
+            </div>
+            <h1 class="dept-title">国家教育部 (Ministry of Education)</h1>
+            <p class="dept-desc">
+                我们致力于重建一个包容、现代且去政治化的教育体系。我们的任务是确保每一个阿特利尔儿童都能重返校园，并为国家复兴培养具备批判性思维的新一代公民。
+            </p>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <div class="search-inner">
+            <label class="search-label" for="edu-search">搜索教育服务、课程大纲或学校信息：</label>
+            <div class="search-box-wrapper">
+                <input type="text" id="edu-search" class="search-input" placeholder="例如：2094年校历, 奖学金申请, 教师资格证...">
+                <button class="search-btn">搜索</button>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <div class="grid-row">
+            <div class="main-services">
+                
+                <div class="service-group">
+                    <h3>学校与课程改革</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">2094 新联邦教学大纲 (临时版)</a>
+                            <span>下载新的历史与公民学教材，旧版“兰德时期”教材已废止。</span>
+                        </li>
+                        <li>
+                            <a href="#">查找附近的学校</a>
+                            <span>查询您所在社区的小学、中学及临时教学点的开放状态。</span>
+                        </li>
+                        <li>
+                            <a href="#">全国学校午餐计划</a>
+                            <span>了解政府如何为所有在校学生提供免费的营养午餐。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>高等教育与技能培训</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">大学复课时间表</a>
+                            <span>国立大学与理工学院的秋季学期注册指引。</span>
+                        </li>
+                        <li>
+                            <a href="#">战后重建职业技能培训 (VET)</a>
+                            <span>免费参加建筑、医疗护理与机械维修的短期速成班。</span>
+                        </li>
+                        <li>
+                            <a href="#">学生资助与奖学金</a>
+                            <span>针对战争遗孤及退伍军人返校的特别助学金申请。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>家庭与支持</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">儿童心理创伤辅导服务</a>
+                            <span>学校内部提供的免费咨询服务详情。</span>
+                        </li>
+                        <li>
+                            <a href="#">特殊教育需求 (SEN)</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                
+                <div class="recruit-card">
+                    <h3>国家需要教师<br>The Nation Needs Teachers</h3>
+                    <p class="recruit-text">
+                        教育是重建的基石。为了填补因战争造成的人员空缺，教育部正在紧急招募 50,000 名新教师。
+                    </p>
+                    <ul style="color: #fff; margin-bottom: 20px; padding-left: 20px; font-size: 14px;">
+                        <li>提供带薪速成培训 (6个月)</li>
+                        <li>包括住房补贴与安置费</li>
+                        <li>无需过往教学经验</li>
+                    </ul>
+                    <a href="#" class="btn-recruit">申请加入“国家教师团队” &rarr;</a>
+                </div>
+
+                <h2>部门动态</h2>
+                
+                <div class="sidebar-news-item">
+                    <div class="sidebar-news-date">2094/01/02</div>
+                    <a href="#" class="sidebar-news-link">部长声明：关于今春取消统一考试的决定</a>
+                </div>
+
+                <div class="sidebar-news-item">
+                    <div class="sidebar-news-date">2093/12/28</div>
+                    <a href="#" class="sidebar-news-link">第一批 200 所受损校舍修复工程完工</a>
+                </div>
+
+                <div class="sidebar-news-item">
+                    <div class="sidebar-news-date">2093/12/15</div>
+                    <a href="#" class="sidebar-news-link">公告：严禁在校园内进行任何形式的政治军事化训练</a>
+                </div>
+
+                <div style="margin-top: 30px; background: #f3f2f1; padding: 15px;">
+                    <h3 style="font-size: 16px; margin-bottom: 10px;">快速链接</h3>
+                    <ul class="link-list" style="font-size: 14px;">
+                        <li style="border:none; padding:0; margin-bottom:5px;"><a href="#">投诉学校管理问题</a></li>
+                        <li style="border:none; padding:0; margin-bottom:5px;"><a href="#">学历认证服务</a></li>
+                    </ul>
+                </div>
+
+            </aside>
+        </div>
+        <div style="margin-top: 60px; padding: 30px; background: #f8f8f8; border-left: 5px solid var(--c-flag-blue);">
+            <h3 style="margin-top: 0;">需要本部门的服务？</h3>
+            <p>您可以使用我们的 <a href="contact-form.html">在线服务申请系统</a> 提交申请、查询或反馈。申请将直接转至国家教育部相关部门处理。</p>
+            <p style="margin-top: 15px;">
+                <a href="contact-form.html" style="background-color: var(--c-flag-blue); color: white; padding: 12px 25px; text-decoration: none; font-weight: 700; display: inline-block;">在线申请服务</a>
+                <a href="#" style="margin-left: 15px; padding: 12px 25px; border: 2px solid var(--c-flag-blue); color: var(--c-flag-blue); text-decoration: none; font-weight: 700; display: inline-block;">查看申请状态</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 14px; color: var(--c-text-sec);">
+                <strong>国家教育部服务热线：</strong> 010-555-XXXX（工作日 9:00-17:00）<br>
+                <strong>紧急情况（警务/消防/救援）：</strong> 911
+            </p>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="header-content" style="padding: 40px 30px; display: block; text-align: center; color: var(--c-text-sec); font-size: 14px;">
+            <p>
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier)
+                <br>
+                <strong>知识照亮未来。</strong>
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

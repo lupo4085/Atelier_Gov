@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atelier National Standard Time - GOV.AT</title>
+    <style>
+        :root {
+            /* Palette: Atelier Flag Colors */
+            --c-flag-dark: #0b0c15;   /* Deep Navy (Header/Gov) */
+            --c-flag-blue: #1d70b8;   /* Gov Blue (Civil Time) */
+            --c-flag-orange: #f47738; /* Alert Orange (Solar Time) */
+            --c-flag-white: #ffffff;
+            
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #f3f2f1;     /* Light Grey */
+            --c-bg-card: #ffffff;
+            --c-border: #b1b4b6;
+
+            /* Typography */
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            --font-data: "GDS Transport", "Roboto", "Helvetica Neue", sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--c-bg-page);
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 1. Header */
+        header {
+            background-color: var(--c-flag-dark);
+            color: var(--c-flag-white);
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-blue); /* Flag Accent */
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* 国徽样式 */
+        .gov-emblem {
+            height: 45px; /* 调整高度以适应页眉 */
+            width: auto;
+            margin-right: 10px;
+            /* 如果图片背景不是透明的，可以加个白色圆底，但通常国徽是透明PNG */
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); 
+        }
+        
+        .logo-text {
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        .service-name {
+            font-weight: 400;
+            font-size: 18px;
+            border-left: 1px solid rgba(255,255,255,0.4);
+            padding-left: 15px;
+            margin-left: 5px;
+            line-height: 1.2;
+        }
+
+        /* 2. Phase Banner */
+        .phase-banner {
+            background-color: var(--c-bg-card);
+            border-bottom: 1px solid var(--c-border);
+            padding: 10px 0;
+        }
+        
+        .banner-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tag {
+            background-color: var(--c-flag-blue);
+            color: #fff;
+            padding: 2px 8px;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* 3. Main Dashboard */
+        main {
+            flex: 1;
+            max-width: 960px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--c-bg-card);
+            border: 1px solid var(--c-border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* Bauhaus Color Coding */
+        .card.solar { border-top: 6px solid var(--c-flag-orange); }
+        .card.civil { border-top: 6px solid var(--c-flag-blue); }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 15px;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 19px;
+            color: var(--c-text-main);
+        }
+
+        .status-badge {
+            font-weight: 700;
+            font-size: 12px;
+            padding: 4px 8px;
+            background-color: #f3f2f1;
+            color: var(--c-text-sec);
+            text-transform: uppercase;
+        }
+
+        /* DST 激活时的样式 */
+        .status-badge.dst-active {
+            background-color: var(--c-flag-blue);
+            color: #fff;
+            box-shadow: 0 2px 5px rgba(29, 112, 184, 0.3);
+        }
+
+        .time-display {
+            font-family: var(--font-data);
+            font-size: 4rem; 
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 5px;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -1px;
+        }
+
+        .date-display {
+            font-size: 1.2rem;
+            color: var(--c-text-sec);
+            margin-bottom: 25px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Visualizer (EoT) */
+        .viz-container {
+            margin-top: auto;
+        }
+        
+        .viz-label {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .bar-bg {
+            height: 6px;
+            background: #f3f2f1;
+            width: 100%;
+            position: relative;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            background: var(--c-flag-orange);
+            position: absolute;
+            left: 50%;
+            width: 0;
+            transition: width 0.1s, left 0.1s;
+        }
+        .bar-mark {
+            position: absolute;
+            left: 50%;
+            height: 10px;
+            width: 2px;
+            background: #0b0c15;
+            top: -2px;
+        }
+
+        /* 4. Controls Footer */
+        .control-panel {
+            background-color: #dee0e2;
+            border-top: 1px solid var(--c-border);
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+
+        .control-wrapper {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .group-label {
+            font-weight: 700;
+            font-size: 14px;
+            margin-right: 10px;
+            color: var(--c-text-main);
+        }
+
+        button {
+            background-color: #f3f2f1;
+            border: 1px solid #b1b4b6;
+            box-shadow: 0 2px 0 #8d9093;
+            color: #0b0c15;
+            font-size: 14px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: var(--font-gov);
+            transition: all 0.1s;
+        }
+
+        button:active {
+            box-shadow: none;
+            transform: translateY(2px);
+        }
+        
+        button:hover {
+            background-color: #e8e8e8;
+        }
+
+        button.btn-primary {
+            background-color: #00703c; /* Gov Green for Start */
+            color: #fff;
+            border-color: #005a30;
+            box-shadow: 0 2px 0 #00361c;
+        }
+        
+        /* 时区按钮激活状态 */
+        button.btn-zone-active {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            border-color: #000;
+            box-shadow: 0 2px 0 #000;
+        }
+
+        /* Reset Button */
+        button.btn-reset {
+            background-color: #d4351c; /* Warning Red */
+            color: white;
+            border-color: #8c2312;
+            box-shadow: 0 2px 0 #5e180d;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            padding: 40px 0;
+            font-size: 14px;
+        }
+
+        .footer-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .earth-ref {
+            font-family: var(--font-data);
+            opacity: 0.8;
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .header-content { flex-direction: column; align-items: flex-start; gap: 10px; height: auto; padding: 15px 30px;}
+            header { height: auto; }
+            .service-name { border-left: none; padding-left: 0; margin-left: 0; display: block; margin-top: 5px;}
+            .control-wrapper { grid-template-columns: 1fr; gap: 20px;}
+            .control-group { flex-wrap: wrap; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="../nationalicon/nationicon.png" alt="阿特利尔联邦共和国国徽" class="gov-emblem">
+            
+            <div class="text-group">
+                <span class="logo-text">Atelier Federal Government</span>
+                <div class="service-name">Atelier National Time Service</span>
+            </div>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+
+    <div class="breadcrumbs" style="max-width: 960px; margin: 10px auto 0; padding: 0 30px; font-size: 14px; color: #505a5f;">
+        <a href="../index.html" style="color: #505a5f; text-decoration: underline;">首页</a> &gt; <a href="../departments.html" style="color: #505a5f; text-decoration: underline;">政府部门</a> &gt; <span>国家授时中心</span>
+    </div>
+
+    <div class="phase-banner">
+        <div class="banner-content">
+            <span class="tag">BETA</span>
+            <span>这是一项新服务，系统当前处于 <b>在线 </b> 状态。</span>
+        </div>
+    </div>
+
+    <main>
+        <h2>当前时间</h2>
+
+        <div class="dashboard-grid">
+            
+            <div class="card solar">
+                <div class="card-header">
+                    <span class="card-title">真太阳时 (AMT)</span>
+                    <span class="status-badge">天文基准</span>
+                </div>
+                <div class="time-display" style="color: var(--c-flag-orange)" id="solar-time">00:00:00</div>
+                <div class="date-display" id="solar-date">2092 / 01 / 01</div>
+                
+                <div class="viz-container">
+                    <div class="viz-label">
+                        <span>均时差 (EoT)</span>
+                        <span id="eot-val">0.0 min</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-mark"></div>
+                        <div class="bar-fill" id="eot-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card civil" id="civil-card">
+                <div class="card-header">
+                    <span class="card-title">民用标准时 (ACT)</span>
+                    <span class="status-badge" id="dst-badge">标准时间 (STD)</span>
+                </div>
+                <div class="time-display" style="color: var(--c-flag-blue)" id="civil-time">00:00:00</div>
+                <div class="date-display" id="civil-date">2092 / 01 / 01</div>
+
+                <div class="viz-container">
+                    <div class="viz-label" style="margin-bottom:10px; font-weight:700;">行政时区切换</div>
+                    <div id="zone-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <div class="control-panel">
+        <div class="control-wrapper">
+            <div class="control-group">
+                <span class="group-label">时间流速</span>
+                <button onclick="setSpeed(1)" class="btn-primary" id="btn-real">实时</button>
+                <button onclick="setSpeed(100)">100x</button>
+                <button onclick="setSpeed(1000)">1kx</button>
+                <button onclick="setSpeed(5000)">5kx</button>
+            </div>
+            
+            <div class="control-group" style="justify-content: flex-end;">
+                <button onclick="resetTime()" class="btn-reset">重置系统</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="license">
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier)
+                <br><span style="opacity: 0.6; font-size: 12px;">由国家天文台 (NAO) 提供数据支持</span>
+            </div>
+            <div class="earth-ref" id="earth-time">
+                EARTH UTC: --
+            </div>
+        </div>
+    </footer>
+
+<script>
+    /* =========================================
+       1. 物理引擎与常数
+       ========================================= */
+    const EARTH_EPOCH = new Date("2025-01-01T00:00:00Z").getTime();
+    const ATELIER_START_YEAR = 2092;
+    const DAY_SEC = 100800.0; // 28h 民用日
+    const AVG_YEAR_DAYS = 312.14; 
+    const YEAR_CYCLE = 7;
+    const AMP_ECC = 901.0;
+    const AMP_OBL = 791.0;
+
+    let timeMultiplier = 1.0;
+    let accumulatedOffset = 0.0;
+    let lastUpdateTs = Date.now();
+    let currentZoneOffset = 0;
+
+    const zones = [
+        { name: "西海岸 (WST)", offset: 0 },
+        { name: "平原 (PLN)", offset: 3 },
+        { name: "山脉 (MNT)", offset: 6 },
+        { name: "高原 (PLT)", offset: 9 },
+        { name: "东海岸 (EST)", offset: 12 }
+    ];
+
+    /* =========================================
+       2. 核心算法 (Python 逻辑移植)
+       ========================================= */
+    function isLeapYear(year) {
+        const relativeYear = year - ATELIER_START_YEAR;
+        if (relativeYear === 0) return false;
+        const isBaseLeap = (relativeYear % YEAR_CYCLE === 0);
+        if (relativeYear % 350 === 0) return false;
+        return isBaseLeap;
+    }
+
+    function getMonthDays(year, month) {
+        if (month === 7 && isLeapYear(year)) return 27;
+        return 26;
+    }
+
+    function getEquationOfTime(totalSec) {
+        const dayInYear = (totalSec / DAY_SEC) % AVG_YEAR_DAYS;
+        const eWave = AMP_ECC * Math.sin(2 * Math.PI * (dayInYear - 5) / AVG_YEAR_DAYS);
+        const tWave = AMP_OBL * Math.sin(4 * Math.PI * (dayInYear - 0) / AVG_YEAR_DAYS);
+        return eWave + tWave;
+    }
+
+    function decomposeTime(totalSec) {
+        let days = Math.floor(totalSec / DAY_SEC);
+        let secInDay = Math.floor(totalSec % DAY_SEC);
+        
+        let year = ATELIER_START_YEAR;
+        // 快速跳过世纪 (350年周期)
+        const cycle350Days = 109249; 
+        const cycles = Math.floor(days / cycle350Days);
+        if (cycles > 0) {
+            year += cycles * 350;
+            days -= cycles * cycle350Days;
+        }
+
+        while (true) {
+            const yDays = isLeapYear(year) ? 313 : 312;
+            if (days < yDays) break;
+            days -= yDays;
+            year++;
+        }
+
+        let month = 1;
+        while (true) {
+            const mDays = getMonthDays(year, month);
+            if (days < mDays) break;
+            days -= mDays;
+            month++;
+        }
+        
+        return { year, month, day: days + 1, sec: secInDay };
+    }
+
+    function fmtTime(sec) {
+        const h = Math.floor(sec / 3600);
+        const rem = sec % 3600;
+        const m = Math.floor(rem / 60);
+        const s = Math.floor(rem % 60);
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    /* =========================================
+       3. UI 交互逻辑
+       ========================================= */
+    function initUI() {
+        const container = document.getElementById('zone-container');
+        zones.forEach(z => {
+            const btn = document.createElement('button');
+            if(z.offset === 0) btn.classList.add('btn-zone-active');
+            btn.innerText = z.name;
+            btn.onclick = () => {
+                currentZoneOffset = z.offset;
+                document.querySelectorAll('#zone-container button').forEach(b => b.classList.remove('btn-zone-active'));
+                btn.classList.add('btn-zone-active');
+                updateClocks();
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function setSpeed(s) {
+        timeMultiplier = s;
+        document.querySelectorAll('.control-group button').forEach(b => {
+             b.classList.remove('btn-primary');
+        });
+        if (s === 1) document.getElementById('btn-real').classList.add('btn-primary');
+    }
+
+    function resetTime() {
+        timeMultiplier = 1.0;
+        accumulatedOffset = 0.0;
+        lastUpdateTs = Date.now();
+        setSpeed(1);
+    }
+
+    function updateClocks() {
+        const nowTs = Date.now();
+        const dt = (nowTs - lastUpdateTs) / 1000;
+        lastUpdateTs = nowTs;
+        accumulatedOffset += dt * (timeMultiplier - 1);
+
+        const earthDelta = (nowTs - EARTH_EPOCH) / 1000;
+        const simDelta = earthDelta + accumulatedOffset;
+        const baseSec = simDelta + (currentZoneOffset * 3600);
+
+        // --- 民用时计算 (Civil Time with DST) ---
+        // 1. 先计算标准时间，判断月份
+        const tempObj = decomposeTime(baseSec);
+        
+        // DST 规则：3月1日 00:00 至 8月结束 (即包含3,4,5,6,7,8月)
+        const isDst = (tempObj.month >= 3 && tempObj.month <= 8);
+        
+        // 2. 如果是夏令时，物理秒数 +3600
+        const civilSecTotal = baseSec + (isDst ? 3600 : 0);
+        const civilDate = decomposeTime(civilSecTotal);
+
+        document.getElementById('civil-time').innerText = fmtTime(civilDate.sec);
+        document.getElementById('civil-date').innerText = 
+            `${civilDate.year} 年 ${civilDate.month.toString().padStart(2,'0')} 月 ${civilDate.day.toString().padStart(2,'0')} 日`;
+        
+        // --- 夏令时视觉反馈 ---
+        const dstBadge = document.getElementById('dst-badge');
+        const civilCard = document.getElementById('civil-card');
+        
+        if (isDst) {
+            dstBadge.innerText = "夏令时生效 (DST)";
+            dstBadge.classList.add('dst-active');
+            // 可选：让整个卡片的顶部边框也变粗
+            civilCard.style.borderTopWidth = "8px";
+        } else {
+            dstBadge.innerText = "标准时间 (STD)";
+            dstBadge.classList.remove('dst-active');
+            civilCard.style.borderTopWidth = "6px";
+        }
+
+        // --- 太阳时计算 (Solar Time) ---
+        const eotVal = getEquationOfTime(baseSec);
+        const solarDate = decomposeTime(baseSec + eotVal);
+
+        document.getElementById('solar-time').innerText = fmtTime(solarDate.sec);
+        document.getElementById('solar-date').innerText = 
+            `${solarDate.year} 年 ${solarDate.month.toString().padStart(2,'0')} 月 ${solarDate.day.toString().padStart(2,'0')} 日`;
+        
+        // 均时差条
+        const eotMin = eotVal / 60;
+        document.getElementById('eot-val').innerText = `${eotMin > 0 ? '+' : ''}${eotMin.toFixed(1)} min`;
+        const eotBar = document.getElementById('eot-bar');
+        const maxEoT = 30 * 60; // 30 mins scale
+        const percentage = (eotVal / maxEoT) * 50; 
+        
+        if (eotVal > 0) {
+            eotBar.style.left = '50%';
+            eotBar.style.width = `${Math.abs(percentage)}%`;
+            eotBar.style.background = 'var(--c-flag-orange)';
+        } else {
+            eotBar.style.left = `${50 - Math.abs(percentage)}%`;
+            eotBar.style.width = `${Math.abs(percentage)}%`;
+            eotBar.style.background = 'var(--c-flag-blue)';
+        }
+
+        // 地球参考时间
+        const u = new Date();
+        document.getElementById('earth-time').innerText = 
+            `地球参考时间 (UTC): ${u.getUTCFullYear()}-${(u.getUTCMonth()+1).toString().padStart(2,'0')}-${u.getUTCDate().toString().padStart(2,'0')} ${u.getUTCHours().toString().padStart(2,'0')}:${u.getUTCMinutes().toString().padStart(2,'0')}:${u.getUTCSeconds().toString().padStart(2,'0')}`;
+
+        requestAnimationFrame(updateClocks);
+    }
+
+    // 启动
+    initUI();
+    updateClocks();
+</script>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

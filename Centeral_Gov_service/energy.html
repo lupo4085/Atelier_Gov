@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联邦能源部 - GOV.AT</title>
+    <style>
+        /* --- 核心样式库 (GOV.AT Standard) --- */
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-dept-energy: #f47738; /* 能源部专属色：橙色，象征能量与活力 */
+            --c-flag-orange: #f47738;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-page);
+        }
+
+        a {
+            color: var(--c-flag-blue);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+
+        a:hover {
+            color: var(--c-dept-energy);
+            text-decoration-thickness: 3px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-orange);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2));
+        }
+
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        /* Department Header */
+        .dept-header {
+            background-color: #f3f2f1;
+            border-bottom: 1px solid var(--c-border);
+            padding: 40px 0;
+            border-left: 10px solid var(--c-dept-energy);
+        }
+
+        .dept-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .breadcrumbs {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: var(--c-text-sec);
+        }
+        .breadcrumbs a { color: var(--c-text-sec); text-decoration: underline; }
+
+        .dept-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--c-dept-energy);
+        }
+
+        .dept-desc {
+            font-size: 19px;
+            color: var(--c-text-sec);
+            max-width: 800px;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-dept-energy);
+        }
+
+        h3 { font-size: 19px; font-weight: 700; margin-bottom: 15px; margin-top: 25px; }
+
+        p { margin-bottom: 15px; }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .service-card {
+            background: #fff;
+            border: 1px solid var(--c-border);
+            padding: 25px;
+            border-top: 5px solid var(--c-dept-energy);
+        }
+
+        .service-card h3 { margin-top: 0; }
+
+        /* Footer */
+        footer {
+            background-color: var(--c-bg-light);
+            padding: 40px 0;
+            border-top: 2px solid var(--c-border);
+            text-align: center;
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .services-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="../nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+
+    <div class="dept-header">
+        <div class="dept-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">首页</a> &gt; <a href="../departments.html">政府部门</a> &gt; <span>联邦能源部</span>
+            </div>
+            <h1 class="dept-title">联邦能源部</h1>
+            <p class="dept-desc">
+                负责阿特利尔联邦的能源政策制定、能源安全监管与可再生能源发展。确保国家能源供应的稳定与可持续性。
+            </p>
+        </div>
+    </div>
+
+    <main>
+        <h2>主要职能</h2>
+        <p>联邦能源部的主要职责包括：</p>
+        <ul>
+            <li>制定和实施国家能源政策与战略</li>
+            <li>监管能源市场，确保公平竞争与消费者权益</li>
+            <li>管理国家能源储备与紧急能源供应</li>
+            <li>推动可再生能源技术与基础设施建设</li>
+            <li>监测能源安全与应对能源危机</li>
+            <li>国际合作与能源外交事务</li>
+        </ul>
+
+        <h2>在线服务</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <h3>能源配额查询</h3>
+                <p>查看您家庭或企业的月度能源配额使用情况，申请额外配额或节能补贴。</p>
+                <a href="#">进入服务 &rarr;</a>
+            </div>
+
+            <div class="service-card">
+                <h3>可再生能源补贴申请</h3>
+                <p>申请太阳能、风能等可再生能源系统的安装与运营补贴。</p>
+                <a href="#">开始申请 &rarr;</a>
+            </div>
+
+            <div class="service-card">
+                <h3>能源设施安全报告</h3>
+                <p>报告能源设施安全隐患或事故，获取应急处理指导。</p>
+                <a href="#">提交报告 &rarr;</a>
+            </div>
+
+            <div class="service-card">
+                <h3>能源统计数据</h3>
+                <p>访问国家能源生产、消费与进出口的实时统计数据。</p>
+                <a href="#">查看数据 &rarr;</a>
+            </div>
+        </div>
+
+        <h2>近期公告</h2>
+        <div style="background: #f8f8f8; padding: 20px; margin-top: 15px;">
+            <h3 style="margin-top: 0;">关于西海岸能源管道维护的公告</h3>
+            <p>西海岸主要能源管道将于2094年3月15日至3月22日进行年度维护，期间该区域能源供应将减少30%。建议居民和企业提前做好节能准备。</p>
+            <p><strong>发布日期：</strong> 2094年3月8日</p>
+        </div>
+
+        <h2>联系我们</h2>
+        <p><strong>地址：</strong> 阿特利尔联邦首都能源大厦，能源大道1号</p>
+        <p><strong>电话：</strong> 010-555-7700（服务热线）</p>
+        <p><strong>电子邮件：</strong> info@energy.atelier.gov</p>
+        <p><strong>紧急事件：</strong> 010-555-7799（24小时能源应急热线）</p>
+        <div style="margin-top: 60px; padding: 30px; background: #f8f8f8; border-left: 5px solid var(--c-flag-blue);">
+            <h3 style="margin-top: 0;">需要本部门的服务？</h3>
+            <p>您可以使用我们的 <a href="contact-form.html">在线服务申请系统</a> 提交申请、查询或反馈。申请将直接转至联邦能源部相关部门处理。</p>
+            <p style="margin-top: 15px;">
+                <a href="contact-form.html" style="background-color: var(--c-flag-blue); color: white; padding: 12px 25px; text-decoration: none; font-weight: 700; display: inline-block;">在线申请服务</a>
+                <a href="#" style="margin-left: 15px; padding: 12px 25px; border: 2px solid var(--c-flag-blue); color: var(--c-flag-blue); text-decoration: none; font-weight: 700; display: inline-block;">查看申请状态</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 14px; color: var(--c-text-sec);">
+                <strong>联邦能源部服务热线：</strong> 010-555-XXXX（工作日 9:00-17:00）<br>
+                <strong>紧急情况（警务/消防/救援）：</strong> 911
+            </p>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="header-content">
+            <p>
+                © 阿特利尔联邦共和国联邦能源部
+                <br>
+                <a href="../index.html">返回政府门户首页</a> | <a href="../departments.html">查看所有政府部门</a>
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

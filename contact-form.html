@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线服务申请 - 阿特利尔联邦政府</title>
+    <style>
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid #f47738;
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+        }
+
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        .breadcrumbs {
+            max-width: 960px;
+            margin: 15px auto 0;
+            padding: 0 30px;
+            font-size: 14px;
+            color: var(--c-text-sec);
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--c-text-main);
+        }
+
+        .form-container {
+            background: #fff;
+            border: 1px solid var(--c-border);
+            border-top: 5px solid var(--c-flag-blue);
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--c-text-main);
+        }
+
+        .required::after {
+            content: " *";
+            color: #d4351c;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--c-border);
+            font-size: 16px;
+            font-family: var(--font-gov);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--c-flag-blue);
+            box-shadow: 0 0 0 3px rgba(29, 112, 184, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .btn-submit {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--c-flag-blue-hover);
+        }
+
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .login-prompt {
+            background-color: #fff8e1;
+            border: 1px solid #feeebb;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: var(--c-bg-light);
+            padding: 40px 0;
+            border-top: 2px solid var(--c-border);
+            text-align: center;
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .form-container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+
+    <div class="breadcrumbs">
+        <a href="index.html">首页</a> &gt; <a href="#">在线服务</a> &gt; <span>服务申请</span>
+    </div>
+
+    <main>
+        <h1>在线服务申请</h1>
+
+        <div id="loginPrompt" class="login-prompt">
+            <p><strong>提示：</strong> 提交申请需要登录账户。请先<a href="login.html?return=contact-form.html">登录</a>或<a href="register.html">注册</a>。</p>
+        </div>
+
+        <div id="message" class="alert"></div>
+
+        <div class="form-container">
+            <form id="serviceForm">
+                <div class="form-group">
+                    <label for="serviceType" class="required">申请服务类型</label>
+                    <select id="serviceType" name="serviceType" required>
+                        <option value="">请选择服务类型</option>
+                        <option value="birth-certificate">出生证明申请</option>
+                        <option value="passport">护照申请/更新</option>
+                        <option value="business-license">商业许可证申请</option>
+                        <option value="tax-filing">税务申报</option>
+                        <option value="housing-assistance">住房援助申请</option>
+                        <option value="energy-subsidy">能源补贴申请</option>
+                        <option value="education-enrollment">教育入学申请</option>
+                        <option value="other">其他服务</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="fullName" class="required">姓名</label>
+                            <input type="text" id="fullName" name="fullName" required placeholder="请输入您的全名">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="idNumber" class="required">身份证号码</label>
+                            <input type="text" id="idNumber" name="idNumber" required placeholder="请输入18位身份证号码">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="email" class="required">电子邮箱</label>
+                            <input type="email" id="email" name="email" required placeholder="your@email.com">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="phone" class="required">联系电话</label>
+                            <input type="tel" id="phone" name="phone" required placeholder="请输入联系电话">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">联系地址</label>
+                    <input type="text" id="address" name="address" placeholder="请输入详细地址">
+                </div>
+
+                <div class="form-group">
+                    <label for="serviceDetails" class="required">服务详情描述</label>
+                    <textarea id="serviceDetails" name="serviceDetails" rows="6" required placeholder="请详细描述您需要申请的服务内容、具体要求以及任何特殊需求..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="additionalInfo">附加信息</label>
+                    <textarea id="additionalInfo" name="additionalInfo" rows="4" placeholder="其他需要说明的信息（可选）"></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">提交申请</button>
+            </form>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f8f8f8; border-left: 5px solid var(--c-flag-blue);">
+            <h3 style="margin-top: 0;">申请处理说明</h3>
+            <ul>
+                <li>申请提交后，您将收到一封确认邮件，包含申请编号。</li>
+                <li>常规服务处理时间为5-10个工作日，复杂申请可能需要更长时间。</li>
+                <li>您可以通过申请编号在<a href="tracking.html">申请状态查询</a>页面跟踪处理进度。</li>
+                <li>如需紧急处理，请致电政府服务热线：010-555-8888。</li>
+                <li>所有申请信息将依据《个人信息保护法》严格保密。</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <div class="header-content">
+            <p>
+                © 阿特利尔联邦政府服务申请系统
+                <br>
+                <a href="index.html">返回政府门户首页</a> | <a href="privacy.html">隐私政策</a> | <a href="help.html">使用帮助</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="database.js"></script>
+
+    <script>
+        // 检查用户登录状态
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginPrompt = document.getElementById('loginPrompt');
+            const serviceForm = document.getElementById('serviceForm');
+
+            firebaseAuth.onAuthStateChanged((user) => {
+                if (user) {
+                    // 用户已登录，隐藏登录提示，显示表单
+                    loginPrompt.style.display = 'none';
+                    serviceForm.style.display = 'block';
+
+                    // 自动填充用户信息
+                    document.getElementById('email').value = user.email;
+                    if (user.displayName) {
+                        document.getElementById('fullName').value = user.displayName;
+                    }
+                } else {
+                    // 用户未登录，显示登录提示，隐藏表单
+                    loginPrompt.style.display = 'block';
+                    serviceForm.style.display = 'none';
+                }
+            });
+        });
+
+        // 表单提交处理
+        document.getElementById('serviceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const user = firebaseAuth.currentUser;
+            if (!user) {
+                showMessage('请先登录后再提交申请', 'error');
+                return;
+            }
+
+            const messageEl = document.getElementById('message');
+            messageEl.style.display = 'none';
+
+            // 收集表单数据
+            const formData = {
+                serviceType: document.getElementById('serviceType').value,
+                fullName: document.getElementById('fullName').value,
+                idNumber: document.getElementById('idNumber').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                serviceDetails: document.getElementById('serviceDetails').value,
+                additionalInfo: document.getElementById('additionalInfo').value,
+                submissionDate: new Date().toISOString(),
+                formType: 'service-application'
+            };
+
+            // 提交到Firebase
+            const result = await submitForm(formData);
+
+            if (result.success) {
+                showMessage(`申请提交成功！您的申请编号是：${result.id}。我们已向您的邮箱发送确认信息。`, 'success');
+
+                // 清空表单
+                document.getElementById('serviceForm').reset();
+
+                // 保留用户邮箱
+                document.getElementById('email').value = user.email;
+                if (user.displayName) {
+                    document.getElementById('fullName').value = user.displayName;
+                }
+            } else {
+                showMessage(`提交失败：${result.error}`, 'error');
+            }
+        });
+
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = type === 'success' ? 'alert alert-success' : 'alert alert-error';
+            messageEl.style.display = 'block';
+
+            // 滚动到消息位置
+            messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府新闻与公告 - GOV.AT</title>
+    <link rel="stylesheet" href="css/common-federal.css">
+    <style>
+        .header-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .header-nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .header-nav a:hover { text-decoration: underline; }
+
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .auth-status span { color: #fff; }
+
+        .breadcrumbs {
+            max-width: 960px;
+            margin: 15px auto 0;
+            padding: 0 30px;
+        }
+
+        .news-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .news-item {
+            border-bottom: 1px solid var(--c-border);
+            padding: 25px 0;
+        }
+
+        .news-item:first-child {
+            padding-top: 0;
+        }
+
+        .news-meta {
+            font-size: 13px;
+            color: var(--c-text-sec);
+            margin-bottom: 8px;
+        }
+
+        .news-tag {
+            display: inline-block;
+            background: var(--c-flag-blue);
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 10px;
+            margin-right: 10px;
+            font-weight: 700;
+        }
+
+        .news-item h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+        }
+
+        .news-item h3 a {
+            color: var(--c-text-main);
+            text-decoration: none;
+        }
+
+        .news-item h3 a:hover {
+            text-decoration: underline;
+        }
+
+        .news-item p {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .featured {
+            background: #f8f8f8;
+            border-left: 5px solid var(--c-flag-orange);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .featured h3 {
+            margin-top: 0;
+        }
+
+        footer {
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 15px 30px;
+            }
+            .header-nav {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="github-api.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div style="display: flex; align-items: center;">
+                <img src="nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+                <span class="logo-text">Atelier Federal Government</span>
+            </div>
+            <nav class="header-nav">
+                <a href="index.html">首页</a>
+                <a href="index.html#services">服务</a>
+                <a href="departments.html">部门</a>
+                <div class="auth-status"></div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="breadcrumbs">
+        <a href="index.html">首页</a> &gt; <span>政府新闻</span>
+    </div>
+
+    <main>
+        <h1>政府新闻与公告</h1>
+        <p>阿特利尔联邦政府最新新闻、政策公告和公共通知。</p>
+
+        <div class="featured">
+            <div class="news-meta">
+                <span class="news-tag">行政令</span> 2093年3月10日 · 联邦行政办公室
+            </div>
+            <h3>第 72 号行政令：关于鲁珀法案的通知</h3>
+            <p>联邦行政办公室发布第72号行政令，涉及《鲁珀法案》相关条款的执行细则。该行政令自发布之日起生效，所有联邦机构须在30日内完成相关政策调整。</p>
+        </div>
+
+        <h2>最新公告</h2>
+        <ul class="news-list">
+            <li class="news-item">
+                <div class="news-meta">
+                    <span class="news-tag">财政</span> 2093年3月8日 · 国家议会
+                </div>
+                <h3><a href="#">联邦议会批准 2093 财年预算案</a></h3>
+                <p>经过为期三周的审议，联邦议会以多数票通过了2093财年联邦预算案。本年度预算总额较上年增长4.2%，重点增加了国防与基础设施投入。</p>
+            </li>
+            <li class="news-item">
+                <div class="news-meta">
+                    <span class="news-tag">基础设施</span> 2093年3月5日 · 工业与信息化部
+                </div>
+                <h3><a href="#">关于西海岸能源管道维护的公告</a></h3>
+                <p>西海岸主干能源管道将于3月15日至4月2日进行年度维护。维护期间，受影响地区将执行分时段供能计划。居民可通过当地能源配额办公室查询具体时段。</p>
+            </li>
+            <li class="news-item">
+                <div class="news-meta">
+                    <span class="news-tag">公民服务</span> 2093年2月28日 · 内政部
+                </div>
+                <h3><a href="#">驾驶执照更新：新版电子驾照系统上线</a></h3>
+                <p>自2093年4月1日起，联邦将全面推行新版电子驾驶执照系统。现有实体驾照持有者需在2093年12月31日前完成电子化迁移。各地车管所已开放在线预约服务。</p>
+            </li>
+            <li class="news-item">
+                <div class="news-meta">
+                    <span class="news-tag">科技</span> 2093年2月20日 · 科学技术部
+                </div>
+                <h3><a href="#">国家天文台发布太阳活动年度预测</a></h3>
+                <p>国家天文台发布2093年度太阳活动预测报告，预计当前太阳周期将在第三季度进入活跃高峰期。各航天与通信部门已收到预警通知。</p>
+            </li>
+            <li class="news-item">
+                <div class="news-meta">
+                    <span class="news-tag">教育</span> 2093年2月15日 · 国家教育部
+                </div>
+                <h3><a href="#">2093年度联邦公务员招考公告</a></h3>
+                <p>联邦公务员委员会发布2093年度招考通知，共开放各级政府部门岗位约1,200个。报名期限为3月1日至4月15日，统一笔试定于5月20日举行。</p>
+            </li>
+            <li class="news-item">
+                <div class="news-meta">
+                    <span class="news-tag">外交</span> 2093年2月10日 · 外交部
+                </div>
+                <h3><a href="gov_Notice/travel.html">更新：米尔斯顿共和国旅行警告</a></h3>
+                <p>外交部更新了针对米尔斯顿共和国的旅行安全建议，将该国安全等级维持在"不建议前往"。请尚在当地的阿特利尔公民与最近的领事馆保持联系。</p>
+            </li>
+        </ul>
+    </main>
+
+    <footer>
+        <div class="header-content">
+            <p>
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier)
+                <br>
+                所有内容均依据 <a href="transparency.html">开放政府许可协议 v3.0</a> 发布，另有说明除外。
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+            // 动态加载最新内容
+            loadDynamicNews();
+        });
+
+        async function loadDynamicNews() {
+            try {
+                const index = await fetch('https://lupo4085.github.io/Atelier_Gov/content/index.json?t=' + Date.now())
+                    .then(r => r.ok ? r.json() : null)
+                    .catch(() => null);
+
+                if (!index || !index.items || index.items.length === 0) return;
+
+                const newsItems = index.items
+                    .filter(item => item.published === true)
+                    .sort((a, b) => new Date(b.publishedAt || b.createdAt) - new Date(a.publishedAt || a.createdAt))
+                    .slice(0, 10);
+
+                if (newsItems.length === 0) return;
+
+                const newsList = document.querySelector('.news-list');
+                if (!newsList) return;
+
+                // 在静态内容前插入动态内容
+                const dynamicHtml = newsItems.map(item => {
+                    const date = new Date(item.publishedAt || item.createdAt);
+                    const dateStr = date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日';
+                    const typeMap = { 'news': '新闻', 'announcement': '公告', 'travel-warning': '旅行警告', 'service-update': '服务更新', 'policy': '政策' };
+                    const tag = typeMap[item.type] || item.type;
+                    return `<li class="news-item">
+                        <div class="news-meta">
+                            <span class="news-tag">${tag}</span> ${dateStr} · ${item.authorName || '联邦政府'}
+                        </div>
+                        <h3><a href="#">${item.title}</a></h3>
+                        <p>${item.excerpt || ''}</p>
+                    </li>`;
+                }).join('');
+
+                newsList.insertAdjacentHTML('afterbegin', dynamicHtml);
+            } catch (e) {
+                console.log('动态内容加载跳过:', e.message);
+            }
+        }
+    </script>
+</body>
+</html>

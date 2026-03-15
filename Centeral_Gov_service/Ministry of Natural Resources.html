@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自然资源部 - GOV.AT</title>
+    <style>
+        /* --- 核心样式库 (GOV.AT Standard) --- */
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-dept-res: #6b5b4b; /* 自然资源部专属色：深褐土色，象征大地与矿产 */
+            --c-flag-orange: #f47738;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-page);
+        }
+
+        a {
+            color: var(--c-flag-blue);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+        
+        a:hover {
+            color: var(--c-flag-blue-hover);
+            text-decoration-thickness: 3px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-orange);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); 
+        }
+        
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        /* Department Header */
+        .dept-header {
+            background-color: #f3f2f1;
+            border-bottom: 1px solid var(--c-border);
+            padding: 40px 0;
+            border-left: 10px solid var(--c-dept-res);
+        }
+
+        .dept-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .breadcrumbs {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: var(--c-text-sec);
+        }
+        
+        .breadcrumbs a { color: var(--c-text-sec); text-decoration: underline; }
+
+        .dept-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--c-dept-res);
+        }
+
+        .dept-desc {
+            font-size: 19px;
+            max-width: 700px;
+            line-height: 1.4;
+            color: var(--c-text-main);
+        }
+
+        /* Functional Search Bar */
+        .search-container {
+            background-color: var(--c-dept-res);
+            padding: 25px 0;
+            margin-bottom: 40px;
+        }
+        
+        .search-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .search-label {
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .search-box-wrapper {
+            display: flex;
+            background: #fff;
+            padding: 4px;
+            max-width: 700px;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 12px 15px;
+            font-size: 18px;
+            outline: none;
+            font-family: var(--font-gov);
+        }
+
+        .search-btn {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            border: none;
+            padding: 0 25px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .search-btn:hover { background-color: #333; }
+
+        /* Main Layout */
+        main {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 50px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-text-main);
+        }
+
+        .service-group { margin-bottom: 35px; }
+        .service-group h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .link-list { list-style: none; }
+        .link-list li {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .link-list a {
+            font-weight: 700;
+            font-size: 16px;
+            display: block;
+        }
+        .link-list span {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* Status Card (Right Side) */
+        .status-card {
+            background-color: #fff;
+            border: 2px solid var(--c-dept-res);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .status-header {
+            background-color: var(--c-dept-res);
+            color: #fff;
+            padding: 5px 10px;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        .data-point {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .data-label { font-size: 14px; color: var(--c-text-sec); display: block; }
+        .data-value { font-size: 24px; font-weight: 700; color: var(--c-text-main); }
+        .trend-up { color: #00703c; font-size: 14px; } /* Green */
+        .trend-down { color: #d4351c; font-size: 14px; } /* Red */
+
+        /* News Section */
+        .news-item { margin-bottom: 15px; }
+        .news-date { font-size: 12px; color: var(--c-text-sec); }
+        .news-link { font-weight: 700; font-size: 15px; text-decoration: underline; color: var(--c-flag-blue); }
+
+        @media (max-width: 768px) {
+            .grid-row { grid-template-columns: 1fr; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="../nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+
+    <div class="dept-header">
+        <div class="dept-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">首页</a> &gt; <a href="../departments.html">政府部门</a> &gt; <span>自然资源部</span>
+            </div>
+            <h1 class="dept-title">自然资源部 (Natural Resources)</h1>
+            <p class="dept-desc">
+                我们负责阿特利尔联邦的土地、矿产、水资源与生物多样性的可持续管理。我们的首要任务是支持国家工业重建，同时修复战争留下的生态创伤，确保资源的代际公平。
+            </p>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <div class="search-inner">
+            <label class="search-label" for="res-search">搜索许可证、地质数据或环保法规：</label>
+            <div class="search-box-wrapper">
+                <input type="text" id="res-search" class="search-input" placeholder="例如：采矿许可证, 水质报告, 国家公园预约...">
+                <button class="search-btn">搜索</button>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <div class="grid-row">
+            <div class="main-services">
+                
+                <div class="service-group">
+                    <h3>资源开发与统计</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">国家矿产资源数据库 (2094版)</a>
+                            <span>查看已勘探的稀土、煤炭及金属矿藏分布图。需企业资质访问。</span>
+                        </li>
+                        <li>
+                            <a href="#">申请工业与矿业开采许可证</a>
+                            <span>包括新的“战后快速审批通道”指南。</span>
+                        </li>
+                        <li>
+                            <a href="#">联邦能源储备月度公报</a>
+                            <span>查看石油、天然气及战略金属的国家储备水平。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>环境保护与土地修复</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">污染土地登记册与修复计划</a>
+                            <span>查询曾受化学武器或工业泄漏影响的“棕地”区域及安全等级。</span>
+                        </li>
+                        <li>
+                            <a href="#">水资源管理与取水许可</a>
+                            <span>针对农业灌溉与工业用水的配额申请。</span>
+                        </li>
+                        <li>
+                            <a href="#">举报非法倾倒与环境破坏行为</a>
+                            <span>24小时匿名举报热线。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>野生动物与自然公园</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">国家公园与保护区名录</a>
+                            <span>查找开放露营、徒步的区域及因排雷工作关闭的禁区。</span>
+                        </li>
+                        <li>
+                            <a href="#">狩猎与捕鱼许可证</a>
+                            <span>2094 季节性配额已更新。</span>
+                        </li>
+                        <li>
+                            <a href="#">濒危物种恢复计划 (Biodiversity Plan)</a>
+                            <span>关于保护受战火威胁物种的特别行动。</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                
+                <div class="status-card">
+                    <div class="status-header">战略资源概览 (2094 Q1)</div>
+                    
+                    <div class="data-point">
+                        <span class="data-label">全国煤炭产量</span>
+                        <div class="data-value">420 万吨 <span class="trend-up">▲ 12%</span></div>
+                        <span style="font-size:12px; color:#666;">较上季度 (工业复苏强劲)</span>
+                    </div>
+
+                    <div class="data-point">
+                        <span class="data-label">可耕地恢复面积</span>
+                        <div class="data-value">12,500 公顷 <span class="trend-up">▲ 5%</span></div>
+                        <span style="font-size:12px; color:#666;">已完成排雷与土壤净化</span>
+                    </div>
+
+                    <div class="data-point" style="border-bottom: none;">
+                        <span class="data-label">森林覆盖率</span>
+                        <div class="data-value">28.4% <span class="trend-down">▼ 0.2%</span></div>
+                        <span style="font-size:12px; color:#666;">受冬季取暖伐木需求影响</span>
+                    </div>
+                </div>
+
+                <h2 style="font-size: 20px; border-bottom: 2px solid var(--c-dept-res);">最新通告</h2>
+                
+                <div class="news-item">
+                    <div class="news-date">2094/01/02</div>
+                    <a href="#" class="news-link">关于在南部山区发现未记录锂矿床的地质简报</a>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-date">2093/12/29</div>
+                    <a href="#" class="news-link">2094 春季禁渔期公告</a>
+                    <span style="font-size: 13px; color: #505a5f; display:block; margin-top:2px;">为恢复生态，本年度禁渔期延长两周。</span>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-date">2093/12/10</div>
+                    <a href="#" class="news-link">警告：北部森林火险等级提升至“高”</a>
+                </div>
+
+                <div style="margin-top: 30px; background: #f3f2f1; padding: 15px;">
+                    <h3 style="font-size: 16px; margin-bottom: 10px;">行业入口</h3>
+                    <ul class="link-list" style="font-size: 14px;">
+                        <li style="border:none; padding:0; margin-bottom:5px;"><a href="#">矿业企业合规门户</a></li>
+                        <li style="border:none; padding:0; margin-bottom:5px;"><a href="#">木材交易追踪系统</a></li>
+                    </ul>
+                </div>
+
+            </aside>
+        </div>
+        <div style="margin-top: 60px; padding: 30px; background: #f8f8f8; border-left: 5px solid var(--c-flag-blue);">
+            <h3 style="margin-top: 0;">需要本部门的服务？</h3>
+            <p>您可以使用我们的 <a href="contact-form.html">在线服务申请系统</a> 提交申请、查询或反馈。申请将直接转至自然资源部相关部门处理。</p>
+            <p style="margin-top: 15px;">
+                <a href="contact-form.html" style="background-color: var(--c-flag-blue); color: white; padding: 12px 25px; text-decoration: none; font-weight: 700; display: inline-block;">在线申请服务</a>
+                <a href="#" style="margin-left: 15px; padding: 12px 25px; border: 2px solid var(--c-flag-blue); color: var(--c-flag-blue); text-decoration: none; font-weight: 700; display: inline-block;">查看申请状态</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 14px; color: var(--c-text-sec);">
+                <strong>自然资源部服务热线：</strong> 010-555-XXXX（工作日 9:00-17:00）<br>
+                <strong>紧急情况（警务/消防/救援）：</strong> 911
+            </p>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="header-content" style="padding: 40px 30px; display: block; text-align: center; color: var(--c-text-sec); font-size: 14px;">
+            <p>
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier)
+                <br>
+                珍惜资源，守护未来。
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

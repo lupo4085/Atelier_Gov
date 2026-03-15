@@ -1,0 +1,98 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 用户集合权限规则
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if
+        // 用户可以创建自己的用户文档
+        (request.auth.uid == userId && request.resource.data.role == 'user') ||
+        // 管理员可以更新任何用户
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'super_admin']);
+    }
+
+    // 内容集合权限规则
+    match /content/{contentId} {
+      allow read: if
+        // 已发布的内容对所有人可读
+        resource.data.published == true ||
+        // 未登录用户只能看到已发布的内容
+        request.auth != null;
+
+      allow create: if request.auth != null &&
+        // 需要至少author权限
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['author', 'editor', 'admin', 'super_admin'];
+
+      allow update: if request.auth != null &&
+        // 作者可以更新自己的草稿
+        (resource.data.authorId == request.auth.uid && resource.data.status == 'draft') ||
+        // 编辑及以上权限可以更新任何内容
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['editor', 'admin', 'super_admin']);
+
+      allow delete: if request.auth != null &&
+        // 只有编辑及以上权限可以删除
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['editor', 'admin', 'super_admin'];
+    }
+
+    // 分类集合权限规则
+    match /categories/{categoryId} {
+      allow read: if true; // 分类对所有人可读
+      allow write: if request.auth != null &&
+        // 需要编辑及以上权限
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['editor', 'admin', 'super_admin'];
+    }
+
+    // 标签集合权限规则
+    match /tags/{tagId} {
+      allow read: if true; // 标签对所有人可读
+      allow create: if request.auth != null &&
+        // 需要作者及以上权限
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['author', 'editor', 'admin', 'super_admin'];
+      allow update, delete: if request.auth != null &&
+        // 需要编辑及以上权限
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['editor', 'admin', 'super_admin'];
+    }
+
+    // 媒体集合权限规则
+    match /media/{mediaId} {
+      allow read: if true; // 媒体元数据对所有人可读
+      allow create: if request.auth != null &&
+        // 需要作者及以上权限
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['author', 'editor', 'admin', 'super_admin'];
+      allow update, delete: if request.auth != null &&
+        // 需要编辑及以上权限
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['editor', 'admin', 'super_admin'];
+    }
+
+    // 工作流日志集合权限规则
+    match /workflow_logs/{logId} {
+      allow read: if request.auth != null; // 仅登录用户可读
+      allow create: if request.auth != null &&
+        // 需要作者及以上权限
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['author', 'editor', 'admin', 'super_admin'];
+    }
+
+    // 表单提交集合权限规则
+    match /formSubmissions/{submissionId} {
+      allow read: if
+        // 用户可以读取自己的提交
+        (request.auth != null && resource.data.userId == request.auth.uid) ||
+        // 管理员可以读取所有提交
+        (request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'super_admin']);
+
+      allow create: if request.auth != null; // 登录用户可以提交表单
+
+      allow update: if request.auth != null &&
+        // 管理员可以更新状态
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'super_admin'];
+    }
+
+    // 内容版本历史集合权限规则
+    match /content_versions/{versionId} {
+      allow read: if request.auth != null; // 仅登录用户可读
+      allow create: if request.auth != null &&
+        // 需要编辑及以上权限
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['editor', 'admin', 'super_admin'];
+    }
+  }
+}

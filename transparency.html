@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信息公开与透明度 - GOV.AT</title>
+    <link rel="stylesheet" href="css/common-federal.css">
+    <style>
+        .header-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .header-nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .header-nav a:hover { text-decoration: underline; }
+
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .auth-status span { color: #fff; }
+
+        .breadcrumbs {
+            max-width: 960px;
+            margin: 15px auto 0;
+            padding: 0 30px;
+        }
+
+        .category-section {
+            margin-bottom: 50px;
+        }
+
+        .doc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .doc-item {
+            border-bottom: 1px solid var(--c-border);
+            padding: 20px 0;
+        }
+
+        .doc-item:first-child {
+            padding-top: 0;
+        }
+
+        .doc-item h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+        }
+
+        .doc-meta {
+            font-size: 13px;
+            color: var(--c-text-sec);
+            margin-bottom: 8px;
+        }
+
+        .doc-item p {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin: 0;
+        }
+
+        .foi-box {
+            background: var(--c-bg-light);
+            border-top: 4px solid var(--c-flag-blue);
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .foi-box h3 {
+            margin-top: 0;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: var(--c-flag-blue);
+            color: #fff;
+            padding: 12px 25px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .btn-primary:hover {
+            background: var(--c-flag-blue-hover);
+            color: #fff;
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            border: 2px solid var(--c-flag-blue);
+            color: var(--c-flag-blue);
+            padding: 10px 23px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            margin-left: 15px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--c-flag-blue);
+            color: #fff;
+        }
+
+        .license-section {
+            background: #f8f8f8;
+            border-left: 5px solid var(--c-flag-orange);
+            padding: 25px;
+            margin-top: 40px;
+        }
+
+        .license-section h3 {
+            margin-top: 0;
+        }
+
+        footer {
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 15px 30px;
+            }
+            .header-nav {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+            .btn-secondary {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div style="display: flex; align-items: center;">
+                <img src="nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+                <span class="logo-text">Atelier Federal Government</span>
+            </div>
+            <nav class="header-nav">
+                <a href="index.html">首页</a>
+                <a href="index.html#services">服务</a>
+                <a href="departments.html">部门</a>
+                <div class="auth-status"></div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="breadcrumbs">
+        <a href="index.html">首页</a> &gt; <span>信息公开</span>
+    </div>
+
+    <main>
+        <h1>信息公开与透明度</h1>
+        <p>阿特利尔联邦政府致力于政务透明与公众参与。在此查阅政策文件、提交信息公开申请，以及了解政府透明度工作。</p>
+
+        <div class="foi-box">
+            <h3>信息公开申请 (FOI)</h3>
+            <p>根据《联邦信息公开法》，公民和法人有权申请获取政府部门持有的信息。申请将在收到后20个工作日内作出答复。</p>
+            <p style="margin-top: 20px;">
+                <a href="contact-form.html" class="btn-primary">提交新的信息公开申请</a>
+                <a href="#disclosure-records" class="btn-secondary">查看过往披露记录</a>
+            </p>
+        </div>
+
+        <div class="category-section">
+            <h2>政策白皮书与咨询</h2>
+            <ul class="doc-list">
+                <li class="doc-item">
+                    <div class="doc-meta">2093年2月 · 工业与信息化部</div>
+                    <h3>白皮书：联邦未来十年的数字化转型</h3>
+                    <p>系统阐述联邦政府在人工智能、量子计算和网络基础设施领域的发展战略与投资规划。涵盖政务数字化、智慧城市建设和数字经济三大主题。</p>
+                </li>
+                <li class="doc-item">
+                    <div class="doc-meta">2093年1月 · 自然资源部 · 公开咨询中</div>
+                    <h3>开放咨询：关于修改《矿业法》的意见征集</h3>
+                    <p>自然资源部拟修改现行《矿业法》中关于开采许可、环境评估和矿区复垦的条款。欢迎公众在2093年4月30日前提交书面意见。</p>
+                </li>
+                <li class="doc-item">
+                    <div class="doc-meta">2092年12月 · 联邦能源部</div>
+                    <h3>联邦能源安全五年战略规划（2093-2098）</h3>
+                    <p>概述联邦在可再生能源发展、战略储备管理和能源供应多元化方面的中长期目标与措施。</p>
+                </li>
+            </ul>
+        </div>
+
+        <div class="category-section" id="disclosure-records">
+            <h2>透明度报告与披露记录</h2>
+            <ul class="doc-list">
+                <li class="doc-item">
+                    <div class="doc-meta">2092年12月 · 透明度与伦理办公室</div>
+                    <h3>Transparency Report 2091</h3>
+                    <p>2091年度联邦政府透明度年度报告。包括信息公开申请统计、申诉处理、部门合规评分和改进建议。</p>
+                </li>
+                <li class="doc-item">
+                    <div class="doc-meta">2093年1月 · 透明度与伦理办公室</div>
+                    <h3>2092年度信息公开申请处理报告</h3>
+                    <p>全年共受理信息公开申请 4,287 件，完成答复率为 96.3%。平均答复时间为 14.2 个工作日。</p>
+                </li>
+                <li class="doc-item">
+                    <div class="doc-meta">持续更新</div>
+                    <h3>政府合同与采购公开记录</h3>
+                    <p>联邦政府与各部门签署的采购合同、服务外包协议和拨款记录。所有超过50,000联邦币的合同均在签署后30日内公开。</p>
+                </li>
+            </ul>
+        </div>
+
+        <div class="license-section">
+            <h3>开放政府许可协议 v3.0</h3>
+            <p>除另有说明外，阿特利尔联邦政府发布的所有信息和数据均依据《开放政府许可协议》第3.0版发布。您可以自由复制、发布、分发、传播和改编这些信息，但须遵守以下条件：</p>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li>注明信息来源（如"阿特利尔联邦政府"或具体部门名称）</li>
+                <li>提供本许可协议的链接</li>
+                <li>声明信息是否经过修改</li>
+            </ul>
+            <p style="margin-top: 15px; font-size: 14px; color: var(--c-text-sec);">本许可协议不适用于：个人数据、第三方版权材料、部门徽标和国徽、军事机密信息。如有疑问，请联系<a href="Centeral_Gov_service/Office of Government Transparency and Ethics.html">透明度与伦理办公室</a>。</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="header-content">
+            <p>
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier)
+                <br>
+                所有内容均依据 开放政府许可协议 v3.0 发布，另有说明除外。
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

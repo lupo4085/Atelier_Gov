@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统测试 - 阿特利尔联邦政府</title>
+    <style>
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #f3f2f1;
+            --c-bg-light: #ffffff;
+            --c-border: #b1b4b6;
+            --c-success: #00703c;
+            --c-error: #d4351c;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-page);
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            padding: 20px;
+            border-bottom: 5px solid #f47738;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .test-section {
+            background: var(--c-bg-light);
+            border: 1px solid var(--c-border);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .test-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--c-flag-blue);
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .test-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .test-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .status-success { background-color: #d4edda; color: #155724; }
+        .status-error { background-color: #f8d7da; color: #721c24; }
+        .status-warning { background-color: #fff3cd; color: #856404; }
+
+        .test-result {
+            font-size: 14px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 3px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--c-flag-blue);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .auth-status {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .test-actions {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--c-border);
+        }
+
+        @media (max-width: 768px) {
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>系统功能测试</h1>
+            <p>阿特利尔联邦政府 - 后端内容发布系统测试页面</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="auth-status" id="authStatus">
+            <div class="user-info">未登录</div>
+            <button class="btn btn-primary" onclick="testLogin()">测试登录</button>
+            <button class="btn btn-secondary" onclick="testLogout()">测试注销</button>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">1. 用户认证测试</div>
+            <div class="test-grid">
+                <div class="test-card">
+                    <div class="test-status status-warning">待测试</div>
+                    <h3>检查认证状态</h3>
+                    <p>测试用户登录状态检测</p>
+                    <button class="btn btn-primary" onclick="testAuthState()">运行测试</button>
+                    <div class="test-result" id="testAuthResult"></div>
+                </div>
+
+                <div class="test-card">
+                    <div class="test-status status-warning">待测试</div>
+                    <h3>检查用户角色</h3>
+                    <p>测试用户角色权限检查</p>
+                    <button class="btn btn-primary" onclick="testUserRole()">运行测试</button>
+                    <div class="test-result" id="testRoleResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">2. 内容管理测试</div>
+            <div class="test-grid">
+                <div class="test-card">
+                    <div class="test-status status-warning">待测试</div>
+                    <h3>获取内容列表</h3>
+                    <p>测试内容列表获取功能</p>
+                    <button class="btn btn-primary" onclick="testGetContent()">运行测试</button>
+                    <div class="test-result" id="testContentResult"></div>
+                </div>
+
+                <div class="test-card">
+                    <div class="test-status status-warning">待测试</div>
+                    <h3>创建测试内容</h3>
+                    <p>测试内容创建功能（需要权限）</p>
+                    <button class="btn btn-success" onclick="testCreateContent()">运行测试</button>
+                    <div class="test-result" id="testCreateResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">3. 数据库功能测试</div>
+            <div class="test-grid">
+                <div class="test-card">
+                    <div class="test-status status-warning">待测试</div>
+                    <h3>分类管理</h3>
+                    <p>测试分类获取功能</p>
+                    <button class="btn btn-primary" onclick="testCategories()">运行测试</button>
+                    <div class="test-result" id="testCategoryResult"></div>
+                </div>
+
+                <div class="test-card">
+                    <div class="test-status status-warning">待测试</div>
+                    <h3>标签管理</h3>
+                    <p>测试标签获取功能</p>
+                    <button class="btn btn-primary" onclick="testTags()">运行测试</button>
+                    <div class="test-result" id="testTagResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">4. 系统信息</div>
+            <div class="test-card">
+                <div class="test-status status-warning">待测试</div>
+                <h3>Firebase连接测试</h3>
+                <p>测试Firebase服务连接状态</p>
+                <button class="btn btn-primary" onclick="testFirebaseConnection()">运行测试</button>
+                <div class="test-result" id="testConnectionResult"></div>
+            </div>
+        </div>
+
+        <div class="test-actions">
+            <button class="btn btn-success" onclick="runAllTests()">运行所有测试</button>
+            <button class="btn btn-danger" onclick="clearAllResults()">清除所有结果</button>
+            <a href="index.html" class="btn btn-secondary">返回首页</a>
+            <a href="admin-dashboard.html" class="btn btn-primary">管理仪表板</a>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="database.js"></script>
+
+    <script>
+        // 更新认证状态显示
+        function updateAuthStatus() {
+            const user = firebaseAuth.currentUser;
+            const authStatusEl = document.getElementById('authStatus');
+
+            if (user) {
+                authStatusEl.innerHTML = `
+                    <div class="user-info">已登录: ${user.email}</div>
+                    <div>用户ID: ${user.uid.substring(0, 10)}...</div>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-primary" onclick="testUserRole()">检查角色</button>
+                        <button class="btn btn-secondary" onclick="testLogout()">注销</button>
+                    </div>
+                `;
+            } else {
+                authStatusEl.innerHTML = `
+                    <div class="user-info">未登录</div>
+                    <button class="btn btn-primary" onclick="testLogin()">测试登录</button>
+                    <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                        使用 admin@atelier.gov 或任意邮箱测试
+                    </p>
+                `;
+            }
+        }
+
+        // 测试登录（模拟用户）
+        async function testLogin() {
+            try {
+                // 尝试使用测试账户登录
+                const result = await signIn('test@atelier.gov', 'test123');
+
+                if (result.success) {
+                    alert('登录成功！');
+                    updateAuthStatus();
+                } else {
+                    // 如果测试账户不存在，提示注册
+                    alert('测试账户不存在。请先注册测试账户。\n建议使用 admin@atelier.gov 邮箱注册。');
+                }
+            } catch (error) {
+                alert('登录测试失败: ' + error.message);
+            }
+        }
+
+        // 测试注销
+        async function testLogout() {
+            try {
+                await signOut();
+                alert('注销成功！');
+                updateAuthStatus();
+            } catch (error) {
+                alert('注销失败: ' + error.message);
+            }
+        }
+
+        // 测试认证状态
+        async function testAuthState() {
+            const resultEl = document.getElementById('testAuthResult');
+            resultEl.innerHTML = '测试中...';
+            resultEl.className = 'test-result';
+
+            try {
+                const user = firebaseAuth.currentUser;
+
+                if (user) {
+                    resultEl.innerHTML = `✅ 认证状态测试通过\n\n用户信息:\n- 邮箱: ${user.email}\n- 用户ID: ${user.uid}\n- 显示名称: ${user.displayName || '未设置'}\n- 邮箱验证: ${user.emailVerified ? '已验证' : '未验证'}`;
+                    resultEl.previousElementSibling.className = 'test-status status-success';
+                } else {
+                    resultEl.innerHTML = '⚠️ 用户未登录\n\n请先登录以进行其他测试。';
+                    resultEl.previousElementSibling.className = 'test-status status-warning';
+                }
+            } catch (error) {
+                resultEl.innerHTML = `❌ 认证状态测试失败\n\n错误: ${error.message}`;
+                resultEl.previousElementSibling.className = 'test-status status-error';
+            }
+        }
+
+        // 测试用户角色
+        async function testUserRole() {
+            const resultEl = document.getElementById('testRoleResult');
+            resultEl.innerHTML = '测试中...';
+            resultEl.className = 'test-result';
+
+            try {
+                const user = firebaseAuth.currentUser;
+
+                if (!user) {
+                    resultEl.innerHTML = '⚠️ 请先登录';
+                    resultEl.previousElementSibling.className = 'test-status status-warning';
+                    return;
+                }
+
+                // 获取用户角色
+                const profile = await getCurrentUserProfile();
+
+                if (profile.success) {
+                    const userData = profile.user;
+                    resultEl.innerHTML = `✅ 用户角色测试通过\n\n用户角色信息:\n- 角色: ${userData.role || 'user'}\n- 邮箱: ${userData.email}\n- 显示名称: ${userData.displayName || '未设置'}\n- 创建时间: ${userData.createdAt ? new Date(userData.createdAt).toLocaleString('zh-CN') : '未知'}`;
+                    resultEl.previousElementSibling.className = 'test-status status-success';
+                } else {
+                    resultEl.innerHTML = `❌ 获取用户信息失败: ${profile.error}`;
+                    resultEl.previousElementSibling.className = 'test-status status-error';
+                }
+            } catch (error) {
+                resultEl.innerHTML = `❌ 用户角色测试失败\n\n错误: ${error.message}`;
+                resultEl.previousElementSibling.className = 'test-status status-error';
+            }
+        }
+
+        // 测试获取内容
+        async function testGetContent() {
+            const resultEl = document.getElementById('testContentResult');
+            resultEl.innerHTML = '测试中...';
+            resultEl.className = 'test-result';
+
+            try {
+                const result = await getContent('news', 5);
+
+                if (result.success) {
+                    if (result.content.length > 0) {
+                        resultEl.innerHTML = `✅ 内容获取测试通过\n\n找到 ${result.content.length} 条内容:\n\n${result.content.map(item => `- ${item.title} (${item.type}, ${item.status || 'draft'})`).join('\n')}`;
+                        resultEl.previousElementSibling.className = 'test-status status-success';
+                    } else {
+                        resultEl.innerHTML = '⚠️ 内容获取测试通过，但没有找到内容\n\n这可能是因为数据库中没有内容，或者内容未发布。';
+                        resultEl.previousElementSibling.className = 'test-status status-warning';
+                    }
+                } else {
+                    resultEl.innerHTML = `❌ 内容获取失败: ${result.error}`;
+                    resultEl.previousElementSibling.className = 'test-status status-error';
+                }
+            } catch (error) {
+                resultEl.innerHTML = `❌ 内容获取测试失败\n\n错误: ${error.message}`;
+                resultEl.previousElementSibling.className = 'test-status status-error';
+            }
+        }
+
+        // 测试创建内容
+        async function testCreateContent() {
+            const resultEl = document.getElementById('testCreateResult');
+            resultEl.innerHTML = '测试中...';
+            resultEl.className = 'test-result';
+
+            try {
+                const user = firebaseAuth.currentUser;
+
+                if (!user) {
+                    resultEl.innerHTML = '⚠️ 请先登录';
+                    resultEl.previousElementSibling.className = 'test-status status-warning';
+                    return;
+                }
+
+                // 检查用户权限
+                const roleCheck = await checkUserRole('author');
+                if (!roleCheck.success || !roleCheck.hasRole) {
+                    resultEl.innerHTML = `❌ 权限不足\n\n当前用户角色: ${roleCheck.userRole || 'unknown'}\n需要至少 author 权限才能创建内容。`;
+                    resultEl.previousElementSibling.className = 'test-status status-error';
+                    return;
+                }
+
+                // 创建测试内容
+                const testContent = {
+                    type: 'news',
+                    title: '系统测试内容 - ' + new Date().toLocaleString('zh-CN'),
+                    content: '这是一个自动生成的测试内容，用于验证内容发布系统功能。\n\n测试时间: ' + new Date().toLocaleString('zh-CN'),
+                    status: 'draft',
+                    published: false,
+                    featured: false
+                };
+
+                const result = await addContent(testContent);
+
+                if (result.success) {
+                    resultEl.innerHTML = `✅ 内容创建测试通过\n\n内容ID: ${result.id}\n标题: ${testContent.title}\n状态: ${testContent.status}\n\n注意：这是一个草稿，不会在网站前台显示。`;
+                    resultEl.previousElementSibling.className = 'test-status status-success';
+                } else {
+                    resultEl.innerHTML = `❌ 内容创建失败: ${result.error}`;
+                    resultEl.previousElementSibling.className = 'test-status status-error';
+                }
+            } catch (error) {
+                resultEl.innerHTML = `❌ 内容创建测试失败\n\n错误: ${error.message}`;
+                resultEl.previousElementSibling.className = 'test-status status-error';
+            }
+        }
+
+        // 测试分类功能
+        async function testCategories() {
+            const resultEl = document.getElementById('testCategoryResult');
+            resultEl.innerHTML = '测试中...';
+            resultEl.className = 'test-result';
+
+            try {
+                const result = await getCategories();
+
+                if (result.success) {
+                    if (result.categories.length > 0) {
+                        resultEl.innerHTML = `✅ 分类获取测试通过\n\n找到 ${result.categories.length} 个分类:\n\n${result.categories.map(cat => `- ${cat.name} (${cat.id})`).join('\n')}`;
+                        resultEl.previousElementSibling.className = 'test-status status-success';
+                    } else {
+                        resultEl.innerHTML = '⚠️ 分类获取测试通过，但没有找到分类\n\n数据库中没有分类数据。';
+                        resultEl.previousElementSibling.className = 'test-status status-warning';
+                    }
+                } else {
+                    resultEl.innerHTML = `❌ 分类获取失败: ${result.error}`;
+                    resultEl.previousElementSibling.className = 'test-status status-error';
+                }
+            } catch (error) {
+                resultEl.innerHTML = `❌ 分类获取测试失败\n\n错误: ${error.message}`;
+                resultEl.previousElementSibling.className = 'test-status status-error';
+            }
+        }
+
+        // 测试标签功能
+        async function testTags() {
+            const resultEl = document.getElementById('testTagResult');
+            resultEl.innerHTML = '测试中...';
+            resultEl.className = 'test-result';
+
+            try {
+                const result = await getTags(10);
+
+                if (result.success) {
+                    if (result.tags.length > 0) {
+                        resultEl.innerHTML = `✅ 标签获取测试通过\n\n找到 ${result.tags.length} 个标签:\n\n${result.tags.map(tag => `- ${tag.name} (使用次数: ${tag.usageCount || 0})`).join('\n')}`;
+                        resultEl.previousElementSibling.className = 'test-status status-success';
+                    } else {
+                        resultEl.innerHTML = '⚠️ 标签获取测试通过，但没有找到标签\n\n数据库中没有标签数据。';
+                        resultEl.previousElementSibling.className = 'test-status status-warning';
+                    }
+                } else {
+                    resultEl.innerHTML = `❌ 标签获取失败: ${result.error}`;
+                    resultEl.previousElementSibling.className = 'test-status status-error';
+                }
+            } catch (error) {
+                resultEl.innerHTML = `❌ 标签获取测试失败\n\n错误: ${error.message}`;
+                resultEl.previousElementSibling.className = 'test-status status-error';
+            }
+        }
+
+        // 测试服务连接
+        async function testFirebaseConnection() {
+            const resultEl = document.getElementById('testConnectionResult');
+            resultEl.innerHTML = '测试中...';
+            resultEl.className = 'test-result';
+
+            try {
+                // 测试Auth连接
+                const authTest = firebaseAuth.currentUser;
+
+                // 测试GitHub Pages连接
+                let ghPagesTest = '未测试';
+                try {
+                    const resp = await fetch('https://lupo4085.github.io/Atelier_Gov/content/index.json?t=' + Date.now());
+                    ghPagesTest = resp.ok ? '✅ 可访问' : '⚠️ 状态 ' + resp.status;
+                } catch (e) {
+                    ghPagesTest = '❌ 不可访问: ' + e.message;
+                }
+
+                // 测试GitHub API（如果有token）
+                let ghApiTest = '未测试（无Token）';
+                if (typeof getGitHubToken === 'function' && getGitHubToken()) {
+                    try {
+                        const resp = await fetch('https://api.github.com/repos/lupo4085/Atelier_Gov', {
+                            headers: { 'Authorization': 'token ' + getGitHubToken() }
+                        });
+                        ghApiTest = resp.ok ? '✅ 可访问' : '⚠️ 状态 ' + resp.status;
+                    } catch (e) {
+                        ghApiTest = '❌ 不可访问: ' + e.message;
+                    }
+                }
+
+                resultEl.innerHTML = `✅ 服务连接测试完成\n\n服务状态:\n- Firebase Auth: ${authTest ? '✅ 有用户登录' : '✅ 服务可用（无用户）'}\n- GitHub Pages: ${ghPagesTest}\n- GitHub API: ${ghApiTest}\n\n配置信息:\n- 项目ID: ${firebaseConfig.projectId || '未设置'}\n- API Key: ${firebaseConfig.apiKey ? '已设置' : '未设置'}`;
+                resultEl.previousElementSibling.className = 'test-status status-success';
+            } catch (error) {
+                resultEl.innerHTML = `❌ 连接测试失败\n\n错误: ${error.message}`;
+                resultEl.previousElementSibling.className = 'test-status status-error';
+            }
+        }
+
+        // 运行所有测试
+        async function runAllTests() {
+            if (!confirm('确定要运行所有测试吗？这可能需要一些时间。')) {
+                return;
+            }
+
+            clearAllResults();
+
+            // 按顺序运行测试
+            await testAuthState();
+            await testUserRole();
+            await testGetContent();
+            await testCreateContent();
+            await testCategories();
+            await testTags();
+            await testFirebaseConnection();
+
+            alert('所有测试完成！请查看每个测试的结果。');
+        }
+
+        // 清除所有结果
+        function clearAllResults() {
+            document.querySelectorAll('.test-result').forEach(el => {
+                el.innerHTML = '';
+                el.className = 'test-result';
+            });
+
+            document.querySelectorAll('.test-status').forEach(el => {
+                el.className = 'test-status status-warning';
+            });
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 监听认证状态变化
+            firebaseAuth.onAuthStateChanged(() => {
+                updateAuthStatus();
+            });
+
+            // 初始更新
+            updateAuthStatus();
+        });
+    </script>
+</body>
+</html>

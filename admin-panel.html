@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内容管理 - 阿特利尔联邦政府</title>
+    <style>
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #f3f2f1;
+            --c-bg-light: #ffffff;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-page);
+        }
+
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid #f47738;
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+        }
+
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: var(--c-text-main);
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .card {
+            background: var(--c-bg-light);
+            border: 1px solid var(--c-border);
+            padding: 30px;
+            border-top: 5px solid var(--c-flag-blue);
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--c-text-main);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--c-text-main);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--c-border);
+            font-size: 16px;
+            font-family: var(--font-gov);
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--c-flag-blue);
+            box-shadow: 0 0 0 3px rgba(29, 112, 184, 0.2);
+        }
+
+        .btn-primary {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--c-flag-blue-hover);
+        }
+
+        .alert {
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .content-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--c-border);
+            padding: 15px;
+            background: #fff;
+        }
+
+        .content-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .content-item:last-child {
+            border-bottom: none;
+        }
+
+        .content-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .content-meta {
+            font-size: 12px;
+            color: var(--c-text-sec);
+            margin-bottom: 5px;
+        }
+
+        .content-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+            background-color: #f3f2f1;
+            border: 1px solid #b1b4b6;
+            cursor: pointer;
+        }
+
+        .requires-auth {
+            display: none;
+        }
+
+        .login-prompt {
+            text-align: center;
+            padding: 40px;
+            background: #fff;
+            border: 1px solid var(--c-border);
+            margin-top: 40px;
+        }
+
+        footer {
+            background-color: var(--c-bg-light);
+            padding: 20px 0;
+            border-top: 1px solid var(--c-border);
+            text-align: center;
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div style="display: flex; align-items: center;">
+                <img src="nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+                <span class="logo-text">政府内容管理</span>
+            </div>
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 由 auth.js 动态填充 -->
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="breadcrumbs" style="max-width: 960px; margin: 10px auto 0; padding: 0 30px; font-size: 14px; color: #505a5f;">
+        <a href="index.html" style="color: #505a5f; text-decoration: underline;">首页</a> &gt; <span>内容管理</span>
+    </div>
+
+    <main>
+        <div class="requires-auth">
+            <h1>内容管理面板</h1>
+
+            <div id="message" class="alert" style="display: none;"></div>
+
+            <div class="admin-grid">
+                <div class="card">
+                    <h2>添加新内容</h2>
+                    <form id="addContentForm">
+                        <div class="form-group">
+                            <label for="contentType">内容类型</label>
+                            <select id="contentType" name="contentType" required>
+                                <option value="news">新闻</option>
+                                <option value="announcement">公告</option>
+                                <option value="travel-warning">旅行警告</option>
+                                <option value="service-update">服务更新</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title">标题</label>
+                            <input type="text" id="title" name="title" required placeholder="请输入标题">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="content">内容</label>
+                            <textarea id="content" name="content" required placeholder="请输入内容..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="published">
+                                <input type="checkbox" id="published" name="published" checked>
+                                立即发布
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn-primary">发布内容</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>最近发布的内容</h2>
+                    <div class="content-list" id="contentList">
+                        <!-- 内容列表将动态加载 -->
+                        <p>正在加载内容...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 40px;">
+                <h2>表单提交管理</h2>
+                <div class="content-list" id="submissionsList">
+                    <!-- 表单提交将动态加载 -->
+                    <p>需要管理员权限查看所有提交。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-prompt" id="loginPrompt">
+            <h2>请登录管理员账户</h2>
+            <p>只有管理员可以访问内容管理面板。</p>
+            <p><a href="login.html?return=admin-panel.html" class="btn-primary" style="display: inline-block; margin-top: 20px;">前往登录</a></p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="header-content">
+            <p>© 阿特利尔联邦政府 | 内部管理面板</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK (仅 Auth) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="github-api.js"></script>
+    <script src="auth.js"></script>
+    <script src="database.js"></script>
+
+    <script>
+        // 检查用户权限
+        async function checkAdminAccess(user) {
+            try {
+                const roleCheck = await checkUserRole('admin');
+                return roleCheck.success && roleCheck.hasRole;
+            } catch (error) {
+                console.error('权限检查错误:', error);
+                return false;
+            }
+        }
+
+        // 加载内容列表
+        async function loadContent() {
+            const result = await getContent('news', 10);
+            if (result.success) {
+                const contentList = document.getElementById('contentList');
+                if (result.content.length === 0) {
+                    contentList.innerHTML = '<p>暂无内容。</p>';
+                    return;
+                }
+
+                let html = '';
+                result.content.forEach(item => {
+                    const date = item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('zh-CN') : '未设置';
+                    html += `
+                        <div class="content-item">
+                            <div class="content-title">${item.title}</div>
+                            <div class="content-meta">${item.type} | ${date} | ${item.authorName || '未知作者'}</div>
+                            <div class="content-actions">
+                                <button class="btn-small" onclick="editContent('${item.id}')">编辑</button>
+                                <button class="btn-small" onclick="deleteContent('${item.id}')">删除</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                contentList.innerHTML = html;
+            } else {
+                document.getElementById('contentList').innerHTML = `<p>加载失败: ${result.error}</p>`;
+            }
+        }
+
+        // 添加内容表单处理
+        document.getElementById('addContentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const contentType = document.getElementById('contentType').value;
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const published = document.getElementById('published').checked;
+
+            const messageEl = document.getElementById('message');
+            messageEl.style.display = 'none';
+            messageEl.className = 'alert';
+
+            const contentData = {
+                type: contentType,
+                title: title,
+                content: content,
+                published: published
+            };
+
+            const result = await addContent(contentData);
+
+            if (result.success) {
+                messageEl.textContent = '内容添加成功！';
+                messageEl.className = 'alert alert-success';
+                messageEl.style.display = 'block';
+
+                // 清空表单
+                document.getElementById('addContentForm').reset();
+                document.getElementById('published').checked = true;
+
+                // 重新加载内容列表
+                loadContent();
+            } else {
+                messageEl.textContent = '添加失败: ' + result.error;
+                messageEl.className = 'alert alert-error';
+                messageEl.style.display = 'block';
+            }
+        });
+
+        // 编辑内容（占位函数）
+        function editContent(contentId) {
+            alert('编辑功能开发中... ID: ' + contentId);
+        }
+
+        // 删除内容（占位函数）
+        function deleteContent(contentId) {
+            if (confirm('确定要删除此内容吗？')) {
+                alert('删除功能开发中... ID: ' + contentId);
+            }
+        }
+
+        // 检查用户权限并更新UI
+        document.addEventListener('DOMContentLoaded', () => {
+            firebaseAuth.onAuthStateChanged(async (user) => {
+                const requiresAuth = document.querySelector('.requires-auth');
+                const loginPrompt = document.getElementById('loginPrompt');
+
+                if (user) {
+                    // 检查是否是管理员
+                    const isAdmin = await checkAdminAccess(user);
+                    if (isAdmin) {
+                        // 管理员用户
+                        requiresAuth.style.display = 'block';
+                        loginPrompt.style.display = 'none';
+                        loadContent();
+                    } else {
+                        // 普通用户，不是管理员
+                        requiresAuth.style.display = 'none';
+                        loginPrompt.innerHTML = `
+                            <h2>权限不足</h2>
+                            <p>您没有管理员权限访问此面板。</p>
+                            <p><a href="index.html" class="btn-primary" style="display: inline-block; margin-top: 20px;">返回首页</a></p>
+                        `;
+                    }
+                } else {
+                    // 未登录
+                    requiresAuth.style.display = 'none';
+                    loginPrompt.style.display = 'block';
+                }
+            });
+        });
+    </script>
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阿特利尔国家电力公司 - ANPC</title>
+    <style>
+        :root {
+            /* 核心配色 */
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-dark: #003078;
+            --c-flag-orange: #f47738;  /* 警告色 */
+            --c-flag-red: #d4351c;     /* 危险/紧急 */
+            --c-flag-green: #00703c;   /* 正常/运行中 */
+            
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #f3f2f1;
+            --c-bg-card: #ffffff;
+            --c-border: #b1b4b6;
+
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            --font-data: "GDS Transport", "Roboto", monospace;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--c-bg-page);
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a { color: var(--c-flag-blue); text-decoration: underline; }
+        a:hover { color: var(--c-flag-blue-dark); text-decoration-thickness: 2px; }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #ffffff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-blue);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            width: auto;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); 
+        }
+        
+        .header-text { display: flex; flex-direction: column; justify-content: center; }
+        
+        .logo-text { font-weight: 700; font-size: 16px; line-height: 1.2; }
+        .service-name { font-weight: 400; font-size: 18px; line-height: 1.2; margin-top: 2px; }
+
+        /* --- Breadcrumbs --- */
+        .breadcrumbs {
+            max-width: 960px;
+            margin: 15px auto 0;
+            padding: 0 30px;
+            font-size: 14px;
+            color: var(--c-text-sec);
+        }
+        .breadcrumbs a { color: var(--c-text-sec); }
+
+        /* --- Alert Banner (紧急通知) --- */
+        .alert-banner {
+            max-width: 960px;
+            margin: 30px auto 0;
+            padding: 0 30px;
+        }
+
+        .alert-box {
+            border: 4px solid var(--c-flag-orange);
+            background-color: #fff;
+            padding: 25px;
+            display: flex;
+            gap: 20px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .alert-box::before {
+            content: "";
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 10px;
+            background-color: var(--c-flag-orange);
+        }
+
+        .alert-icon {
+            background-color: var(--c-flag-orange);
+            color: #fff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 30px;
+            flex-shrink: 0;
+        }
+
+        .alert-content h2 { margin: 0 0 10px 0; font-size: 24px; font-weight: 700; }
+        .alert-content p { font-size: 18px; margin-bottom: 15px; }
+        
+        .emergency-contact {
+            background-color: #fff4f2;
+            padding: 15px;
+            border-left: 4px solid var(--c-flag-red);
+            font-weight: 700;
+            margin-top: 15px;
+        }
+
+        /* --- Main Layout --- */
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 960px;
+            margin: 40px auto 60px;
+            padding: 0 30px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        h3 { font-size: 22px; font-weight: 700; margin-bottom: 20px; border-bottom: 2px solid var(--c-text-main); padding-bottom: 10px; }
+
+        /* Grid Status Table */
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid var(--c-border);
+            margin-bottom: 30px;
+        }
+        
+        .status-table th {
+            text-align: left;
+            padding: 12px 15px;
+            background: #f8f8f8;
+            border-bottom: 1px solid var(--c-border);
+            color: var(--c-text-sec);
+            font-size: 14px;
+        }
+        
+        .status-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-family: var(--font-data);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #fff;
+        }
+        
+        .st-ok { background-color: var(--c-flag-green); }
+        .st-warn { background-color: var(--c-flag-orange); color: #000; }
+        .st-err { background-color: var(--c-flag-red); }
+
+        /* Quick Links / Sidebar */
+        .service-card {
+            background: #fff;
+            border: 1px solid var(--c-border);
+            margin-bottom: 20px;
+        }
+        
+        .service-header {
+            background: var(--c-flag-dark);
+            color: #fff;
+            padding: 12px 15px;
+            font-weight: 700;
+        }
+        
+        .link-list { list-style: none; }
+        .link-list li { border-bottom: 1px solid #eee; }
+        .link-list a {
+            display: block;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--c-flag-blue);
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+        }
+        .link-list a:hover { background: #f3f2f1; }
+        .link-list a::after { content: "→"; }
+
+        /* Feature Section */
+        .feature-box {
+            background: #fff;
+            padding: 20px;
+            border: 1px solid var(--c-border);
+            margin-bottom: 20px;
+        }
+        .feature-title { font-weight: 700; font-size: 18px; margin-bottom: 10px; }
+
+        /* Footer */
+        footer {
+            background-color: var(--c-bg-page);
+            padding: 40px 0;
+            border-top: 1px solid var(--c-border);
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-top: auto;
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="../nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <div class="header-text">
+                <span class="logo-text">Atelier Federal Government</span>
+                <span class="service-name">National Power Company (ANPC)</span>
+            </div>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+
+    <div class="breadcrumbs">
+        <a href="../index.html">首页</a> &gt; <a href="../departments.html">政府部门</a> &gt; <span>国家电力公司</span>
+    </div>
+
+    <div class="alert-banner">
+        <div class="alert-box">
+            <div class="alert-icon">!</div>
+            <div class="alert-content">
+                <h2>叙拉古地区 (Syracuse) 电力中断警报</h2>
+                <p>受强烈暴风雪影响，首都北部干线发生多处故障，叙拉古及周边地区目前处于部分停电状态。由于恶劣天气影响，抢修工作无法进行，预计恢复时间将推迟至 28 小时后。</p>
+                
+                <p><strong>请立即采取以下措施：</strong></p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>如您遇到停电，请等待区域紧急电网启动。大多数情况下它们可以运行。</li>
+                    <li>检查并启用备用照明设备（手电筒、应急灯，蜡烛等）。</li>
+                    <li>启动家用独立柴油发电机前，请确保通风良好以防一氧化碳中毒。</li>
+                    <li>关闭主要电器开关，防止来电瞬间电压过载。</li>
+                    <li>居民应当互帮互助，帮助有需要的人士。</li>
+                </ul>
+
+                <div class="emergency-contact">
+                    遇到生命危险或医疗急救情况，请立即拨打 999。
+                    <br>
+                    若家中温度过低，请在确保安全的前提下前往最近的<a href="#">政府指定庇护点</a>。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <div class="main-column">
+            <h3>区域电网实时状态</h3>
+            <p style="margin-bottom: 15px; color: var(--c-text-sec);">数据最后更新：2093-01-02 14:30 ACT</p>
+            
+            <table class="status-table">
+                <thead>
+                    <tr>
+                        <th width="40%">供电区域 (Region)</th>
+                        <th width="30%">负载率 (Load)</th>
+                        <th width="30%">状态 (Status)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background-color: #fff4f2;">
+                        <td><strong>叙拉古首都圈</strong></td>
+                        <td>83%</td>
+                        <td><span class="status-badge st-err">部分中断</span></td>
+                    </tr>
+                    <tr>
+                        <td>西海岸物流中心</td>
+                        <td>92%</td>
+                        <td><span class="status-badge st-ok">运行中</span></td>
+                    </tr>
+                    <tr>
+                        <td>西海岸工业中心</td>
+                        <td>45%</td>
+                        <td><span class="status-badge st-ok">运行中</span></td>
+                    </tr>
+                    <tr>
+                        <td>高地矿区</td>
+                        <td>78%</td>
+                        <td><span class="status-badge st-warn">高负载</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>最新动态</h3>
+            <div class="feature-box">
+                <div class="feature-title">关于冬季电价补贴的通知</div>
+                <p>针对本次极寒天气，联邦能源部已批准电力折扣。所有受暴风雪影响区域的居民用户，本月基础电费将自动减免 50%。无需主动申请。</p>
+                <p style="margin-top:10px"><a href="#">阅读政策详情 ></a></p>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-title">基础设施升级进度</div>
+                <p>连接西海岸聚变电厂与首都的超导输电网络二期工程已完成 80%。预计完工后将提升抗灾能力等级至 9 级。</p>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            
+            <div class="service-card">
+                <div class="service-header">快速服务</div>
+                <ul class="link-list">
+                    <li><a href="#">报告新的停电故障</a></li>
+                    <li><a href="#">查询实时故障地图</a></li>
+                    <li><a href="#">支付超额电费 / 查看电力配额</a></li>
+                    <li><a href="#">提交电表读数</a></li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-header">弱势群体支持</div>
+                <div style="padding: 15px;">
+                    <p style="font-size: 14px; margin-bottom: 10px;">如果您家里有依赖电力维持生命的医疗设备，或有行动不便的老人，请加入我们的优先服务名录。</p>
+                    <a href="#" style="font-weight: 700; color: var(--c-flag-blue);">注册优先服务 ></a>
+                </div>
+            </div>
+
+            <div class="service-card" style="border-top: 5px solid var(--c-flag-green);">
+                <div style="padding: 15px;">
+                    <strong style="display:block; margin-bottom:5px;">清洁能源占比</strong>
+                    <div style="font-family: var(--font-data); font-size: 32px; font-weight: 700; color: var(--c-flag-green);">92.2%</div>
+                    <span style="font-size: 12px; color: var(--c-text-sec);">主要来源：聚变/太阳能/核能</span>
+                </div>
+            </div>
+
+        </div>
+        <div style="margin-top: 60px; padding: 30px; background: #f8f8f8; border-left: 5px solid var(--c-flag-blue);">
+            <h3 style="margin-top: 0;">需要本部门的服务？</h3>
+            <p>您可以使用我们的 <a href="contact-form.html">在线服务申请系统</a> 提交申请、查询或反馈。申请将直接转至该部门相关部门处理。</p>
+            <p style="margin-top: 15px;">
+                <a href="contact-form.html" style="background-color: var(--c-flag-blue); color: white; padding: 12px 25px; text-decoration: none; font-weight: 700; display: inline-block;">在线申请服务</a>
+                <a href="#" style="margin-left: 15px; padding: 12px 25px; border: 2px solid var(--c-flag-blue); color: var(--c-flag-blue); text-decoration: none; font-weight: 700; display: inline-block;">查看申请状态</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 14px; color: var(--c-text-sec);">
+                <strong>该部门服务热线：</strong> 010-555-XXXX（工作日 9:00-17:00）<br>
+                <strong>紧急情况（警务/消防/救援）：</strong> 911
+            </p>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>
+                © 阿特利尔国家电力公司 (ANPC) 隶属于联邦能源部
+                <br>
+                如遇紧急电力危险，请立即远离并拨打急修热线 777。
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>
