@@ -24,11 +24,13 @@
         }
 
         
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
         /* 认证状态样式 */
         .auth-status {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             font-size: 14px;
         }
 
@@ -36,15 +38,16 @@
             background-color: var(--c-flag-blue);
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 6px 12px;
             text-decoration: none;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             display: inline-block;
+            white-space: nowrap;
         }
 
         .btn-login:hover, .btn-register:hover {
-            background-color: var(--c-flag-blue-hover);
+            background-color: #1558a0;
             color: white;
             text-decoration: none;
         }
@@ -53,15 +56,15 @@
             background-color: #d4351c;
             color: white;
             border: none;
-            padding: 8px 15px;
-            font-size: 14px;
+            padding: 6px 12px;
+            font-size: 13px;
             cursor: pointer;
+            white-space: nowrap;
         }
 
         .auth-status span {
             color: #fff;
         }
-* { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
             background-color: var(--c-bg-page);
@@ -77,7 +80,7 @@
         header {
             background-color: var(--c-flag-dark);
             color: var(--c-flag-white);
-            height: 70px;
+            min-height: 70px;
             display: flex;
             align-items: center;
             border-bottom: 5px solid var(--c-flag-blue); /* Flag Accent */
@@ -91,6 +94,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-wrap: nowrap;
         }
 
         /* 国徽样式 */
@@ -104,18 +108,47 @@
         
         .logo-text {
             font-weight: 700;
-            font-size: 22px;
+            font-size: 20px;
             letter-spacing: 0.5px;
             line-height: 1;
+            white-space: nowrap;
         }
 
         .service-name {
             font-weight: 400;
-            font-size: 18px;
+            font-size: 16px;
             border-left: 1px solid rgba(255,255,255,0.4);
             padding-left: 15px;
             margin-left: 5px;
             line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .text-group {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            flex-shrink: 0;
+        }
+
+        .header-nav {
+            margin-left: auto;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .header-nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .header-nav a:hover {
+            text-decoration: underline;
         }
 
         /* 2. Phase Banner */
@@ -365,9 +398,11 @@
         /* Responsive */
         @media (max-width: 768px) {
             .dashboard-grid { grid-template-columns: 1fr; }
-            .header-content { flex-direction: column; align-items: flex-start; gap: 10px; height: auto; padding: 15px 30px;}
-            header { height: auto; }
-            .service-name { border-left: none; padding-left: 0; margin-left: 0; display: block; margin-top: 5px;}
+            .header-content { flex-wrap: wrap; height: auto; padding: 12px 20px; gap: 10px; }
+            header { height: auto; min-height: 60px; }
+            .text-group { flex-wrap: wrap; }
+            .service-name { border-left: none; padding-left: 0; margin-left: 0; }
+            .header-nav { width: 100%; gap: 12px; flex-wrap: wrap; }
             .control-wrapper { grid-template-columns: 1fr; gap: 20px;}
             .control-group { flex-wrap: wrap; }
         }
@@ -386,21 +421,23 @@
 
     <header>
         <div class="header-content">
-            <img src="../nationalicon/nationicon.png" alt="阿特利尔联邦共和国国徽" class="gov-emblem">
+            <img src="nationalicon/nationicon.png" alt="阿特利尔联邦共和国国徽" class="gov-emblem">
             
             <div class="text-group">
                 <span class="logo-text">Atelier Federal Government</span>
-                <div class="service-name">Atelier National Time Service</span>
+                <div class="service-name">Atelier National Time Service</div>
             </div>
         
-            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
-                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
-                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
-                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+            <nav class="header-nav">
+                <a href="../index.html">首页</a>
+                <a href="../index.html#services">服务</a>
+                <a href="../departments.html">部门</a>
                 <div class="auth-status">
-                    <!-- 认证状态将由 auth.js 动态填充 -->
+                    <a href="../login.html" class="btn-login">登录</a>
+                    <a href="../register.html" class="btn-register">注册</a>
                 </div>
-            </nav></div>
+            </nav>
+        </div>
     </header>
 
     <div class="breadcrumbs" style="max-width: 960px; margin: 10px auto 0; padding: 0 30px; font-size: 14px; color: #505a5f;">
