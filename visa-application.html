@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>签证申请 - 阿特利尔联邦政府</title>
+    <style>
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span { color: #fff; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid #f47738;
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+        }
+
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        .breadcrumbs {
+            max-width: 960px;
+            margin: 15px auto 0;
+            padding: 0 30px;
+            font-size: 14px;
+            color: var(--c-text-sec);
+        }
+
+        .breadcrumbs a {
+            color: var(--c-flag-blue);
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--c-text-main);
+        }
+
+        .page-desc {
+            font-size: 16px;
+            color: var(--c-text-sec);
+            margin-bottom: 30px;
+        }
+
+        .form-container {
+            background: #fff;
+            border: 1px solid var(--c-border);
+            border-top: 5px solid var(--c-flag-blue);
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .form-section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--c-flag-blue);
+            color: var(--c-flag-blue);
+        }
+
+        .form-section-title:first-child {
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--c-text-main);
+        }
+
+        .required::after {
+            content: " *";
+            color: #d4351c;
+        }
+
+        .hint {
+            display: block;
+            font-size: 13px;
+            color: var(--c-text-sec);
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--c-border);
+            font-size: 16px;
+            font-family: var(--font-gov);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--c-flag-blue);
+            box-shadow: 0 0 0 3px rgba(29, 112, 184, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .btn-submit {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--c-flag-blue-hover);
+        }
+
+        .btn-submit:disabled {
+            background-color: var(--c-border);
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .login-prompt {
+            background-color: #fff8e1;
+            border: 1px solid #feeebb;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .conditional-field {
+            display: none;
+        }
+
+        .conditional-field.visible {
+            display: block;
+        }
+
+        footer {
+            background-color: var(--c-bg-light);
+            padding: 40px 0;
+            border-top: 2px solid var(--c-border);
+            text-align: center;
+            font-size: 14px;
+            color: var(--c-text-sec);
+            margin-top: 60px;
+        }
+
+        footer a {
+            color: var(--c-flag-blue);
+        }
+
+        .info-box {
+            margin-top: 40px;
+            padding: 20px;
+            background: #f8f8f8;
+            border-left: 5px solid var(--c-flag-blue);
+        }
+
+        .info-box h3 {
+            margin: 0 0 10px 0;
+        }
+
+        .info-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: var(--c-text-sec);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .form-container {
+                padding: 25px;
+            }
+
+            h1 { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div style="display: flex; align-items: center;">
+                <img src="nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+                <span class="logo-text">Atelier Federal Government</span>
+            </div>
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="service-citizen.html" style="color: #fff; text-decoration: none; font-weight: 700;">公民服务</a>
+                <a href="departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status"></div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="breadcrumbs">
+        <a href="index.html">首页</a> &gt; <a href="service-citizen.html">公民服务</a> &gt; <span>签证申请</span>
+    </div>
+
+    <main>
+        <h1>电子签证申请 (e-Visa Application)</h1>
+        <p class="page-desc">欢迎申请阿特利尔联邦共和国签证。请如实填写以下信息，提交后您将获得申请编号用于查询进度。</p>
+
+        <div id="loginPrompt" class="login-prompt">
+            <p><strong>提示：</strong> 提交签证申请需要登录账户。请先<a href="login.html?return=visa-application.html">登录</a>或<a href="register.html">注册</a>。</p>
+        </div>
+
+        <div id="message" class="alert"></div>
+
+        <div class="form-container">
+            <form id="visaForm">
+                <h3 class="form-section-title" style="margin-top: 0;">签证类型</h3>
+
+                <div class="form-group">
+                    <label for="visaType" class="required">签证类型</label>
+                    <select id="visaType" name="visaType" required>
+                        <option value="">请选择签证类型</option>
+                        <option value="tourist">旅游签证 (Tourist Visa) — 30 天</option>
+                        <option value="business">商务签证 (Business Visa) — 90 天</option>
+                        <option value="work">工作签证 (Work Visa) — 1 年</option>
+                        <option value="student">学生签证 (Student Visa)</option>
+                        <option value="journalist">记者签证 (Journalist Visa) — 90 天</option>
+                        <option value="transit">过境签证 (Transit Visa) — 72 小时</option>
+                    </select>
+                </div>
+
+                <h3 class="form-section-title">个人信息</h3>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="fullName" class="required">全名 (Full Name)</label>
+                            <input type="text" id="fullName" name="fullName" required placeholder="与护照一致的全名">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="nationality" class="required">国籍 (Nationality)</label>
+                            <input type="text" id="nationality" name="nationality" required placeholder="例如：中华人民共和国">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="passportNumber" class="required">护照号码 (Passport No.)</label>
+                            <input type="text" id="passportNumber" name="passportNumber" required placeholder="请输入护照号码">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="dateOfBirth" class="required">出生日期</label>
+                            <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="gender" class="required">性别</label>
+                            <select id="gender" name="gender" required>
+                                <option value="">请选择</option>
+                                <option value="male">男 (Male)</option>
+                                <option value="female">女 (Female)</option>
+                                <option value="other">其他 (Other)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="phone" class="required">联系电话</label>
+                            <input type="tel" id="phone" name="phone" required placeholder="含国际区号，如 +86-138XXXXXXXX">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="required">电子邮箱</label>
+                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                    <span class="hint">审批结果将发送至此邮箱</span>
+                </div>
+
+                <h3 class="form-section-title">行程信息</h3>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="entryDate" class="required">计划入境日期</label>
+                            <input type="date" id="entryDate" name="entryDate" required>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="exitDate" class="required">计划离境日期</label>
+                            <input type="date" id="exitDate" name="exitDate" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="entryPort">入境口岸</label>
+                    <select id="entryPort" name="entryPort">
+                        <option value="">请选择入境口岸（可选）</option>
+                        <option value="international-airport">阿特利尔国际机场 (Atelier International Airport)</option>
+                        <option value="west-coast-port">西海岸港口 (West Coast Port)</option>
+                        <option value="north-land-crossing">北部陆路口岸 (Northern Land Crossing)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="accommodation">住宿地址</label>
+                    <textarea id="accommodation" name="accommodation" rows="2" placeholder="在阿特利尔期间的住宿地址（酒店名称或详细地址）"></textarea>
+                </div>
+
+                <h3 class="form-section-title">访问目的</h3>
+
+                <div class="form-group">
+                    <label for="purpose" class="required">访问目的详述</label>
+                    <textarea id="purpose" name="purpose" rows="4" required placeholder="请详细说明您此次访问阿特利尔的目的、计划活动等..."></textarea>
+                </div>
+
+                <div id="invitingPartyGroup" class="form-group conditional-field">
+                    <label for="invitingParty">邀请方信息</label>
+                    <input type="text" id="invitingParty" name="invitingParty" placeholder="邀请方名称、地址、联系方式">
+                    <span class="hint">商务签证、工作签证须填写邀请方/雇主信息</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="additionalInfo">附加说明</label>
+                    <textarea id="additionalInfo" name="additionalInfo" rows="3" placeholder="其他需要说明的信息（可选）"></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">提交签证申请</button>
+            </form>
+        </div>
+
+        <div class="info-box">
+            <h3>申请须知</h3>
+            <ul>
+                <li>提交后您将获得申请编号，请妥善保管。</li>
+                <li>签证审批通常需要 5-15 个工作日，过境签证可在 48 小时内处理。</li>
+                <li>审批结果将通过邮件通知到您的注册邮箱。</li>
+                <li>请确保护照有效期至少超过计划离境日期 6 个月。</li>
+                <li>提供虚假信息将导致申请被拒绝，并可能影响未来的签证申请。</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <div class="header-content">
+            <p>
+                &copy; 阿特利尔联邦政府签证服务
+                <br>
+                <a href="index.html">返回政府门户首页</a> | <a href="service-citizen.html">公民服务</a> | <a href="atelier-gov-introduction/index.html">国家介绍</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="firebase-config.js"></script>
+    <script src="github-api.js"></script>
+    <script src="auth.js"></script>
+    <script src="database.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginPrompt = document.getElementById('loginPrompt');
+            const visaForm = document.getElementById('visaForm');
+            const visaTypeSelect = document.getElementById('visaType');
+            const invitingPartyGroup = document.getElementById('invitingPartyGroup');
+
+            // 签证类型切换时显示/隐藏邀请方字段
+            visaTypeSelect.addEventListener('change', () => {
+                const type = visaTypeSelect.value;
+                if (type === 'business' || type === 'work') {
+                    invitingPartyGroup.classList.add('visible');
+                } else {
+                    invitingPartyGroup.classList.remove('visible');
+                }
+            });
+
+            // 认证状态检查
+            firebaseAuth.onAuthStateChanged((user) => {
+                if (user) {
+                    loginPrompt.style.display = 'none';
+                    visaForm.style.display = 'block';
+                    document.getElementById('email').value = user.email;
+                    if (user.displayName) {
+                        document.getElementById('fullName').value = user.displayName;
+                    }
+                } else {
+                    loginPrompt.style.display = 'block';
+                    visaForm.style.display = 'none';
+                }
+            });
+
+            if (typeof checkAuthState === 'function') {
+                checkAuthState();
+            }
+        });
+
+        // 表单提交
+        document.getElementById('visaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const user = firebaseAuth.currentUser;
+            if (!user) {
+                showMessage('请先登录后再提交申请', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '提交中...';
+
+            const formData = {
+                formType: 'visa-application',
+                visaType: document.getElementById('visaType').value,
+                fullName: document.getElementById('fullName').value,
+                nationality: document.getElementById('nationality').value,
+                passportNumber: document.getElementById('passportNumber').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                gender: document.getElementById('gender').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                entryDate: document.getElementById('entryDate').value,
+                exitDate: document.getElementById('exitDate').value,
+                entryPort: document.getElementById('entryPort').value,
+                accommodation: document.getElementById('accommodation').value,
+                purpose: document.getElementById('purpose').value,
+                invitingParty: document.getElementById('invitingParty').value,
+                additionalInfo: document.getElementById('additionalInfo').value
+            };
+
+            try {
+                const result = await submitForm(formData);
+
+                if (result.success) {
+                    showMessage(
+                        '签证申请提交成功！您的申请编号是：' + result.id +
+                        '。请保存此编号以便查询进度。审批结果将发送至您的邮箱。',
+                        'success'
+                    );
+                    document.getElementById('visaForm').reset();
+                    document.getElementById('email').value = user.email;
+                    if (user.displayName) {
+                        document.getElementById('fullName').value = user.displayName;
+                    }
+                } else {
+                    showMessage('提交失败：' + result.error, 'error');
+                }
+            } catch (error) {
+                showMessage('提交失败：' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '提交签证申请';
+            }
+        });
+
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = type === 'success' ? 'alert alert-success' : 'alert alert-error';
+            messageEl.style.display = 'block';
+            messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+</body>
+</html>

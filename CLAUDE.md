@@ -11,9 +11,10 @@
 ## 目录结构
 
 ```
-├── Bank_of_Atelier/          # 中央银行
-├── Centeral_Gov_service/     # 联邦部委（司法、国防、教育、财政等 22 个页面）
-├── Outside_Gov_service/      # 外部机构（电力公司、大学招生等）
+├── atelier-gov-introduction/  # 国家介绍页（全屏滚动）
+├── Bank_of_Atelier/          # 中央银行 (bank-of-atelier.html)
+├── Centeral_Gov_service/     # 联邦部委（21 个页面，文件名用连字符）
+├── Outside_Gov_service/      # 外部机构（电力公司、大学招生、铁路）
 ├── gov_Notice/               # 公告与旅行警告
 ├── local_gov/                # 地方政府门户
 ├── nationalicon/             # 国徽图片 (nationicon.png)
@@ -22,16 +23,9 @@
 │   ├── index.json            # 所有内容的索引
 │   ├── categories.json       # 分类定义
 │   ├── tags.json             # 标签定义
-│   ├── news/                 # 新闻文章（每篇一个 JSON）
-│   ├── announcements/        # 公告
-│   ├── policies/             # 政策文件
-│   ├── service-updates/      # 服务更新
-│   ├── travel-warnings/      # 旅行警告
-│   └── submissions/          # 表单提交
+│   └── submissions/          # 表单提交（签证申请等）
 ├── media/                    # 媒体文件
-│   ├── index.json            # 媒体索引
-│   ├── images/               # 图片
-│   └── documents/            # 文档（PDF 等）
+│   └── index.json            # 媒体索引
 ├── config/                   # 系统配置
 │   ├── users.json            # 用户角色映射（Firebase UID → 角色）
 │   └── workflow-logs.json    # 工作流审核日志
@@ -39,12 +33,15 @@
 ├── github-api.js             # GitHub REST API 封装
 ├── auth.js                   # 认证 + 角色检查
 ├── database.js               # 数据操作封装层（调用 github-api.js）
-├── admin-dashboard.html      # 完整管理仪表板
+├── emailjs-config.js         # EmailJS 配置（签证邮件通知）
+├── email-service.js          # 邮件发送服务
+├── admin-dashboard.html      # 管理仪表板（含签证审批）
 ├── admin-panel.html          # 简易管理面板
-├── index.html                # 主页
+├── index.html                # 政府主页
+├── visa-application.html     # 签证申请页
 ├── login.html / register.html # 登录/注册
 ├── news.html                 # 新闻页（支持动态加载）
-├── USAGE_GUIDE.md            # 详细使用说明
+├── USAGE_GUIDE.md            # 上线部署与使用指南
 └── CHANGELOG.md              # 迭代日志
 ```
 
@@ -117,8 +114,11 @@ GITHUB_PAGES_BASE = 'https://lupo4085.github.io/Atelier_Gov'
 
 ## 开发规则
 
+### 文件命名规则
+所有 HTML 文件使用**小写 + 连字符**命名（如 `ministry-of-defence.html`）。禁止在文件名中使用空格或特殊字符。
+
 ### 添加新部门页面
-在对应子目录创建 `.html` 文件，从现有页面复制结构和 CSS 变量，修改内容和配色。
+在对应子目录创建 `.html` 文件，从现有页面复制结构和 CSS 变量，修改内容和配色。子目录页面的 JS/CSS/图片引用必须使用 `../` 前缀。
 
 ### 添加认证功能到页面
 按上述「所有页面」脚本顺序加载，在 header 中添加 `<div class="auth-status"></div>`。

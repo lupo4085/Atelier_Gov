@@ -42,6 +42,24 @@ async function addContent(contentData) {
   }
 }
 
+// 更新提交（需要管理员权限）
+async function updateSubmission(submissionId, updateData) {
+  try {
+    const user = firebaseAuth.currentUser;
+    if (!user) return { success: false, error: '请先登录' };
+
+    const roleCheck = await checkUserRole('admin');
+    if (!roleCheck.success || !roleCheck.hasRole) {
+      return { success: false, error: '需要管理员权限' };
+    }
+
+    return _gh.updateSubmission(submissionId, updateData);
+  } catch (error) {
+    console.error('更新提交错误:', error);
+    return { success: false, error: error.message };
+  }
+}
+
 // 获取用户提交的表单（仅限自己的）
 async function getUserSubmissions() {
   return _gh.getUserSubmissions();
@@ -214,6 +232,7 @@ async function rejectContent(contentId, notes = '') {
 
 // 导出函数到全局作用域
 window.submitForm = submitForm;
+window.updateSubmission = updateSubmission;
 window.getContent = getContent;
 window.getContentList = getContentList;
 window.searchContent = searchContent;

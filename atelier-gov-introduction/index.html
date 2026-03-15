@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阿特利尔联邦共和国 | Federal Republic of Atelier</title>
+    <style>
+        /* --- 1. 基础设置 (保持包豪斯+科幻风格) --- */
+        :root {
+            --c-primary: #1d70b8; /* 联邦蓝 */
+            --c-text: #0b0c15;    /* 深黑 */
+            --c-grey: #f5f5f5;    /* 浅灰背景 */
+            --c-white: #ffffff;
+            --c-accent: #d4351c;  /* 警示红/强调色 */
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --section-padding: 40px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-stack);
+            color: var(--c-text);
+            line-height: 1.6;
+            margin: 0;
+            background-color: var(--c-white);
+            overflow: hidden; /* 隐藏默认滚动条 */
+        }
+
+        /* --- 2. 全屏滚动容器 --- */
+        .scroll-container {
+            height: 100vh;
+            width: 100vw;
+            overflow-y: scroll;
+            scroll-snap-type: y proximity;
+            scroll-behavior: smooth;
+        }
+
+        section {
+            height: 100vh;
+            width: 100%;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: var(--section-padding);
+            border-bottom: 1px solid #eee;
+        }
+
+        .content-wrap {
+            width: 100%;
+            max-width: 1100px; /* 加宽以容纳图表 */
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        /* --- 3. 悬浮导航 --- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 40px;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-logo {
+            font-weight: 700;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--c-text);
+            text-decoration: none;
+        }
+
+        .nav-dots { display: flex; gap: 10px; }
+        .nav-dot {
+            width: 10px; height: 10px; border-radius: 50%; background: #ddd; cursor: pointer; transition: all 0.3s;
+        }
+        .nav-dot:hover, .nav-dot.active { background: var(--c-primary); transform: scale(1.2); }
+
+        /* --- 4. 通用组件 --- */
+        h1 { font-size: 48px; font-weight: 800; margin-bottom: 10px; line-height: 1.1; }
+        h2 { font-size: 32px; margin-bottom: 25px; border-left: 6px solid var(--c-primary); padding-left: 20px; color: var(--c-text); text-transform: uppercase; }
+        h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; color: var(--c-primary); }
+        
+        p { font-size: 16px; color: #555; margin-bottom: 15px; text-align: justify; }
+
+        /* 图片/图表占位符 */
+        .slot {
+            background-color: var(--c-grey);
+            border: 2px dashed #d0d0d0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 14px;
+            transition: all 0.3s;
+            overflow: hidden;
+            position: relative;
+        }
+        .slot img { width: 100%; height: 100%; object-fit: contain; } /* 默认包含 */
+        .slot:hover { border-color: var(--c-primary); color: var(--c-primary); }
+
+        .btn {
+            display: inline-block; padding: 12px 30px; background-color: var(--c-primary); color: white;
+            text-decoration: none; font-weight: 700; border-radius: 4px; transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        .btn-outline { background: transparent; border: 2px solid var(--c-primary); color: var(--c-primary); }
+        .btn-outline:hover { background: var(--c-primary); color: white; }
+
+        /* --- 5. 布局网格 --- */
+        .split-layout {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; height: 100%;
+        }
+        
+        /* 统计图表网格 (3列) */
+        .chart-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px;
+        }
+        .chart-item { text-align: center; }
+        .chart-label { display: block; margin-top: 10px; font-size: 14px; font-weight: 700; color: #666; }
+
+        /* --- 6. 各屏特定样式 --- */
+        
+        /* SCREEN 1: 首页 */
+        .hero-layout { text-align: center; align-items: center; }
+        .emblem-big { width: 120px; height: 120px; border-radius: 50%; margin-bottom: 30px; background:transparent; border:none;}
+
+        /* SCREEN 2: 概况 */
+        .flag-rect { width: 100%; height: 260px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border:none;}
+
+        /* SCREEN 3: 环境 (新) */
+        .env-info-box { background: #f9f9f9; padding: 20px; border-left: 4px solid var(--c-accent); margin-top: 20px; }
+        .map-world { width: 100%; height: 400px; background: #fff; border: 1px solid #eee; }
+
+/* SCREEN 4: 社会 (新) - 优化版 */
+        .society-text-col { 
+            column-count: 2; 
+            column-gap: 60px; 
+            margin-bottom: 30px; 
+            font-size: 15px; /* 稍微减小字号以节省空间给大图 */
+        }
+        
+        .chart-grid {
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 30px; /* 增加间距让大图不拥挤 */
+            width: 100%;
+        }
+
+        .chart-item { 
+            text-align: center; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-slot { 
+            width: 100%; 
+            height: 300px; /* 【核心修改】高度翻倍，从200px改为400px */
+            background: #fff; 
+            border: 1px solid #eee;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); /* 增加一点阴影让大图更立体 */
+        }
+
+        .chart-label { 
+            margin-top: 15px; 
+            font-size: 16px; 
+            font-weight: 700; 
+            color: var(--c-primary); 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 针对小屏幕的适配 */
+        @media (max-width: 768px) {
+            .society-text-col { column-count: 1; }
+            .chart-grid { grid-template-columns: 1fr; }
+            .chart-slot { height: 300px; } /* 手机上稍微小一点 */
+        }
+
+        /* SCREEN 5: 政府 */
+        .structure-wide { width: 100%; height: 76vh; background: #fff; border: none; }
+
+        /* SCREEN 6: 历史 */
+        .timeline-h { display: flex; justify-content: space-between; margin-top: 50px; position: relative; }
+        .timeline-h::before { content: ''; position: absolute; top: 20px; left: 0; right: 0; height: 2px; background: #e0e0e0; z-index: 0; }
+        .t-item { position: relative; z-index: 1; width: 22%; background: white; padding-top: 50px; }
+        .t-dot { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 20px; height: 20px; background: var(--c-primary); border: 4px solid white; border-radius: 50%; box-shadow: 0 0 0 1px #e0e0e0; }
+        .t-year { font-weight: 800; color: var(--c-primary); font-size: 24px; display: block; text-align: center; margin-bottom: 10px; }
+        .t-title { font-weight: 700; font-size: 16px; text-align: center; display: block; margin-bottom: 10px; }
+        .t-desc { font-size: 14px; color: #666; text-align: center; line-height: 1.4; }
+
+        /* SCREEN 7: 签证 */
+        .visa-box { background: var(--c-grey); padding: 60px; text-align: center; border-radius: 12px; max-width: 800px; margin: 0 auto; }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .split-layout { grid-template-columns: 1fr; gap: 30px; }
+            .society-text-col { column-count: 1; }
+            .chart-grid { grid-template-columns: 1fr; }
+            .timeline-h { flex-direction: column; border-left: 2px solid #eee; padding-left: 20px; margin-top: 20px; }
+            .timeline-h::before { display: none; }
+            .t-item { width: 100%; padding-top: 0; padding-left: 20px; margin-bottom: 30px; text-align: left; }
+            .t-dot { left: -31px; top: 0; }
+            .t-year, .t-title, .t-desc { text-align: left; }
+        }
+
+
+        @media (max-width: 768px) {
+            
+            /* 【核心修复】：解锁 body 的滚动限制 */
+            body, html {
+                overflow: auto !important; /* 强制允许滚动 */
+                height: auto !important;
+                -webkit-overflow-scrolling: touch; /* 增加 iOS 滚动的流畅度 */
+            }
+
+            /* 【核心修复】：让容器自然撑开，不再作为滚动容器 */
+            .scroll-container {
+                height: auto !important; /* 不再是 100vh */
+                width: 100%;
+                overflow: visible !important; /* 内容溢出可见，交给 body 去滚 */
+                scroll-snap-type: none; /* 彻底关闭吸附 */
+                position: static;
+            }
+
+            /* --- 以下是之前的布局优化内容 (保持不变) --- */
+            
+            section {
+                height: auto; /* 取消固定高度 */
+                min-height: 100vh;
+                padding: 100px 20px 60px 20px; /* 顶部加高，避开导航 */
+                justify-content: flex-start;
+                border-bottom: 1px solid #eee; /* 增加分隔线帮助区分 */
+            }
+
+            .content-wrap {
+                height: auto;
+                justify-content: flex-start;
+            }
+
+            /* 导航栏优化 */
+            nav {
+                padding: 15px 20px;
+                background: rgba(255,255,255,0.98); /* 手机上背景更实一点 */
+            }
+            .nav-logo {
+                font-size: 14px;
+                max-width: 80%;
+            }
+            .nav-dots { display: none; } /* 隐藏导航点 */
+
+            /* 字体与排版 */
+            h1 { font-size: 32px; }
+            h2 { font-size: 24px; border-left-width: 4px; padding-left: 15px; }
+            p { font-size: 16px; text-align: left; }
+
+            /* 布局转单列 */
+            .split-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            /* 图片高度适配 */
+            .flag-rect { height: 220px; }
+            .map-large { height: 300px; }
+            .structure-wide { height: 400px; } /* 架构图在手机上需要高一点才看得清 */
+            .emblem-big { width: 100px; height: 100px; margin-top: 20px; }
+
+            /* 环境板块：把地图放上面 */
+            #env .split-layout {
+                display: flex;
+                flex-direction: column-reverse;
+            }
+            .map-world { height: 250px; }
+
+            /* 社会板块 */
+            .society-text-col { column-count: 1; }
+            .chart-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .chart-slot { height: 220px; } /* 图表稍微高一点 */
+
+            /* 历史时间线：垂直化 */
+            .timeline-h {
+                flex-direction: column;
+                margin-top: 20px;
+                border-left: 2px solid #e0e0e0;
+                padding-left: 20px;
+            }
+            .timeline-h::before { display: none; }
+            
+            .t-item {
+                width: 100%;
+                margin-bottom: 40px;
+                padding-top: 0;
+                background: transparent;
+                text-align: left;
+            }
+            .t-dot {
+                top: 0;
+                left: -31px; /* 调整到左侧线上 */
+                transform: none;
+            }
+            .t-year, .t-title, .t-desc { text-align: left; }
+
+            /* 按钮全宽 */
+            .btn, .btn-outline {
+                display: block;
+                width: 100%;
+                text-align: center;
+                padding: 15px;
+            }
+            
+            /* 签证 */
+            .visa-box {
+                padding: 40px 20px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#home" class="nav-logo">Federal Republic of Atelier</a>
+        <div class="nav-dots">
+            <a href="#home" class="nav-dot" title="首页"></a>
+            <a href="#intro" class="nav-dot" title="概况"></a>
+            <a href="#env" class="nav-dot" title="环境与历法"></a>
+            <a href="#society" class="nav-dot" title="社会与经济"></a>
+            <a href="#gov" class="nav-dot" title="政府"></a>
+            <a href="#history" class="nav-dot" title="历史"></a>
+            <a href="#visa" class="nav-dot" title="访问"></a>
+        </div>
+    </nav>
+
+    <div class="scroll-container">
+
+        <section id="home">
+            <div class="content-wrap hero-layout">
+                <div class="slot emblem-big">
+                    <img src="emblem.png" alt="国徽">
+                </div>
+                <h1 style="margin-bottom: 5px;">阿特利尔联邦共和国</h1>
+                <span style="font-size: 20px; color: #666; letter-spacing: 2px; text-transform: uppercase;">Federal Republic of Atelier</span>
+                
+                <div style="width: 50px; height: 4px; background: var(--c-primary); margin: 30px auto;"></div>
+                
+                <p style="font-size: 16px; opacity: 0.8; text-align: center;">
+                    团结 · 坚韧 · 自由 · 繁荣
+                </p>
+                <div style="margin-top: 20px;">
+                    <a href="#intro" class="btn btn-outline" style="border-radius: 50px; padding: 10px 30px;">向下探索 &darr;</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="intro">
+            <div class="content-wrap">
+                <div class="split-layout">
+                    <div style="padding-right: 20px;">
+                        <h2>国家概况</h2>
+                        <p>
+                            阿特利尔联邦共和国横跨阿特利尔大陆，是由 <strong>24 个省份</strong> 与 <strong>5 个自治省</strong> 组成的民主联邦共和国。
+                        </p>
+                        <p>
+                            我们致力于建立一个透明、法治与科技驱动的现代化社会。从西部的沃土平原到东部的工业海岸，多元文化在这里交融共生。
+                        </p>
+                        
+                        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee;">
+                            <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px;">
+                                国家象征
+                            </h3>
+                            <div style="display: flex; gap: 20px;">
+                                <div>
+                                    <strong style="color: var(--c-primary); font-size: 14px;">国旗</strong>
+                                    <p style="font-size: 13px; margin-bottom: 0; margin-top: 2px;">
+                                        旗帜上的三色，象征着阿特利尔狼族三大血脉的缔结与共荣，正是这份神圣的联合奠定了国家的基石。
+                                    </p>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--c-primary); font-size: 14px;">国徽</strong>
+                                    <p style="font-size: 13px; margin-bottom: 0; margin-top: 2px;">
+                                        徽章两侧环绕着安卡洛斯橄榄枝，寄托了国家对和平与庇佑的永恒祈愿；顶端高悬城市突击队徽记，以纪念其刺破长夜、引领国家走向光明的丰功伟绩。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br>
+                        <a href="../index.html" class="btn-outline" style="padding: 10px 20px; text-decoration:none; font-weight:700; font-size:14px; border-radius:4px;">
+                            访问联邦政府主页 (GOV.AT) &rarr;
+                        </a>
+                    </div>
+                    
+                    <div>
+                        <div class="slot flag-rect">
+                            <img src="flag.png" alt="国旗" style="width:100%; height:100%; object-fit: cover;">
+                        </div>
+                        <div style="text-align: right; font-size: 12px; color: #999; margin-top: 5px;">
+                            * 我们的国旗
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="env">
+            <div class="content-wrap">
+                <div class="split-layout" style="grid-template-columns: 1fr 1.5fr;">
+                    <div>
+                        <h2>我们的疆域与文明</h2>
+                        <p>
+                            阿特利尔坐落于<strong>沃尔行星</strong>，地理坐标横跨中西经 150° 至 0°，南纬 17° 至北纬 55°。
+                        </p>
+                        <p>
+                            国土广袤，纵贯寒带、温带与热带，部分北部领土深入极圈之内。壮丽的冰川与繁茂的热带雨林在此共存。多种文明在我们的国土内欣欣向荣。
+                        </p>
+                        
+                        <div class="env-info-box">
+                            <h3>安特乌斯历法</h3>
+                            <ul style="list-style: none; padding: 0; font-size: 15px; color: #444;">
+                                <li style="margin-bottom: 8px;"><strong>日长：</strong> 28 小时/天</li>
+                                <li style="margin-bottom: 8px;"><strong>年长：</strong> 312 天/年</li>
+                                <li><strong>月制：</strong> 共 12 个月 (每月 26 天)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="slot map-world">
+                            <img src="world-map.png" alt="世界地图" style="width:100%; height:100%; object-fit: contain;">
+                        </div>
+                        <div style="text-align: right; font-size: 12px; color: #999; margin-top: 5px;">
+                            * 地图数据来源：阿特利尔国家测绘局 (2093)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="society">
+            <div class="content-wrap">
+                <h2>社会与经济</h2>
+                
+                <div class="society-text-col">
+                    <p>
+                        <strong>能源革命：</strong> 阿特利尔已全面告别化石燃料，成功实现<strong>可控核聚变发电</strong>全国覆盖。无限且清洁的能源不仅保障了国家能源安全，更驱动了从重工业到服务业的全面转型。
+                    </p>
+                    <p>
+                        <strong>战后腾飞：</strong> 经济体系正以惊人的速度复苏，服务与科技产业成为新引擎。我们拥有庞大的大学集群与学术系统，被誉为“新时代学术巨人的摇篮”。
+                    </p>
+                    <p>
+                        <strong>社会契约：</strong> 我们坚信每一个生命都值得被守护。联邦实行 <strong>12 年义务教育</strong>，建立覆盖全民的免费医疗服务与社会保障网。无论身处何地，阿特利尔公民都享有免于匮乏的自由。
+                    </p>
+                </div>
+
+                <div class="chart-grid">
+                    <div class="chart-item">
+                        <div class="slot chart-slot">
+                            <img src="chart-food.png" alt="粮食自给率 95%" style="object-fit: contain;">
+                        </div>
+                        <span class="chart-label">粮食自给率 95%</span>
+                    </div>
+                    
+                    <div class="chart-item">
+                        <div class="slot chart-slot">
+                            <img src="chart-power.png" alt="清洁能源占比" style="object-fit: contain;">
+                        </div>
+                        <span class="chart-label">聚变能源覆盖率 99.8%</span>
+                    </div>
+
+                    <div class="chart-item">
+                        <div class="slot chart-slot">
+                            <img src="chart-industry.png" alt="产业结构" style="object-fit: contain;">
+                        </div>
+                        <span class="chart-label">2093 产业结构</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<section id="gov">
+            <div class="content-wrap">
+                <div class="split-layout" style="grid-template-columns: 1fr 1.5fr;">
+                    
+                    <div>
+                        <h2>政府架构</h2>
+                        <p>
+                            联邦遵循<strong>三权分立</strong>原则。国家议会代表人民行使立法权，内阁政府在行政团轮班行政的带领下行使行政权，最高法院独立行使司法权。
+                            我们致力于确保国家的繁荣、安全与可持续发展，为所有阿特利尔公民提供透明、高效的行政服务。
+                        </p>
+                        
+                        <div style="background-color: #f9f9f9; padding: 25px; border-radius: 4px; border-left: 4px solid #1d70b8; margin-top: 30px;">
+                            <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 16px; color: #0b0c15;">治理体系概览</h3>
+                            
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding: 10px 0; font-size: 14px;">
+                                <span style="font-weight: 700; color: #555;">政府首脑</span>
+                                <span style="text-align: right;">阿特利尔国家行政团</span>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding: 10px 0; font-size: 14px;">
+                                <span style="font-weight: 700; color: #555;">立法机关</span>
+                                <span style="text-align: right;">阿特利尔国家议会</span>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding: 10px 0; font-size: 14px;">
+                                <span style="font-weight: 700; color: #555;">基本法律</span>
+                                <span style="text-align: right;">2091 阿特利尔国家基本法</span>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding: 10px 0; font-size: 14px;">
+                                <span style="font-weight: 700; color: #555;">行政分支</span>
+                                <span style="text-align: right;">13 个联邦部委</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; padding-top: 10px; font-size: 14px;">
+                                <span style="font-weight: 700; color: #555;">监督机构</span>
+                                <span style="text-align: right;">国家审计署 / 宪法法庭/检察委员会</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="slot structure-wide">
+                            <img src="structure.png" alt="政府架构图" style="width: 100%; height: 100%; object-fit: contain;">
+                        </div>
+                        <p style="font-size: 12px; color: #999; margin-top: 10px; text-align: center;">
+                            图示：阿特利尔联邦权力制衡与组织架构
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="history">
+            <div class="content-wrap">
+                <h2 style="align-self: flex-start;">历史进程 (2088-2092)</h2>
+                
+                <div class="timeline-h">
+                    <div class="t-item">
+                        <div class="t-dot"></div>
+                        <span class="t-year">2088</span>
+                        <span class="t-title">旧时代的终结</span>
+                        <p class="t-desc">前民主政府因内部僵化解体，激进派兰德将军借机掌权，建立军事独裁政权。</p>
+                    </div>
+                    <div class="t-item">
+                        <div class="t-dot"></div>
+                        <span class="t-year">2089</span>
+                        <span class="t-title">至暗时刻</span>
+                        <p class="t-desc">国家陷入极权统治与对外战争。民生凋敝，但地下抵抗运动开始萌芽。</p>
+                    </div>
+                    <div class="t-item">
+                        <div class="t-dot"></div>
+                        <span class="t-year">2091</span>
+                        <span class="t-title">八月革命</span>
+                        <p class="t-desc">议会救国力量与城市突击队联合起义，推翻军政府。兰德政权倒台。</p>
+                    </div>
+                    <div class="t-item">
+                        <div class="t-dot"></div>
+                        <span class="t-year">2092</span>
+                        <span class="t-title">联邦重建</span>
+                        <p class="t-desc">通过新宪法，阿特利尔联邦共和国正式成立。开启国家重建计划。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="visa">
+            <div class="content-wrap">
+                <div class="visa-box">
+                    <h2 style="border:none; padding:0; margin-bottom:20px; text-align: center;">欢迎访问阿特利尔</h2>
+                    <p style="margin: 0 auto 30px auto;">
+                        阿特利尔的大门向世界敞开。无论您是旅行者、记者还是投资者，我们都诚挚邀请您见证这片土地的复兴。
+                    </p>
+                    
+                    <a href="../visa-application.html" class="btn">申请电子签证 (e-Visa)</a>
+                    
+                    <div style="margin-top: 40px; border-top: 1px solid #ddd; padding-top: 20px; font-size: 13px; color: #999;">
+                        &copy; 2094 Federal Republic of Atelier<br>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('section');
+        const navDots = document.querySelectorAll('.nav-dot');
+        const scrollContainer = document.querySelector('.scroll-container');
+
+        scrollContainer.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollContainer.scrollTop >= (sectionTop - section.clientHeight / 3)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('href').includes(current)) {
+                    dot.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

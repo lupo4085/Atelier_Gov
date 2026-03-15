@@ -4,6 +4,81 @@
 
 ---
 
+## v0.3.1 — 2026-03-15 | GitHub Pages 兼容性整理
+
+### 修改内容
+
+**文件重命名（16 个文件，空格改为连字符）：**
+- `Bank of Atelier.html` → `bank-of-atelier.html`
+- `Ministry of Defence.html` → `ministry-of-defence.html`
+- `Ministry of Finance.html` → `ministry-of-finance.html`
+- `Ministry of Education.html` → `ministry-of-education.html`
+- `Ministry of Food, Fisheries and Agriculture.html` → `ministry-of-agriculture.html`
+- `Ministry of Industry and Information Technology.html` → `ministry-of-industry.html`
+- `Ministry of Natural Resources.html` → `ministry-of-natural-resources.html`
+- `Ministry of Science and Technology.html` → `ministry-of-science.html`
+- `National Office of Statistics.html` → `national-statistics.html`
+- `Office of Government Transparency and Ethics.html` → `transparency-ethics.html`
+- `Urban Assault Group.html` → `urban-assault-group.html`
+- `Department of Emergency Managemen.html` → `emergency-management.html`
+- `Federal Department of Justice  Supreme Court.html` → `justice-supreme-court.html`
+- `Atelier National Time Service.html` → `time-service.html`
+- `National Power Company.html` → `national-power-company.html`
+- `Universities Admissions Service.html` → `universities-admissions.html`
+
+**修复的问题：**
+- 所有子目录 HTML 文件的 JS 引用路径修复（`firebase-config.js` → `../firebase-config.js` 等，共 28 个文件）
+- 子目录页面的 `contact-form.html` 链接修复（添加 `../` 前缀）
+- `contact-form.html`、`research-permit.html`、`test-system.html` 缺少 `github-api.js` 加载
+- `departments.html` 中引用了不存在的 `Ministry of Justice.html`，修正为 `justice-supreme-court.html`
+- 4 个不存在页面的链接改为 `#`（`clock.html`、`tracking.html`、`privacy.html`、`help.html`）
+- 删除 `.bak` 备份文件（3 个）
+
+**其他：**
+- 重写 `USAGE_GUIDE.md`，添加完整上线部署指南
+
+---
+
+## v0.3.0 — 2026-03-15 | 国家介绍页整合 + 签证申请系统
+
+### 架构变化
+
+新增 EmailJS 纯前端邮件通知系统，用于签证审批结果通知。无需后端服务器，免费额度 200 封/月。
+
+### 修改的文件
+
+| 文件 | 操作 | 说明 |
+|------|------|------|
+| `visa-application.html` | 新建 | 签证申请表单页（6种签证类型，15个字段） |
+| `emailjs-config.js` | 新建 | EmailJS 配置占位（需用户填入密钥） |
+| `email-service.js` | 新建 | 邮件发送辅助函数（批准/拒绝通知） |
+| `atelier-gov-introduction/index.html` | 修改 | 「访问联邦政府主页」→ `../index.html`，「申请电子签证」→ `../visa-application.html` |
+| `index.html` | 修改 | header 导航添加「国家介绍」链接 |
+| `service-citizen.html` | 修改 | 「签证与居留许可」链接改为 `visa-application.html` |
+| `github-api.js` | 修改 | 新增 `ghUpdateSubmission()` 函数 |
+| `database.js` | 修改 | 新增 `updateSubmission()` 包装函数（需 admin 权限） |
+| `admin-dashboard.html` | 修改 | 新增签证管理 Tab（申请列表、统计、筛选、审批模态框）+ EmailJS 集成 |
+| `CHANGELOG.md` | 修改 | 记录本次迭代 |
+
+### 实现的功能
+
+- [x] 国家介绍页与政府门户互链（双向跳转）
+- [x] 签证申请表单（旅游/商务/工作/学生/记者/过境 6 种类型）
+- [x] 签证申请提交到 `content/submissions/` 存储
+- [x] 商务/工作签证时动态显示「邀请方信息」字段
+- [x] 管理仪表板签证管理 Tab（统计条、筛选、列表）
+- [x] 签证审批详情模态框（查看全部信息 + 批准/拒绝按钮）
+- [x] `updateSubmission()` API（管理员更新提交状态）
+- [x] EmailJS 邮件通知集成（批准/拒绝时发送邮件）
+
+### 用户需完成的配置
+
+- [ ] 注册 EmailJS（https://www.emailjs.com）并连接邮箱服务
+- [ ] 创建 `visa_approved` 和 `visa_rejected` 两个邮件模板
+- [ ] 在 `emailjs-config.js` 中填入 Public Key 和 Service ID
+
+---
+
 ## v0.2.0 — 2026-03-15 | 迁移到 GitHub 存储 + 项目清理
 
 ### 架构变化

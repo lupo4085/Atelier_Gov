@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页 - 阿特利尔国家统计办公室 (NOS)</title>
+    <style>
+        /* --- 统计局商务风格 (Data & Professional) --- */
+        :root {
+            --c-ons-green: #006548; /* ONS 风格深青色 */
+            --c-ons-dark: #206095;  /* 专业深蓝 */
+            --c-ons-blue-light: #e6ecf3;
+            --c-text-main: #222222;
+            --c-text-sec: #707070;
+            --c-bg-page: #ffffff;
+            --c-bg-grey: #f0f0f0;
+            --c-border: #d3d3d3;
+            
+            --font-main: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-main);
+            line-height: 1.5;
+            background-color: var(--c-bg-page);
+        }
+
+        a { color: var(--c-ons-dark); text-decoration: underline; text-decoration-thickness: 1px; }
+        a:hover { color: var(--c-ons-green); text-decoration-thickness: 2px; background-color: #f9f9f9; }
+
+        /* Top Bar */
+        .gov-bar {
+            background-color: #000;
+            color: #fff;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        /* Header & Nav */
+        header {
+            background-color: var(--c-ons-dark);
+            color: #fff;
+            padding: 20px 0;
+        }
+        
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+        }
+        
+        .logo-img {
+            height: 50px;
+            margin-right: 15px;
+            filter: brightness(0) invert(1); /* 纯白Logo */
+        }
+        
+        .logo-text h1 { font-size: 24px; font-weight: 700; line-height: 1.1; }
+        .logo-text span { font-size: 14px; opacity: 0.8; font-weight: 400; }
+
+        /* Main Navigation */
+        .main-nav {
+            background-color: var(--c-ons-dark);
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        .nav-list {
+            list-style: none;
+            display: flex;
+            padding: 0;
+            margin: 0;
+        }
+        .nav-list li a {
+            display: block;
+            color: #fff;
+            padding: 12px 20px 12px 0;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .nav-list li a:hover { text-decoration: underline; background: none; }
+
+        /* Search Banner */
+        .search-banner {
+            background-color: var(--c-ons-blue-light);
+            padding: 30px 0;
+            border-bottom: 1px solid var(--c-border);
+        }
+        .search-wrapper {
+            display: flex;
+            max-width: 800px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            font-size: 18px;
+            border: 1px solid var(--c-ons-dark);
+            border-right: none;
+        }
+        .search-btn {
+            background-color: var(--c-ons-green);
+            color: #fff;
+            border: none;
+            padding: 0 25px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Key Figures Dashboard */
+        .dashboard-section {
+            padding: 40px 0;
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--c-text-main);
+            border-bottom: 1px solid var(--c-border);
+            padding-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: #fff;
+            border-top: 4px solid var(--c-ons-dark);
+            padding: 15px 0;
+        }
+        
+        .stat-title { font-size: 16px; font-weight: 700; color: var(--c-ons-dark); margin-bottom: 10px; display: block; text-decoration: underline;}
+        .stat-figure { font-size: 36px; font-weight: 700; margin-bottom: 5px; color: var(--c-text-main); }
+        .stat-period { font-size: 14px; color: var(--c-text-sec); margin-bottom: 8px; }
+        .stat-trend { font-size: 14px; font-weight: 600; }
+        .trend-up { color: #d0021b; } /* 红色通常表示负面（如通胀），或单纯上升 */
+        .trend-down { color: #008000; }
+
+        /* Census Banner */
+        .census-banner {
+            background-color: #4c2c92; /* 紫色用于普查 */
+            color: #fff;
+            padding: 30px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .census-content h2 { margin-bottom: 10px; font-size: 28px; }
+        .btn-census {
+            background-color: #fff;
+            color: #4c2c92;
+            padding: 12px 25px;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+
+        /* Content Columns */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .release-item {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .release-meta { font-size: 13px; color: var(--c-text-sec); margin-bottom: 5px; }
+        .release-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; display: block; color: var(--c-ons-dark); }
+        .release-summary { font-size: 15px; line-height: 1.5; color: var(--c-text-main); }
+
+        .topic-list { list-style: none; }
+        .topic-list li {
+            border-bottom: 1px solid #e5e5e5;
+            padding: 10px 0;
+        }
+        .topic-list a { font-weight: 700; font-size: 16px; }
+
+        /* Footer */
+        footer {
+            background-color: var(--c-bg-grey);
+            padding: 50px 0;
+            border-top: 5px solid var(--c-ons-green);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid, .content-grid { grid-template-columns: 1fr; }
+            .census-banner { flex-direction: column; text-align: left; align-items: flex-start; }
+            .btn-census { margin-top: 15px; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="../firebase-config.js"></script>
+    <script src="../auth.js"></script>
+</head>
+<body>
+
+    <div class="gov-bar">
+        <div class="container">
+            <a href="../index.html" style="color: #fff; text-decoration: none;">GOV.AT</a> — 阿特利尔联邦政府官方统计机构
+        </div>
+    </div>
+
+    <div class="breadcrumbs" style="max-width: 960px; margin: 10px auto 0; padding: 0 30px; font-size: 14px; color: #505a5f;">
+        <a href="../index.html" style="color: #505a5f; text-decoration: underline;">首页</a> &gt; <a href="../departments.html" style="color: #505a5f; text-decoration: underline;">政府部门</a> &gt; <span>国家统计局</span>
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="header-inner">
+                <a href="#" class="logo-area">
+                    <img src="../nationalicon/nationicon.png" alt="NOS Logo" class="logo-img">
+                    <div class="logo-text">
+                        <h1>National Office of Statistics</h1>
+                        <span>国家统计，国之根本</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-list">
+                <li><a href="#">商业与工业</a></li>
+                <li><a href="#">经济与通胀</a></li>
+                <li><a href="#">就业与劳动力</a></li>
+                <li><a href="#">人口与社区</a></li>
+                <li><a href="#">健康与社会关怀</a></li>
+                <li><a href="#">方法论与质量</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="search-banner">
+        <div class="container">
+            <label for="site-search" style="display:block; margin-bottom:10px; font-weight:700; color:var(--c-text-main);">搜索统计数据、公告或数据集：</label>
+            <div class="search-wrapper">
+                <input type="text" id="site-search" class="search-input" placeholder="例如：CPI, 战后人口普查, 平均周薪...">
+                <button class="search-btn">搜索</button>
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+        
+        <div class="dashboard-section" style="padding-bottom: 20px;">
+            <div class="census-banner">
+                <div class="census-content">
+                    <h2>2093 年人口普查：首批数据发布</h2>
+                    <p>查看关于阿特利尔联邦战后人口规模、家庭结构及居住情况的初步统计结果。</p>
+                </div>
+                <a href="#" class="btn-census">查看普查报告 &rarr;</a>
+            </div>
+        </div>
+
+        <div class="dashboard-section">
+            <h2 class="section-title">主要经济指标 (Key Economic Indicators)</h2>
+            <div class="stats-grid">
+                
+                <div class="stat-card">
+                    <a href="#" class="stat-title">通货膨胀率 (CPI)</a>
+                    <div class="stat-figure">8.4%</div>
+                    <div class="stat-period">2093年12月</div>
+                    <div class="stat-trend trend-down">▼ 较上月下降 0.6%</div>
+                </div>
+
+                <div class="stat-card">
+                    <a href="#" class="stat-title">GDP 增长率</a>
+                    <div class="stat-figure">+1.2%</div>
+                    <div class="stat-period">2093年第4季度</div>
+                    <div class="stat-trend">▲ 连续两个季度增长</div>
+                </div>
+
+                <div class="stat-card">
+                    <a href="#" class="stat-title">失业率</a>
+                    <div class="stat-figure">12.1%</div>
+                    <div class="stat-period">2093年10-12月</div>
+                    <div class="stat-trend trend-down">▼ 较上季度下降 1.5%</div>
+                </div>
+
+                <div class="stat-card">
+                    <a href="#" class="stat-title">平均周薪 (常规)</a>
+                    <div class="stat-figure">£482</div>
+                    <div class="stat-period">2093年12月</div>
+                    <div class="stat-trend">▲ 较去年同期增长 4.2%</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="latest-releases">
+                <h2 class="section-title">最新统计公告</h2>
+                
+                <div class="release-item">
+                    <div class="release-meta">发布日期：2094年1月3日 | 主题：人口</div>
+                    <a href="#" class="release-title">战后超额死亡率分析 (2088-2092)</a>
+                    <p class="release-summary">
+                        本报告详细分析了兰德政府时期及战争期间的注册死亡人数与历史平均水平的对比。数据显示，直接冲突与系统性迫害导致的非自然死亡显著推高了总死亡率。
+                    </p>
+                </div>
+
+                <div class="release-item">
+                    <div class="release-meta">发布日期：2094年1月2日 | 主题：能源与住房</div>
+                    <a href="#" class="release-title">家庭能源效率与燃料贫困公报：2093冬季版</a>
+                    <p class="release-summary">
+                        统计了受损房屋的供暖状况。尽管电力供应逐步恢复，但仍有 28% 的家庭处于“燃料贫困”状态，主要集中在遭受空袭严重的东部工业区。
+                    </p>
+                </div>
+
+                <div class="release-item">
+                    <div class="release-meta">发布日期：2093年12月28日 | 主题：零售业</div>
+                    <a href="#" class="release-title">零售销售指数：2093年11月</a>
+                    <p class="release-summary">
+                        零售量环比增长 0.8%。食品店销售额保持稳定，但建筑材料与五金类商品需求激增，反映了民间自发重建活动的活跃。
+                    </p>
+                </div>
+
+                <a href="#" style="font-weight:700;">查看发布日历 &rarr;</a>
+            </div>
+
+            <aside class="topics">
+                <h2 class="section-title">浏览主题</h2>
+                <ul class="topic-list">
+                    <li><a href="#">商业、工业与贸易</a></li>
+                    <li><a href="#">经济 (GDP, 债务, 通胀)</a></li>
+                    <li><a href="#">就业与劳动力市场</a></li>
+                    <li><a href="#">人口、普查与移民</a></li>
+                    <li><a href="#">犯罪与司法统计</a></li>
+                    <li><a href="#">住房与基础设施</a></li>
+                    <li><a href="#">区域数据 (按省份划分)</a></li>
+                </ul>
+
+                <div style="background-color: #f5f5f5; padding: 20px; margin-top: 30px; border-left: 4px solid var(--c-ons-green);">
+                    <h3 style="font-size:18px; margin-bottom:10px; font-weight:700;">方法论变更说明</h3>
+                    <p style="font-size:14px; color:#555;">
+                        自2093年起，NOS 重新调整了“一揽子商品”的权重以计算 CPI，移除了战时配给品，重新加入了民用电子产品与进口食品。
+                        <a href="#">阅读完整的方法论白皮书</a>
+                    </p>
+                </div>
+            </aside>
+        </div>
+
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; font-size: 14px; color: var(--c-text-main);">
+                <div>
+                    <h4 style="margin-bottom:15px; font-size:16px;">联系我们</h4>
+                    <p>媒体咨询: media.relations@nos.gov.at</p>
+                    <p>一般查询: +00 (1) 800 123 4567</p>
+                    <p style="margin-top:15px;">NOS 总部: Federal Statistics House, 12 Data Road, Capital City</p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:15px; font-size:16px;">关于 NOS</h4>
+                    <ul style="list-style:none; padding:0;">
+                        <li style="margin-bottom:5px;"><a href="#" style="color:#222;">我们是谁</a></li>
+                        <li style="margin-bottom:5px;"><a href="#" style="color:#222;">统计行为准则</a></li>
+                        <li style="margin-bottom:5px;"><a href="#" style="color:#222;">职业机会</a></li>
+                        <li style="margin-bottom:5px;"><a href="#" style="color:#222;">数据保护与隐私</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #d3d3d3; margin-top: 30px; padding-top: 20px; text-align: center; font-size: 13px; color: #707070;">
+                © 2094 National Office of Statistics. All content is available under the Open Government Licence v3.0, except where otherwise stated.
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

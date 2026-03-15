@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国防部 - GOV.AT</title>
+    <style>
+        /* --- 核心样式库 (GOV.AT Standard) --- */
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-dept-mod: #37474f; /* 国防部专属色：战术蓝灰，象征钢铁与秩序 */
+            --c-dept-mod-dark: #263238;
+            --c-flag-orange: #f47738;
+            --c-flag-red: #d4351c; /* 用于未爆弹药警告 */
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-page);
+        }
+
+        a {
+            color: var(--c-flag-blue);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+        
+        a:hover {
+            color: var(--c-flag-blue-hover);
+            text-decoration-thickness: 3px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-orange);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); 
+        }
+        
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        /* Department Header */
+        .dept-header {
+            background-color: var(--c-dept-mod);
+            color: #fff;
+            padding: 40px 0;
+            border-bottom: 10px solid var(--c-dept-mod-dark);
+        }
+
+        .dept-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .breadcrumbs {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .breadcrumbs a { color: #fff; text-decoration: none; }
+        .breadcrumbs a:hover { text-decoration: underline; }
+
+        .dept-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dept-desc {
+            font-size: 19px;
+            max-width: 700px;
+            line-height: 1.4;
+            color: #e0e0e0;
+        }
+
+        /* Mobilization Banner (重点强调重建) */
+        .mobilization-banner {
+            background-color: #f3f2f1;
+            border-left: 5px solid var(--c-dept-mod);
+            padding: 25px;
+            margin: 0 auto 40px auto;
+            max-width: 960px;
+            /* 使其在视觉上突出 */
+            position: relative;
+            top: -20px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .mob-title {
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--c-dept-mod);
+            display: flex;
+            align-items: center;
+        }
+        
+        .mob-badge {
+            background: var(--c-dept-mod);
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 2px;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Main Layout */
+        main {
+            max-width: 960px;
+            margin: 0 auto 60px auto;
+            padding: 0 30px;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 50px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-text-main);
+        }
+
+        .service-group { margin-bottom: 35px; }
+        .service-group h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .link-list { list-style: none; }
+        .link-list li {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .link-list a {
+            font-weight: 700;
+            font-size: 16px;
+            display: block;
+        }
+        .link-list span {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* UXO Warning Card */
+        .uxo-card {
+            background-color: #fff;
+            border: 4px solid var(--c-flag-red);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .uxo-title { color: var(--c-flag-red); font-weight: 700; font-size: 18px; margin-bottom: 10px; }
+
+        /* News Section */
+        .news-item { margin-bottom: 20px; }
+        .news-date { font-size: 12px; color: var(--c-text-sec); margin-bottom: 4px; display: block; }
+        .news-link { font-weight: 700; font-size: 16px; line-height: 1.4; }
+
+        @media (max-width: 768px) {
+            .grid-row { grid-template-columns: 1fr; }
+            .mobilization-banner { top: 0; margin-top: 20px; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="../firebase-config.js"></script>
+    <script src="../auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="../nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+
+    <div class="dept-header">
+        <div class="dept-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">首页</a> &gt; <a href="../departments.html">政府部门</a> &gt; <span>国防部</span>
+            </div>
+            <h1 class="dept-title">联邦国防部 (Ministry of Defence)</h1>
+            <p class="dept-desc">
+                我们负责保卫阿特利尔联邦的主权与领土安全。在战后时期，我们的核心使命已转变为利用军事力量加速国家基础设施重建，并确保所有公民免受战争遗留物的伤害。
+            </p>
+        </div>
+    </div>
+
+    <div class="mobilization-banner">
+        <div class="mob-title">
+            当前行动：代号“阿特拉斯” (Operation Atlas)
+            <span class="mob-badge">进行中</span>
+        </div>
+        <p style="margin-bottom: 15px;">
+            依据总理府第 72 号行政令，国防部已全面调动麾下力量投入国家重建工程。军队的职能已从作战转为建设。
+        </p>
+        <ul style="list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; font-size: 14px;">
+            <li style="background: #fff; padding: 10px; border: 1px solid #ddd;">
+                <strong>联邦国防军 (FDF)</strong><br>
+                负责重型桥梁搭建与铁路抢修。
+            </li>
+            <li style="background: #fff; padding: 10px; border: 1px solid #ddd;">
+                <strong>独立机动部队</strong><br>
+                部署移动发电机组，恢复偏远地区供电。
+            </li>
+            <li style="background: #fff; padding: 10px; border: 1px solid #ddd;">
+                <strong>城市突击队</strong><br>
+                在阿特利尔城市突击队指挥部带领下参与城市建设，废墟清理以及治安巡逻的工作。
+            </li>
+        </ul>
+    </div>
+
+    <main>
+        <div class="grid-row">
+            <div class="main-services">
+                <h2>服务与信息</h2>
+
+                <div class="service-group">
+                    <h3>公共安全与排雷</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">报告未爆弹药 (UXO) 或可疑军事装置</a>
+                            <span>如果您在农田或建筑工地发现遗留武器，请勿触碰，立即在此标记坐标。</span>
+                        </li>
+                        <li>
+                            <a href="#">查看“安全绿区”地图</a>
+                            <span>查询已完成扫雷工作的区域及目前仍受管制的红色区域。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>服役、退伍与档案</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">加入工程兵团 (Engineering Corps)</a>
+                            <span>国防军目前主要招募建筑师、机械师及医疗人员，而非战斗步兵。</span>
+                        </li>
+                        <li>
+                            <a href="#">退伍军人安置与福利申请</a>
+                            <span>为前兰德政府时期的被征召士兵提供职业再培训与心理创伤治疗。</span>
+                        </li>
+                        <li>
+                            <a href="#">寻找失踪军人档案</a>
+                            <span>查询战时失踪人员记录及阵亡将士名单。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>国防资产处理</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">军用物资民用化拍卖</a>
+                            <span>查看即将拍卖的运输卡车、野战帐篷及发电设备清单。</span>
+                        </li>
+                        <li>
+                            <a href="#">军事禁区解封公告</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                
+                <div class="uxo-card">
+                    <div class="uxo-title">紧急安全提示</div>
+                    <p style="font-size: 14px; margin-bottom: 10px;">
+                        春耕期间请注意：东部平原区近期因暴雨导致部分地雷移位。
+                    </p>
+                    <p style="font-size: 14px;">
+                        请下载最新的 <a href="#" style="color:var(--c-flag-red); font-weight:700;">危险识别指南 (PDF)</a> 以教导儿童识别 M-90 子母弹。
+                    </p>
+                </div>
+
+                <h2>国防动态</h2>
+                
+                <div class="news-item">
+                    <span class="news-date">2094/01/03</span>
+                    <a href="#" class="news-link">城市突击队第3支队成功拆除首都塔楼区的悬挂残骸</a>
+                    <span style="font-size: 13px; color: #505a5f; display:block; margin-top:2px;">消除了威胁主干道通行的重大隐患。</span>
+                </div>
+
+                <div class="news-item">
+                    <span class="news-date">2094/01/01</span>
+                    <a href="#" class="news-link">国防部长视察独立部队供电站：承诺冬季能源保障</a>
+                </div>
+
+                <div class="news-item">
+                    <span class="news-date">2093/12/29</span>
+                    <a href="#" class="news-link">关于裁撤进攻性武器系统的白皮书</a>
+                    <span style="font-size: 13px; color: #505a5f; display:block; margin-top:2px;">国防预算将进一步向工程与救援装备倾斜。</span>
+                </div>
+
+                <div style="margin-top: 30px; background: #eef2f5; padding: 15px; border-top: 2px solid var(--c-dept-mod);">
+                    <h3 style="font-size: 16px; margin-bottom: 5px;">文职控制原则</h3>
+                    <p style="font-size: 13px; color: var(--c-text-sec);">
+                        阿特利尔联邦国防军严格受民选政府与联邦议会领导。军队无权参与国内政治事务。
+                    </p>
+                </div>
+
+            </aside>
+        </div>
+        <div style="margin-top: 60px; padding: 30px; background: #f8f8f8; border-left: 5px solid var(--c-flag-blue);">
+            <h3 style="margin-top: 0;">需要本部门的服务？</h3>
+            <p>您可以使用我们的 <a href="../contact-form.html">在线服务申请系统</a> 提交申请、查询或反馈。申请将直接转至国防部相关部门处理。</p>
+            <p style="margin-top: 15px;">
+                <a href="../contact-form.html" style="background-color: var(--c-flag-blue); color: white; padding: 12px 25px; text-decoration: none; font-weight: 700; display: inline-block;">在线申请服务</a>
+                <a href="#" style="margin-left: 15px; padding: 12px 25px; border: 2px solid var(--c-flag-blue); color: var(--c-flag-blue); text-decoration: none; font-weight: 700; display: inline-block;">查看申请状态</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 14px; color: var(--c-text-sec);">
+                <strong>国防部服务热线：</strong> 010-555-XXXX（工作日 9:00-17:00）<br>
+                <strong>紧急情况（警务/消防/救援）：</strong> 911
+            </p>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="header-content" style="padding: 40px 30px; display: block; text-align: center; color: var(--c-text-sec); font-size: 14px;">
+            <p>
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier)
+                <br>
+                <strong>力量用于守护，而非征服。</strong>
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

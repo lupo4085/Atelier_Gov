@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科学技术部 - GOV.AT</title>
+    <style>
+        /* --- 核心样式库 (GOV.AT Standard) --- */
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-dept-sci: #005ea5; /* 科技部专属色：理性、深邃的科技蓝 */
+            --c-flag-orange: #f47738;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-page);
+        }
+
+        a {
+            color: var(--c-flag-blue);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+        
+        a:hover {
+            color: var(--c-flag-blue-hover);
+            text-decoration-thickness: 3px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-orange);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); 
+        }
+        
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        /* Department Header */
+        .dept-header {
+            background-color: #f3f2f1;
+            border-bottom: 1px solid var(--c-border);
+            padding: 40px 0;
+            border-left: 10px solid var(--c-dept-sci);
+        }
+
+        .dept-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .breadcrumbs {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: var(--c-text-sec);
+        }
+        
+        .breadcrumbs a { color: var(--c-text-sec); text-decoration: underline; }
+
+        .dept-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--c-dept-sci);
+        }
+
+        .dept-desc {
+            font-size: 19px;
+            max-width: 700px;
+            line-height: 1.4;
+            color: var(--c-text-main);
+        }
+
+        /* Functional Search Bar */
+        .search-container {
+            background-color: var(--c-dept-sci);
+            padding: 25px 0;
+            margin-bottom: 40px;
+        }
+        
+        .search-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .search-label {
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .search-box-wrapper {
+            display: flex;
+            background: #fff;
+            padding: 4px;
+            max-width: 700px;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 12px 15px;
+            font-size: 18px;
+            outline: none;
+            font-family: var(--font-gov);
+        }
+
+        .search-btn {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            border: none;
+            padding: 0 25px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .search-btn:hover { background-color: #333; }
+
+        /* Alert Banner for Ethics */
+        .alert-banner {
+            border: 2px solid var(--c-text-main);
+            padding: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .alert-icon { font-size: 24px; margin-right: 15px; line-height: 1; }
+
+        /* Main Grid */
+        main {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 50px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-text-main);
+        }
+
+        .service-group { margin-bottom: 35px; }
+        .service-group h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--c-dept-sci);
+        }
+
+        .link-list { list-style: none; }
+        .link-list li {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .link-list a {
+            font-weight: 700;
+            font-size: 16px;
+            display: block;
+        }
+        .link-list span {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* Funding Card */
+        .funding-card {
+            background-color: #f3f2f1;
+            border-top: 4px solid var(--c-dept-sci);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* News */
+        .sidebar-news-item {
+            margin-bottom: 20px;
+        }
+        .sidebar-news-date { font-size: 12px; color: var(--c-text-sec); display: block; margin-bottom: 3px; }
+        .sidebar-news-link { font-weight: 700; font-size: 16px; line-height: 1.4; }
+
+        @media (max-width: 768px) {
+            .grid-row { grid-template-columns: 1fr; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="../firebase-config.js"></script>
+    <script src="../auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="../nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+
+    <div class="dept-header">
+        <div class="dept-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">首页</a> &gt; <a href="../departments.html">政府部门</a> &gt; <span>科学技术部</span>
+            </div>
+            <h1 class="dept-title">科学技术部 (MST)</h1>
+            <p class="dept-desc">
+                我们的使命是重建以人道主义为核心的科学体系。我们致力于捍卫学术自由，执行最严格的科研伦理标准，并推动技术创新以服务于国家重建与民生改善。
+            </p>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <div class="search-inner">
+            <label class="search-label" for="sci-search">搜索科研基金、专利数据库或伦理审查指南：</label>
+            <div class="search-box-wrapper">
+                <input type="text" id="sci-search" class="search-input" placeholder="例如：2094 能源补助, 实验室安全规范, 专利申请...">
+                <button class="search-btn">搜索</button>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        
+        <div class="alert-banner">
+            <div class="alert-icon">⚠️</div>
+            <div>
+                <strong>关于《生物技术伦理公约》生效的通知</strong>
+                <p style="margin-bottom: 5px; font-size: 15px;">自 2094 年 1 月 1 日起，所有涉及人体组织的研究项目必须获得新成立的“国家生物伦理委员会”的批准。旧政权颁发的许可证已全部作废。</p>
+                <a href="#">阅读新的合规指南 &rarr;</a>
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="main-services">
+                
+                <div class="service-group">
+                    <h3>学术自由与科研环境</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">报告学术审查或政治干预</a>
+                            <span>用于举报任何试图强迫修改研究数据或压制发表的行为的独立通道。</span>
+                        </li>
+                        <li>
+                            <a href="#">科研数据公开平台 (OpenScience)</a>
+                            <span>访问联邦资助的所有非涉密研究成果与原始数据。</span>
+                        </li>
+                        <li>
+                            <a href="#">国家实验室设备共享计划</a>
+                            <span>为受损大学的研究团队提供国家级实验室的使用权。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>学术伦理与监管</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">提交科研伦理审查申请 (IRB)</a>
+                            <span>所有涉及人类、动物或环境影响的研究必须在此申报。</span>
+                        </li>
+                        <li>
+                            <a href="#">禁止的研究领域清单</a>
+                            <span>包括生物武器化、强制性神经改造等被永久禁止的项目。</span>
+                        </li>
+                        <li>
+                            <a href="#">科研诚信档案查询</a>
+                            <span>查询机构或个人的学术不端记录。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>技术转化与创新</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">专利局：专利申请与检索</a>
+                            <span>针对清洁能源、医疗设备和建筑材料技术的快速审批通道。</span>
+                        </li>
+                        <li>
+                            <a href="#">战后技术民用化办公室</a>
+                            <span>申请将旧军用技术（如外骨骼、通讯器材）转化为民用产品的许可。</span>
+                        </li>
+                        <li>
+                            <a href="#">小微科技企业孵化基金</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                
+                <div class="funding-card">
+                    <h3>🎓 科学人才复兴计划</h3>
+                    <p style="font-size: 14px; margin-bottom: 15px;">
+                        为填补战争造成的人才断层，我们为青年科学家提供全额支持。
+                    </p>
+                    <ul class="link-list" style="margin-bottom: 0;">
+                        <li style="border:none; padding-bottom: 5px;">
+                            <a href="#">"新视野" 博士后奖学金</a>
+                        </li>
+                        <li style="border:none; padding-bottom: 5px;">
+                            <a href="#">海外流亡科学家归国安置补助</a>
+                        </li>
+                        <li style="border:none; padding-bottom: 0;">
+                            <a href="#">STEM 教育志愿者招募</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="funding-card" style="border-top-color: var(--c-flag-orange);">
+                    <h3>💰 科研资金机会</h3>
+                    <ul class="link-list" style="margin-bottom: 0;">
+                        <li style="border:none; padding-bottom: 5px;">
+                            <a href="#">2094 基础设施重建专项基金</a>
+                            <span style="font-size:12px;">截止日期：2094/03/30</span>
+                        </li>
+                        <li style="border:none; padding-bottom: 0;">
+                            <a href="#">战争创伤医疗研究拨款</a>
+                            <span style="font-size:12px;">常年开放申请</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <h2 style="font-size: 20px; border-bottom: none; margin-top: 30px;">科技新闻</h2>
+                
+                <div class="sidebar-news-item">
+                    <span class="sidebar-news-date">2094/01/02</span>
+                    <a href="#" class="sidebar-news-link">联邦首座民用聚变反应堆试验站破土动工</a>
+                </div>
+
+                <div class="sidebar-news-item">
+                    <span class="sidebar-news-date">2093/12/29</span>
+                    <a href="#" class="sidebar-news-link">科技部长：永远不再让科学成为战争的帮凶</a>
+                </div>
+
+                <div class="sidebar-news-item">
+                    <span class="sidebar-news-date">2093/12/20</span>
+                    <a href="#" class="sidebar-news-link">国家气象卫星网络修复进度达到 80%</a>
+                </div>
+
+            </aside>
+        </div>
+        <div style="margin-top: 60px; padding: 30px; background: #f8f8f8; border-left: 5px solid var(--c-flag-blue);">
+            <h3 style="margin-top: 0;">需要本部门的服务？</h3>
+            <p>您可以使用我们的 <a href="../contact-form.html">在线服务申请系统</a> 提交申请、查询或反馈。申请将直接转至科学技术部相关部门处理。</p>
+            <p style="margin-top: 15px;">
+                <a href="../contact-form.html" style="background-color: var(--c-flag-blue); color: white; padding: 12px 25px; text-decoration: none; font-weight: 700; display: inline-block;">在线申请服务</a>
+                <a href="#" style="margin-left: 15px; padding: 12px 25px; border: 2px solid var(--c-flag-blue); color: var(--c-flag-blue); text-decoration: none; font-weight: 700; display: inline-block;">查看申请状态</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 14px; color: var(--c-text-sec);">
+                <strong>科学技术部服务热线：</strong> 010-555-XXXX（工作日 9:00-17:00）<br>
+                <strong>紧急情况（警务/消防/救援）：</strong> 911
+            </p>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="header-content" style="padding: 40px 30px; display: block; text-align: center; color: var(--c-text-sec); font-size: 14px;">
+            <p>
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier)
+                <br>
+                <strong>科学服务于和平与真理。</strong>
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

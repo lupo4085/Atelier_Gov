@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>司法部与最高法院 - GOV.AT</title>
+    <style>
+        /* --- 核心样式库 (GOV.AT Standard) --- */
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-dept-justice: #8a1538; /* 司法部专属色：深红，象征威严与正义 */
+            --c-flag-orange: #f47738;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-page);
+        }
+
+        a {
+            color: var(--c-flag-blue);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+        
+        a:hover {
+            color: var(--c-flag-blue-hover);
+            text-decoration-thickness: 3px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-orange);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); 
+        }
+        
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        /* Department Header */
+        .dept-header {
+            background-color: #f3f2f1;
+            border-bottom: 1px solid var(--c-border);
+            padding: 40px 0;
+            border-left: 10px solid var(--c-dept-justice);
+        }
+
+        .dept-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .breadcrumbs {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: var(--c-text-sec);
+        }
+        
+        .breadcrumbs a { color: var(--c-text-sec); text-decoration: underline; }
+
+        .dept-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--c-dept-justice);
+        }
+
+        .dept-desc {
+            font-size: 19px;
+            max-width: 700px;
+            line-height: 1.4;
+            color: var(--c-text-main);
+        }
+
+        /* Search Bar */
+        .search-container {
+            background-color: var(--c-dept-justice);
+            padding: 25px 0;
+            margin-bottom: 40px;
+        }
+        
+        .search-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .search-label {
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .search-box-wrapper {
+            display: flex;
+            background: #fff;
+            padding: 4px;
+            max-width: 700px;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 12px 15px;
+            font-size: 18px;
+            outline: none;
+        }
+
+        .search-btn {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            border: none;
+            padding: 0 25px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .search-btn:hover { background-color: #333; }
+
+        /* Main Layout */
+        main {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 50px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-text-main);
+        }
+
+        .service-group { margin-bottom: 35px; }
+        .service-group h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .link-list { list-style: none; }
+        .link-list li {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .link-list a {
+            font-weight: 700;
+            font-size: 16px;
+            display: block;
+        }
+        .link-list span {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* Court Live Card */
+        .live-card {
+            border: 1px solid #000;
+            margin-bottom: 30px;
+        }
+        
+        .live-header {
+            background-color: #000;
+            color: #fff;
+            padding: 10px 15px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .live-indicator {
+            color: #d4351c;
+            background: #fff;
+            padding: 2px 6px;
+            font-size: 12px;
+            border-radius: 2px;
+            text-transform: uppercase;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink { 0% {opacity: 1;} 50% {opacity: 0.5;} 100% {opacity: 1;} }
+
+        .live-content {
+            padding: 15px;
+            background: #f8f8f8;
+        }
+        
+        .case-title { font-weight: 700; font-size: 16px; margin-bottom: 5px; display: block;}
+        .case-meta { font-size: 14px; color: #505a5f; margin-bottom: 10px; }
+
+        /* Highlight Box */
+        .highlight-box {
+            background-color: #f3f2f1;
+            padding: 20px;
+            border-left: 5px solid var(--c-dept-justice);
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-row { grid-template-columns: 1fr; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="../firebase-config.js"></script>
+    <script src="../auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="../nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+
+    <div class="dept-header">
+        <div class="dept-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">首页</a> &gt; <a href="../departments.html">政府部门</a> &gt; <span>司法部与最高法院</span>
+            </div>
+            <h1 class="dept-title">联邦司法部 | 最高法院</h1>
+            <p class="dept-desc">
+                我们负责维护法律尊严，管理联邦法院与监狱系统，并作为国家最高司法机关对宪法进行解释。我们的使命是在废墟之上重建法治，确保正义对每一个人平等。
+            </p>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <div class="search-inner">
+            <label class="search-label" for="justice-search">搜索法庭判决、法律条文、监狱服务或法律援助：</label>
+            <div class="search-box-wrapper">
+                <input type="text" id="justice-search" class="search-input" placeholder="例如：最高法院第72号判决, 申请法律援助, 监狱探视预约...">
+                <button class="search-btn">搜索</button>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <div class="grid-row">
+            <div class="main-services">
+                
+                <div class="service-group">
+                    <h3>法院与法庭服务</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">查找法庭与案件排期</a>
+                            <span>查询联邦最高法院、上诉法院及各地区法院的每日开庭清单。</span>
+                        </li>
+                        <li>
+                            <a href="#">支付法庭罚款与费用</a>
+                            <span>在线缴纳交通违章、民事赔偿或行政罚款。</span>
+                        </li>
+                        <li>
+                            <a href="#">参与陪审团服务</a>
+                            <span>了解作为新联邦公民的陪审员义务与津贴政策。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>法律援助与正义重建</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">申请公共法律援助</a>
+                            <span>为低收入者提供的免费律师服务，包括针对前政府征用财产的诉讼。</span>
+                        </li>
+                        <li>
+                            <a href="#">战争受害者赔偿仲裁庭</a>
+                            <span>针对战争相关的人身伤害与财产损失进行快速仲裁。</span>
+                        </li>
+                        <li>
+                            <a href="#">特赦与犯罪记录清除</a>
+                            <span>依据《2092 和解法案》查询您是否符合清除轻微政治犯罪记录的条件。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>监狱与缓刑</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">查找囚犯与监狱位置</a>
+                            <span>新的联邦监狱数据库（包含从旧战俘营转移的人员名单）。</span>
+                        </li>
+                        <li>
+                            <a href="#">预约监狱探视</a>
+                            <span>所有探视需提前 48 小时进行在线实名预约。</span>
+                        </li>
+                        <li>
+                            <a href="#">报告假释违规行为</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>法律与宪法</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">浏览《阿特利尔联邦临时宪法》</a>
+                            <span>全文阅读关于公民权利、政府结构及权力制衡的基本法。</span>
+                        </li>
+                        <li>
+                            <a href="#">已废止的兰德时期法律清单</a>
+                            <span>查询不再具有法律效力的旧政权法令和行政命令。</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                
+                <div class="live-card">
+                    <div class="live-header">
+                        <span>最高法院直播</span>
+                        <span class="live-indicator">LIVE NOW</span>
+                    </div>
+                    <div class="live-content">
+                        <span class="case-title">联邦诉沃格特案 (The Federation v. Vogt)</span>
+                        <div class="case-meta">第 1 法庭 | 宪法解释听证会</div>
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='120' viewBox='0 0 300 120'%3E%3Crect width='300' height='120' fill='%23333'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23fff' font-family='sans-serif'%3E[视频信号流] 点击观看%3C/text%3E%3C/svg%3E" style="width:100%; display:block; margin-bottom:10px;">
+                        <a href="#" style="font-size:14px; font-weight:700;">查看今日完整庭审时间表 &rarr;</a>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3 style="margin-top:0; font-size:18px;">重要通告：司法独立声明</h3>
+                    <p style="font-size:14px; margin-bottom:0;">
+                        依据宪法，联邦法院法官的任命为终身制，且独立于行政分支。政府官员不得干预任何正在进行的司法程序。
+                    </p>
+                </div>
+
+                <h2>司法新闻</h2>
+                <ul class="link-list">
+                    <li>
+                        <a href="#">最高法院驳回关于“战时紧急征用令”合法性的上诉</a>
+                        <span>2094/01/02 - 判决书 [2094] SC-004</span>
+                    </li>
+                    <li>
+                        <a href="#">新任司法部长宣誓就职：承诺加速监狱人道主义改革</a>
+                        <span>2093/12/29</span>
+                    </li>
+                    <li>
+                        <a href="#">关于前国防部高级官员的公审将于下周一在第 3 法庭开始</a>
+                        <span>2093/12/25</span>
+                    </li>
+                </ul>
+
+                <div style="margin-top: 30px; border-top: 2px solid #ccc; padding-top: 15px;">
+                    <h3 style="font-size: 16px;">常用资源</h3>
+                    <ul class="link-list" style="font-size: 14px;">
+                        <li style="border:none; padding-bottom:5px;"><a href="#">下载标准法律文书模板 (PDF/Word)</a></li>
+                        <li style="border:none; padding-bottom:5px;"><a href="#">律师执业资格查询</a></li>
+                    </ul>
+                </div>
+
+            </aside>
+        </div>
+        <div style="margin-top: 60px; padding: 30px; background: #f8f8f8; border-left: 5px solid var(--c-flag-blue);">
+            <h3 style="margin-top: 0;">需要本部门的服务？</h3>
+            <p>您可以使用我们的 <a href="../contact-form.html">在线服务申请系统</a> 提交申请、查询或反馈。申请将直接转至司法部与最高法院相关部门处理。</p>
+            <p style="margin-top: 15px;">
+                <a href="../contact-form.html" style="background-color: var(--c-flag-blue); color: white; padding: 12px 25px; text-decoration: none; font-weight: 700; display: inline-block;">在线申请服务</a>
+                <a href="#" style="margin-left: 15px; padding: 12px 25px; border: 2px solid var(--c-flag-blue); color: var(--c-flag-blue); text-decoration: none; font-weight: 700; display: inline-block;">查看申请状态</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 14px; color: var(--c-text-sec);">
+                <strong>司法部与最高法院服务热线：</strong> 010-555-XXXX（工作日 9:00-17:00）<br>
+                <strong>紧急情况（警务/消防/救援）：</strong> 911
+            </p>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="header-content" style="padding: 40px 30px; display: block; text-align: center; color: var(--c-text-sec); font-size: 14px;">
+            <p>
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier)
+                <br>
+                <strong>法律面前，人人平等。</strong>
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>

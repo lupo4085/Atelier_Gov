@@ -487,6 +487,13 @@
             </div>
 
             <div class="nav-section">
+                <div class="nav-title">签证管理</div>
+                <a href="#" class="nav-item" data-tab="visa-applications">
+                    <span class="nav-icon">🛂</span> 签证申请
+                </a>
+            </div>
+
+            <div class="nav-section">
                 <div class="nav-title">工作流</div>
                 <a href="#" class="nav-item" data-tab="pending-review">
                     <span class="nav-icon">⏳</span> 待审核
@@ -706,6 +713,76 @@
             </div>
             <div id="user-roles" class="tab-content">
                 <div class="loading">角色权限功能开发中...</div>
+            </div>
+
+            <!-- 签证申请管理 -->
+            <div id="visa-applications" class="tab-content">
+                <div class="content-header">
+                    <h1 class="page-title">签证申请管理</h1>
+                </div>
+
+                <div id="visaStats" class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-title">总申请数</div>
+                        <div class="card-stat" id="visaTotal">--</div>
+                        <div class="card-desc">所有签证申请</div>
+                    </div>
+                    <div class="card" style="border-top-color: #f47738;">
+                        <div class="card-title">待审核</div>
+                        <div class="card-stat" id="visaPending" style="color: #f47738;">--</div>
+                        <div class="card-desc">等待处理的申请</div>
+                    </div>
+                    <div class="card" style="border-top-color: #00703c;">
+                        <div class="card-title">已批准</div>
+                        <div class="card-stat" id="visaApproved" style="color: #00703c;">--</div>
+                        <div class="card-desc">已批准的申请</div>
+                    </div>
+                    <div class="card" style="border-top-color: #d4351c;">
+                        <div class="card-title">已拒绝</div>
+                        <div class="card-stat" id="visaRejected" style="color: #d4351c;">--</div>
+                        <div class="card-desc">已拒绝的申请</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                    <select id="visaFilterStatus" style="padding: 8px 12px; border: 1px solid var(--c-border); font-size: 14px;">
+                        <option value="all">全部状态</option>
+                        <option value="pending">待审核</option>
+                        <option value="approved">已批准</option>
+                        <option value="rejected">已拒绝</option>
+                    </select>
+                    <select id="visaFilterType" style="padding: 8px 12px; border: 1px solid var(--c-border); font-size: 14px;">
+                        <option value="all">全部签证类型</option>
+                        <option value="tourist">旅游签证</option>
+                        <option value="business">商务签证</option>
+                        <option value="work">工作签证</option>
+                        <option value="student">学生签证</option>
+                        <option value="journalist">记者签证</option>
+                        <option value="transit">过境签证</option>
+                    </select>
+                    <button onclick="loadVisaApplications()" class="btn-action" style="padding: 8px 15px;">刷新</button>
+                </div>
+
+                <div class="table-container">
+                    <table id="visaTable">
+                        <thead>
+                            <tr>
+                                <th>申请编号</th>
+                                <th>申请人</th>
+                                <th>签证类型</th>
+                                <th>国籍</th>
+                                <th>提交日期</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 30px;">点击「签证申请」加载数据...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
@@ -1117,6 +1194,290 @@
             }, 2000);
         });
     </script>
+
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="emailjs-config.js"></script>
+    <script src="email-service.js"></script>
+
+    <script>
+        // 签证管理功能
+
+        const visaTypeNames = {
+            'tourist': '旅游签证',
+            'business': '商务签证',
+            'work': '工作签证',
+            'student': '学生签证',
+            'journalist': '记者签证',
+            'transit': '过境签证'
+        };
+
+        // 加载签证申请列表
+        async function loadVisaApplications() {
+            const tableBody = document.querySelector('#visaTable tbody');
+            tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;">正在加载...</td></tr>';
+
+            try {
+                // 列出 submissions 目录
+                const files = await githubApiRequest('/contents/content/submissions?ref=' + GITHUB_BRANCH);
+
+                if (!Array.isArray(files)) {
+                    tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;">暂无申请</td></tr>';
+                    updateVisaStats([]);
+                    return;
+                }
+
+                const applications = [];
+                for (const file of files) {
+                    if (!file.name.endsWith('.json')) continue;
+                    try {
+                        const data = await getPublicContent('content/submissions/' + file.name);
+                        if (data && data.formType === 'visa-application') {
+                            applications.push(data);
+                        }
+                    } catch (e) {
+                        // skip
+                    }
+                }
+
+                applications.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+
+                updateVisaStats(applications);
+
+                // 应用筛选
+                const statusFilter = document.getElementById('visaFilterStatus').value;
+                const typeFilter = document.getElementById('visaFilterType').value;
+
+                let filtered = applications;
+                if (statusFilter !== 'all') {
+                    filtered = filtered.filter(a => a.status === statusFilter);
+                }
+                if (typeFilter !== 'all') {
+                    filtered = filtered.filter(a => a.visaType === typeFilter);
+                }
+
+                if (filtered.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;">无匹配的申请</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                filtered.forEach(app => {
+                    const date = app.submittedAt ? new Date(app.submittedAt).toLocaleDateString('zh-CN') : '--';
+                    const statusBadge = getVisaStatusBadge(app.status);
+                    html += '<tr>' +
+                        '<td><code>' + (app.id || '--') + '</code></td>' +
+                        '<td>' + (app.fullName || '--') + '</td>' +
+                        '<td>' + (visaTypeNames[app.visaType] || app.visaType) + '</td>' +
+                        '<td>' + (app.nationality || '--') + '</td>' +
+                        '<td>' + date + '</td>' +
+                        '<td>' + statusBadge + '</td>' +
+                        '<td>' +
+                            '<button class="btn-action" onclick="showVisaDetail(\'' + app.id + '\')">详情</button>' +
+                        '</td>' +
+                    '</tr>';
+                });
+
+                tableBody.innerHTML = html;
+            } catch (error) {
+                console.error('加载签证申请错误:', error);
+                tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--c-error);">加载失败: ' + error.message + '</td></tr>';
+            }
+        }
+
+        function updateVisaStats(applications) {
+            document.getElementById('visaTotal').textContent = applications.length;
+            document.getElementById('visaPending').textContent = applications.filter(a => a.status === 'pending').length;
+            document.getElementById('visaApproved').textContent = applications.filter(a => a.status === 'approved').length;
+            document.getElementById('visaRejected').textContent = applications.filter(a => a.status === 'rejected').length;
+        }
+
+        function getVisaStatusBadge(status) {
+            const config = {
+                'pending': { cls: 'status-pending', text: '待审核' },
+                'approved': { cls: 'status-approved', text: '已批准' },
+                'rejected': { cls: 'status-draft', text: '已拒绝' }
+            };
+            const c = config[status] || { cls: 'status-draft', text: status || '未知' };
+            return '<span class="status-badge ' + c.cls + '">' + c.text + '</span>';
+        }
+
+        // 查看签证详情
+        async function showVisaDetail(submissionId) {
+            const modal = document.getElementById('visaDetailModal');
+            const content = document.getElementById('visaDetailContent');
+            content.innerHTML = '<p style="text-align:center;padding:30px;">正在加载...</p>';
+            modal.style.display = 'flex';
+
+            try {
+                const data = await getPublicContent('content/submissions/' + submissionId + '.json');
+                if (!data) {
+                    content.innerHTML = '<p style="color:var(--c-error);">无法加载申请数据</p>';
+                    return;
+                }
+
+                const isPending = data.status === 'pending';
+
+                content.innerHTML =
+                    '<h2 style="margin-bottom:20px;">签证申请详情</h2>' +
+                    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">' +
+                        '<div><strong>申请编号：</strong><br><code>' + data.id + '</code></div>' +
+                        '<div><strong>状态：</strong><br>' + getVisaStatusBadge(data.status) + '</div>' +
+                        '<div><strong>签证类型：</strong><br>' + (visaTypeNames[data.visaType] || data.visaType) + '</div>' +
+                        '<div><strong>提交日期：</strong><br>' + (data.submittedAt ? new Date(data.submittedAt).toLocaleString('zh-CN') : '--') + '</div>' +
+                    '</div>' +
+                    '<hr style="margin:15px 0;border:none;border-top:1px solid #eee;">' +
+                    '<h3 style="margin-bottom:10px;color:var(--c-flag-blue);">个人信息</h3>' +
+                    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;">' +
+                        '<div><strong>姓名：</strong> ' + (data.fullName || '--') + '</div>' +
+                        '<div><strong>国籍：</strong> ' + (data.nationality || '--') + '</div>' +
+                        '<div><strong>护照号码：</strong> ' + (data.passportNumber || '--') + '</div>' +
+                        '<div><strong>出生日期：</strong> ' + (data.dateOfBirth || '--') + '</div>' +
+                        '<div><strong>性别：</strong> ' + (data.gender || '--') + '</div>' +
+                        '<div><strong>电话：</strong> ' + (data.phone || '--') + '</div>' +
+                        '<div><strong>邮箱：</strong> ' + (data.email || '--') + '</div>' +
+                    '</div>' +
+                    '<h3 style="margin-bottom:10px;color:var(--c-flag-blue);">行程信息</h3>' +
+                    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;">' +
+                        '<div><strong>入境日期：</strong> ' + (data.entryDate || '--') + '</div>' +
+                        '<div><strong>离境日期：</strong> ' + (data.exitDate || '--') + '</div>' +
+                        '<div><strong>入境口岸：</strong> ' + (data.entryPort || '未指定') + '</div>' +
+                        '<div><strong>住宿：</strong> ' + (data.accommodation || '未提供') + '</div>' +
+                    '</div>' +
+                    '<div style="margin-bottom:15px;"><strong>访问目的：</strong><br>' + (data.purpose || '--') + '</div>' +
+                    (data.invitingParty ? '<div style="margin-bottom:15px;"><strong>邀请方：</strong><br>' + data.invitingParty + '</div>' : '') +
+                    (data.additionalInfo ? '<div style="margin-bottom:15px;"><strong>附加说明：</strong><br>' + data.additionalInfo + '</div>' : '') +
+                    (isPending ?
+                        '<hr style="margin:20px 0;border:none;border-top:2px solid var(--c-flag-blue);">' +
+                        '<h3 style="margin-bottom:10px;">审批操作</h3>' +
+                        '<div class="form-group" style="margin-bottom:15px;">' +
+                            '<label>管理员备注 / 拒绝原因</label>' +
+                            '<textarea id="adminNotes" rows="3" style="width:100%;padding:10px;border:1px solid var(--c-border);font-family:var(--font-gov);" placeholder="请输入备注或拒绝原因..."></textarea>' +
+                        '</div>' +
+                        '<div style="display:flex;gap:10px;">' +
+                            '<button onclick="approveVisa(\'' + data.id + '\')" style="flex:1;padding:12px;background:#00703c;color:#fff;border:none;font-size:16px;font-weight:700;cursor:pointer;">批准</button>' +
+                            '<button onclick="rejectVisa(\'' + data.id + '\')" style="flex:1;padding:12px;background:#d4351c;color:#fff;border:none;font-size:16px;font-weight:700;cursor:pointer;">拒绝</button>' +
+                        '</div>'
+                    :
+                        (data.updatedBy ? '<div style="margin-top:15px;padding:10px;background:#f3f2f1;font-size:13px;"><strong>审批人：</strong> ' + (data.updatedByEmail || data.updatedBy) + ' | <strong>时间：</strong> ' + (data.updatedAt ? new Date(data.updatedAt).toLocaleString('zh-CN') : '--') + '</div>' : '')
+                    );
+            } catch (error) {
+                content.innerHTML = '<p style="color:var(--c-error);">加载失败: ' + error.message + '</p>';
+            }
+        }
+
+        // 批准签证
+        async function approveVisa(submissionId) {
+            const notes = document.getElementById('adminNotes').value;
+
+            if (!confirm('确认批准此签证申请？')) return;
+
+            try {
+                const result = await updateSubmission(submissionId, {
+                    status: 'approved',
+                    adminNotes: notes,
+                    approvedAt: new Date().toISOString()
+                });
+
+                if (result.success) {
+                    // 尝试发送邮件
+                    const submission = result.submission;
+                    if (submission) {
+                        const emailResult = await sendVisaApprovalEmail(submission, notes);
+                        if (emailResult.success) {
+                            alert('签证已批准，通知邮件已发送！');
+                        } else {
+                            alert('签证已批准！邮件发送失败：' + (emailResult.error || '请检查 EmailJS 配置'));
+                        }
+                    } else {
+                        alert('签证已批准！');
+                    }
+
+                    hideVisaDetailModal();
+                    loadVisaApplications();
+                } else {
+                    alert('操作失败：' + result.error);
+                }
+            } catch (error) {
+                alert('操作失败：' + error.message);
+            }
+        }
+
+        // 拒绝签证
+        async function rejectVisa(submissionId) {
+            const reason = document.getElementById('adminNotes').value;
+
+            if (!reason.trim()) {
+                alert('拒绝签证时必须填写拒绝原因');
+                return;
+            }
+
+            if (!confirm('确认拒绝此签证申请？')) return;
+
+            try {
+                const result = await updateSubmission(submissionId, {
+                    status: 'rejected',
+                    rejectionReason: reason,
+                    rejectedAt: new Date().toISOString()
+                });
+
+                if (result.success) {
+                    const submission = result.submission;
+                    if (submission) {
+                        const emailResult = await sendVisaRejectionEmail(submission, reason);
+                        if (emailResult.success) {
+                            alert('签证已拒绝，通知邮件已发送。');
+                        } else {
+                            alert('签证已拒绝！邮件发送失败：' + (emailResult.error || '请检查 EmailJS 配置'));
+                        }
+                    } else {
+                        alert('签证已拒绝。');
+                    }
+
+                    hideVisaDetailModal();
+                    loadVisaApplications();
+                } else {
+                    alert('操作失败：' + result.error);
+                }
+            } catch (error) {
+                alert('操作失败：' + error.message);
+            }
+        }
+
+        function hideVisaDetailModal() {
+            document.getElementById('visaDetailModal').style.display = 'none';
+        }
+
+        // 初始化 EmailJS
+        document.addEventListener('DOMContentLoaded', () => {
+            initEmailService();
+        });
+
+        // switchTab 扩展：切换到签证页时自动加载
+        const _originalSwitchTab = window.switchTab;
+        window.switchTab = function(tabId) {
+            _originalSwitchTab(tabId);
+            if (tabId === 'visa-applications') {
+                loadVisaApplications();
+            }
+        };
+
+        window.loadVisaApplications = loadVisaApplications;
+        window.showVisaDetail = showVisaDetail;
+        window.approveVisa = approveVisa;
+        window.rejectVisa = rejectVisa;
+        window.hideVisaDetailModal = hideVisaDetailModal;
+    </script>
+
+    <!-- 签证详情模态框 -->
+    <div id="visaDetailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center; overflow-y:auto;">
+        <div style="background:#fff; padding:30px; max-width:700px; width:90%; border-top:5px solid var(--c-flag-blue); max-height:90vh; overflow-y:auto; margin:20px auto; position:relative;">
+            <button onclick="hideVisaDetailModal()" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:24px; cursor:pointer; color:#666;">&times;</button>
+            <div id="visaDetailContent">
+                <!-- 动态填充 -->
+            </div>
+        </div>
+    </div>
 
     <!-- GitHub PAT 设置模态框 -->
     <div id="tokenModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">

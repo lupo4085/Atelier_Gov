@@ -475,6 +475,44 @@ async function ghSubmitForm(formData) {
 }
 
 // ============================================================
+// 更新提交（管理员审批用）
+// ============================================================
+
+async function ghUpdateSubmission(submissionId, updateData) {
+  try {
+    const user = window.firebaseAuth.currentUser;
+    if (!user) return { success: false, error: '请先登录' };
+
+    // 读取现有提交
+    const submission = await getPublicContent(`content/submissions/${submissionId}.json`);
+    if (!submission) {
+      return { success: false, error: '提交不存在' };
+    }
+
+    // 合并更新数据
+    const updated = {
+      ...submission,
+      ...updateData,
+      updatedAt: new Date().toISOString(),
+      updatedBy: user.uid,
+      updatedByEmail: user.email
+    };
+
+    // 写回
+    await putFileContent(
+      `content/submissions/${submissionId}.json`,
+      updated,
+      `更新提交: ${submissionId} (${updateData.status || 'update'})`
+    );
+
+    return { success: true, submission: updated };
+  } catch (error) {
+    console.error('更新提交错误:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// ============================================================
 // 用户提交查询
 // ============================================================
 
@@ -1006,6 +1044,7 @@ window._gh = {
   updateContent: ghUpdateContent,
   deleteContent: ghDeleteContent,
   submitForm: ghSubmitForm,
+  updateSubmission: ghUpdateSubmission,
   getUserSubmissions: ghGetUserSubmissions,
   addCategory: ghAddCategory,
   getCategories: ghGetCategories,

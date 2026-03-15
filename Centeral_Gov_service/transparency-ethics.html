@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府透明度办公室 - GOV.AT</title>
+    <style>
+        /* --- 核心样式库 (GOV.AT Standard) --- */
+        :root {
+            --c-flag-dark: #0b0c15;
+            --c-flag-blue: #1d70b8;
+            --c-flag-blue-hover: #003078;
+            --c-dept-teal: #007079; /* 透明度办公室专属色：客观、冷静 */
+            --c-flag-orange: #f47738;
+            --c-text-main: #0b0c15;
+            --c-text-sec: #505a5f;
+            --c-bg-page: #ffffff;
+            --c-bg-light: #f3f2f1;
+            --c-border: #b1b4b6;
+            --font-gov: "GDS Transport", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        
+        /* 认证状态样式 */
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--c-flag-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background-color: var(--c-flag-blue-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-logout {
+            background-color: #d4351c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .auth-status span {
+            color: #fff;
+        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            color: var(--c-text-main);
+            font-family: var(--font-gov);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--c-bg-page);
+        }
+
+        a {
+            color: var(--c-flag-blue);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+        
+        a:hover {
+            color: var(--c-flag-blue-hover);
+            text-decoration-thickness: 3px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--c-flag-dark);
+            color: #fff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 5px solid var(--c-flag-orange);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .gov-emblem {
+            height: 45px;
+            margin-right: 15px;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); 
+        }
+        
+        .logo-text { font-weight: 700; font-size: 24px; letter-spacing: 0.5px; }
+
+        /* Department Header */
+        .dept-header {
+            background-color: #f3f2f1;
+            border-bottom: 1px solid var(--c-border);
+            padding: 40px 0;
+            border-left: 10px solid var(--c-dept-teal);
+        }
+
+        .dept-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        .breadcrumbs {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: var(--c-text-sec);
+        }
+        
+        .breadcrumbs a { color: var(--c-text-sec); text-decoration: underline; }
+
+        .dept-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--c-dept-teal);
+        }
+
+        .dept-desc {
+            font-size: 19px;
+            max-width: 700px;
+            line-height: 1.4;
+            color: var(--c-text-main);
+        }
+
+        /* Main Layout */
+        main {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        /* Search/Track Bar */
+        .search-banner {
+            background-color: var(--c-dept-teal);
+            padding: 20px;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+        .search-label { font-weight: 700; font-size: 18px; margin-bottom: 10px; display: block; }
+        .search-group { display: flex; gap: 10px; }
+        .search-input { flex: 1; padding: 10px; border: none; font-size: 16px; }
+        .search-btn { background: #0b0c15; color: #fff; border: none; padding: 10px 20px; font-weight: 700; cursor: pointer; }
+
+        /* Grid System */
+        .grid-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 50px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--c-text-main);
+        }
+
+        .service-group { margin-bottom: 35px; }
+        .service-group h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .link-list { list-style: none; }
+        .link-list li {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .link-list a {
+            font-weight: 700;
+            font-size: 16px;
+            display: block;
+        }
+        .link-list span {
+            font-size: 14px;
+            color: var(--c-text-sec);
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* Data Dashboard Card */
+        .data-card {
+            background: #fff;
+            border: 1px solid var(--c-border);
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .stat-val { font-weight: 700; }
+        .progress-bar {
+            height: 8px;
+            background: #e5e5e5;
+            margin-bottom: 20px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--c-dept-teal);
+        }
+
+        /* Whistleblower Box */
+        .whistle-box {
+            background-color: #2b2b2b;
+            color: #fff;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .whistle-box h3 { color: #fff; margin-top: 0; }
+        .whistle-box a { color: #fff; text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            .grid-row { grid-template-columns: 1fr; }
+            .search-group { flex-direction: column; }
+        }
+    </style>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <!-- 项目配置文件 -->
+    <script src="../firebase-config.js"></script>
+    <script src="../auth.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="../nationalicon/nationicon.png" alt="国徽" class="gov-emblem">
+            <span class="logo-text">Atelier Federal Government</span>
+        
+            <nav style="margin-left: auto; display: flex; gap: 20px; align-items: center;">
+                <a href="../index.html" style="color: #fff; text-decoration: none; font-weight: 700;">首页</a>
+                <a href="../index.html#services" style="color: #fff; text-decoration: none; font-weight: 700;">服务</a>
+                <a href="../departments.html" style="color: #fff; text-decoration: none; font-weight: 700;">部门</a>
+                <div class="auth-status">
+                    <!-- 认证状态将由 auth.js 动态填充 -->
+                </div>
+            </nav></div>
+    </header>
+
+    <div class="dept-header">
+        <div class="dept-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">首页</a> &gt; <a href="../departments.html">政府部门</a> &gt; <span>透明度办公室</span>
+            </div>
+            <h1 class="dept-title">政府透明度与道德办公室</h1>
+            <p class="dept-desc">
+                我们负责监督政府运作的公开性，管理公共档案解密，并确保公职人员遵守最高的道德标准。我们的目标是重建公众对民主制度的信任。
+            </p>
+        </div>
+    </div>
+
+    <main>
+        <div class="search-banner">
+            <label class="search-label">查找已公开的政府文件或追踪申请：</label>
+            <div class="search-group">
+                <input type="text" class="search-input" placeholder="输入关键词、FOI 案件编号或档案ID...">
+                <button class="search-btn">搜索披露日志</button>
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="main-services">
+                <h2>获取信息与监督</h2>
+
+                <div class="service-group">
+                    <h3>信息自由 (FOI)</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">提交新的信息公开申请</a>
+                            <span>根据《信息自由法》，任何公民均可要求政府部门披露未公开的数据。</span>
+                        </li>
+                        <li>
+                            <a href="#">查看披露日志</a>
+                            <span>浏览过去已被批准公开的政府文件库。</span>
+                        </li>
+                        <li>
+                            <a href="#">FOI 申请被拒？提出上诉</a>
+                            <span>如果您认为政府不当扣留了信息，请联系信息专员。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>历史清算与解密</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">兰德政权档案库 (The Rand Archives)</a>
+                            <span>搜索已解密的旧政府会议记录、军事命令与财政支出明细。</span>
+                        </li>
+                        <li>
+                            <a href="#">申请查阅个人被监控记录</a>
+                            <span>查询旧秘密警察是否曾为您建立非法档案（需验证身份）。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="service-group">
+                    <h3>政府道德与支出</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="#">部长级官员利益登记册</a>
+                            <span>查看所有内阁成员的资产申报、礼品接收记录及潜在利益冲突。</span>
+                        </li>
+                        <li>
+                            <a href="#">政府超额支出实时看板</a>
+                            <span>依据《阳光法案》，所有大额政府采购合同必须在此公示。</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                
+                <div class="data-card">
+                    <h3 style="margin-top:0; font-size:16px; margin-bottom:15px;">战时档案解密进度</h3>
+                    
+                    <div class="stat-row">
+                        <span>军事行动记录</span>
+                        <span class="stat-val">82% 已公开</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 82%;"></div></div>
+
+                    <div class="stat-row">
+                        <span>财政/黑预算</span>
+                        <span class="stat-val">45% 已公开</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
+
+                    <div class="stat-row">
+                        <span>生物实验数据</span>
+                        <span class="stat-val">100% 已公开</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+                    
+                    <p style="font-size:12px; color:#666; margin-top:10px;">数据更新于：2094/01/03</p>
+                </div>
+
+                <div class="whistle-box">
+                    <h3>内部举报/吹哨人通道</h3>
+                    <p style="font-size:14px; margin-bottom:15px; opacity:0.9;">
+                        如果您是政府雇员，并发现目前的部门存在腐败、欺诈或掩盖真相的行为，请通过此加密通道安全上报。
+                    </p>
+                    <a href="#" style="font-weight:700;">访问匿名投递系统 &rarr;</a>
+                </div>
+
+                <h3 style="margin-top:30px; font-size:18px; font-weight:700;">最新裁决</h3>
+                <ul class="link-list" style="margin-top:15px;">
+                    <li>
+                        <a href="#">裁决 94-012：责令能源部公开核电站选址评估报告</a>
+                        <span style="font-size:12px;">2094/01/01</span>
+                    </li>
+                    <li>
+                        <a href="#">关于前副总理回忆录出版审查的说明</a>
+                        <span style="font-size:12px;">2093/12/29</span>
+                    </li>
+                </ul>
+
+            </aside>
+        </div>
+        <div style="margin-top: 60px; padding: 30px; background: #f8f8f8; border-left: 5px solid var(--c-flag-blue);">
+            <h3 style="margin-top: 0;">需要本部门的服务？</h3>
+            <p>您可以使用我们的 <a href="../contact-form.html">在线服务申请系统</a> 提交申请、查询或反馈。申请将直接转至政府透明度办公室相关部门处理。</p>
+            <p style="margin-top: 15px;">
+                <a href="../contact-form.html" style="background-color: var(--c-flag-blue); color: white; padding: 12px 25px; text-decoration: none; font-weight: 700; display: inline-block;">在线申请服务</a>
+                <a href="#" style="margin-left: 15px; padding: 12px 25px; border: 2px solid var(--c-flag-blue); color: var(--c-flag-blue); text-decoration: none; font-weight: 700; display: inline-block;">查看申请状态</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 14px; color: var(--c-text-sec);">
+                <strong>政府透明度办公室服务热线：</strong> 010-555-XXXX（工作日 9:00-17:00）<br>
+                <strong>紧急情况（警务/消防/救援）：</strong> 911
+            </p>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="header-content" style="padding: 40px 30px; display: block; text-align: center; color: var(--c-text-sec); font-size: 14px;">
+            <p>
+                © 阿特利尔联邦共和国 (Federal Republic of Atelier)
+                <br>
+                <strong>透明度是公信力的基石。</strong>
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        // 检查认证状态
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebaseAuth !== 'undefined') {
+                checkAuthState();
+            }
+        });
+    </script>
+</body>
+</html>
